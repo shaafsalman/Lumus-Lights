@@ -2,9 +2,9 @@ import React from 'react';
 
 const Contact = () => {
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-4xl font-bold mb-4">Welcome to Lights Store</h1>
-      <p className="text-lg">Find the perfect lighting solutions for your home or office.</p>
+    <div className="container mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold">Contact Us</h1>
+      <p className="mt-4">Get in touch with us through our contact form.</p>
     </div>
   );
 };

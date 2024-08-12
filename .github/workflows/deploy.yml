@@ -11,49 +11,50 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
 
       - name: Install dependencies
         run: |
-          cd frontend
+          cd cargo-frontend
           npm install
 
       - name: Build the project
         run: |
-          cd frontend
+          cd cargo-frontend
           npm run build
+
+      - name: Set up SSH
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        run: |
+          echo "Setting up SSH connection..."
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan $CPANEL_SERVER >> ~/.ssh/known_hosts
+          echo "SSH key scanned."
 
       - name: Deploy to cPanel
         env:
           CPANEL_USER: ${{ secrets.CPANEL_USER }}
-          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
           CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          sshpass -p $CPANEL_PASSWORD ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
-          # Navigate to the deployment directory
-          cd $CPANEL_PATH
-
-          # Preserve .htaccess and .well-known folders, and backup existing files
-          rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' $CPANEL_PATH/ /tmp/deploy/
-          rm -rf $CPANEL_PATH/*
-          rsync -av /tmp/deploy/ $CPANEL_PATH/
-          EOF
-
-          # Deploy the new build files
-          rsync -av ${{ github.workspace }}/frontend/dist/ $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH/
+          echo "Deploying to cPanel..."
+          rsync -avz --delete --exclude='.htaccess' --exclude='.well-known' cargo-frontend/dist/ $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH
+          echo "Deployment completed."
 
       - name: Verify deployment
         env:
           CPANEL_USER: ${{ secrets.CPANEL_USER }}
-          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
           CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          sshpass -p $CPANEL_PASSWORD ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
           echo "Verifying deployment..."
-          ls -la $CPANEL_PATH/
-          EOF
+          ssh -v -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
+          echo "Deployment verification completed."
