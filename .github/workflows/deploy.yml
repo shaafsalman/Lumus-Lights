@@ -40,7 +40,7 @@ jobs:
           rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' /home/kcjarr7hikqn/public_html/lumuslights.com/ /tmp/deploy/
           rm -rf /home/kcjarr7hikqn/public_html/lumuslights.com/*
           rsync -av /tmp/deploy/ /home/kcjarr7hikqn/public_html/lumuslights.com/
-          mv /path/to/frontend/dist/* /home/kcjarr7hikqn/public_html/lumuslights.com/
+          mv /home/kcjarr7hikqn/frontend/dist/* /home/kcjarr7hikqn/public_html/lumuslights.com/
           EOF
 
       - name: Verify deployment
