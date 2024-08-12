@@ -12,6 +12,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          path: frontend
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -61,5 +63,5 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           echo "Verifying deployment..."
-          ssh -v -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
+          ssh -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
           echo "Deployment verification completed."
