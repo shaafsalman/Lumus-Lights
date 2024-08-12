@@ -12,7 +12,7 @@ export default {
       colors: {
         primary: '#bea77f', 
         primaryHover: '#bea77f', 
-        secondary: 'black',  
+        secondary: '#22211f',  
       },
     },
   },

@@ -44,6 +44,7 @@ const App = () => {
     { path: '/', name: 'Home', component: <Home />, icon: faHome },
     { path: '/products', name: 'Products', component: <Products />, icon: faLightbulb },
     { path: '/contact', name: 'Contact', component: <Contact />, icon: faEnvelope },
+    
   ]);
 
   const companyName = "Lumus Lights";
@@ -51,7 +52,7 @@ const App = () => {
   return (
     <DarkModeProvider>
       <Router>
-        <AppContent pages={NavPages} companyName={companyName} />
+        <AppContent pages={pages} companyName={companyName} />
       </Router>
     </DarkModeProvider>
   );

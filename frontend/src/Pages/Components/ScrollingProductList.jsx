@@ -25,15 +25,16 @@ const ScrollingProductList = ({ products, productsPerRow = 4 }) => {
   const visibleProducts = products.slice(0, productsPerRow); 
 
   return (
-    <div className="relative flex items-center">
+    <div className="relative flex items-center justify-center">
       {/* Left Arrow */}
       <RoundButton
         onClick={() => handleScroll(-1)}
         icon={faArrowLeft}
         disabled={scrollPosition === 0}
+        className="absolute left-0 z-10" // Positioning the button over the first card
       />
 
-      <div className="relative overflow-hidden w-full">
+      <div className="relative overflow-hidden w-full flex justify-center">
         <div 
           ref={containerRef}
           className="flex overflow-x-hidden"
@@ -55,6 +56,7 @@ const ScrollingProductList = ({ products, productsPerRow = 4 }) => {
       <RoundButton
         onClick={() => handleScroll(1)}
         icon={faArrowRight}
+        className="absolute right-0 z-10" // Positioning the button over the last card
       />
     </div>
   );
