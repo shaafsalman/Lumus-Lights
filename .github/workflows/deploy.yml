@@ -13,19 +13,8 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up SSH
-        run: |
-          echo "${{ secrets.KEY_NAME }}" > key.pem
-          chmod 600 key.pem
-          eval "$(ssh-agent -s)"
-          ssh-add key.pem
-        env:
-          SSH_PASSPHRASE: ${{ secrets.KEY_PASSWORD }}
-
-      - name: Debug SSH Agent
-        run: |
-          eval "$(ssh-agent -s)"
-          ssh-add -l
+      - name: Install sshpass
+        run: sudo apt-get install -y sshpass
 
       - name: Install dependencies
         run: |
@@ -40,24 +29,28 @@ jobs:
       - name: Deploy to cPanel
         env:
           CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
           CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
+          sshpass -p $CPANEL_PASSWORD ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
           cd $CPANEL_PATH
+
+          # Preserve .htaccess and .well-known folders
           rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' $CPANEL_PATH/ /tmp/deploy/
           rm -rf $CPANEL_PATH/*
           rsync -av /tmp/deploy/ $CPANEL_PATH/
-          mv /home/kcjarr7hikqn/frontend/dist/* $CPANEL_PATH/
+          mv /home/runner/work/your-repo/frontend/dist/* $CPANEL_PATH/
           EOF
 
       - name: Verify deployment
         env:
           CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_PASSWORD: ${{ secrets.CPANEL_PASSWORD }}
           CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
+          sshpass -p $CPANEL_PASSWORD ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
           echo "Verifying deployment..."
           ls -la $CPANEL_PATH/
           EOF
