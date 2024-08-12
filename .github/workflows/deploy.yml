@@ -8,10 +8,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
+    
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0  # Ensures full history is fetched
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
@@ -21,7 +23,6 @@ jobs:
       - name: Install dependencies
         run: |
           cd frontend
-          ls -la  # List files to verify package.json is present
           npm install
 
       - name: Build the project
@@ -63,5 +64,5 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           echo "Verifying deployment..."
-          ssh -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
+          ssh -v -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
           echo "Deployment verification completed."
