@@ -1,0 +1,51 @@
+name: Deploy to cPanel
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.5.3
+        with:
+          ssh-private-key: ${{ secrets.KEY_NAME }}
+        env:
+          SSH_PASSPHRASE: ${{ secrets.KEY_PASSWORD }}
+
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm install
+
+      - name: Build the project
+        run: |
+          cd frontend
+          npm run build
+
+      - name: Deploy to cPanel
+        run: |
+          ssh -o StrictHostKeyChecking=no kcjarr7hikqn@c0z.d04.mytemp.website << 'EOF'
+          # Navigate to the website directory
+          cd /home/kcjarr7hikqn/public_html/lumuslights.com
+
+          # Preserve .htaccess and .well-known folders
+          rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' /home/kcjarr7hikqn/public_html/lumuslights.com/ /tmp/deploy/
+          rm -rf /home/kcjarr7hikqn/public_html/lumuslights.com/*
+          rsync -av /tmp/deploy/ /home/kcjarr7hikqn/public_html/lumuslights.com/
+          mv /path/to/frontend/dist/* /home/kcjarr7hikqn/public_html/lumuslights.com/
+          EOF
+
+      - name: Verify deployment
+        run: |
+          ssh -o StrictHostKeyChecking=no kcjarr7hikqn@c0z.d04.mytemp.website << 'EOF'
+          echo "Verifying deployment..."
+          ls -la /home/kcjarr7hikqn/public_html/lumuslights.com/
+          EOF
