@@ -1,3 +1,4 @@
+/** @type {import('tailwindcss').Config} */
 export default {
   content: [
     "./index.html",
@@ -10,8 +11,11 @@ export default {
       },
       colors: {
         primary: '#bea77f', 
+        primaryHover: '#bea77f', 
+        secondary: 'black',  
       },
     },
   },
+  darkMode: 'class', 
   plugins: [],
 }

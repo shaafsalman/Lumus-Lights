@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import NavigationBar from './Components/NavigationBar.jsx';
 import Footer from './Components/Footer.jsx';
@@ -7,50 +7,51 @@ import Home from './Pages/Home.jsx';
 import Products from './Pages/Products.jsx';
 import ProductDetail from './Pages/ProductDetail.jsx';
 import Contact from './Pages/Contact.jsx';
+import ProductMainPage from './Components/ProductMainPage.jsx';
+
+import { useDarkMode,DarkModeProvider } from './Util/DarkModeContext.jsx';
+import { faHome, faBoxOpen,faLightbulb, faInfoCircle, faEnvelope } from '@fortawesome/free-solid-svg-icons';
+
+const AppContent = ({ pages, companyName }) => {
+  const { darkMode, toggleDarkMode } = useDarkMode();
+
+  return (
+    <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
+      <NavigationBar pages={pages} companyName={companyName} />
+      <main className="flex-grow pt-16">
+        <Routes>
+          {pages.map((page) => (
+            <Route key={page.path} path={page.path} element={page.component} />
+          ))}
+        </Routes>
+      </main>
+      <Footer />
+    </div>
+  );
+};
 
 const App = () => {
   const [pages] = useState([
-    { path: '/', name: 'Home', component: <Home />, icon: 'fas fa-home' },
-    { path: '/products', name: 'Products', component: <Products />, icon: 'fas fa-box-open' },
-    { path: '/products/:id', name: 'Product Detail', component: <ProductDetail />, icon: 'fas fa-info-circle' },
-    { path: '/contact', name: 'Contact', component: <Contact />, icon: 'fas fa-envelope' },
+    { path: '/', name: 'Home', component: <Home />, icon: faHome },
+    { path: '/products', name: 'Products', component: <Products />, icon: faLightbulb },
+    { path: '/products/:id', name: 'Product Detail', component: <ProductDetail />, icon: faInfoCircle },
+    { path: '/contact', name: 'Contact', component: <Contact />, icon: faEnvelope },
+    { path: '/product-main-page', name: 'Product', component: <ProductMainPage />, icon: faEnvelope },
+  ]);
+  const [NavPages] = useState([
+    { path: '/', name: 'Home', component: <Home />, icon: faHome },
+    { path: '/products', name: 'Products', component: <Products />, icon: faLightbulb },
+    { path: '/contact', name: 'Contact', component: <Contact />, icon: faEnvelope },
   ]);
 
-  const companyName = "Lumus Lights"; 
-
-  // State for dark mode
-  const [darkMode, setDarkMode] = useState(false);
-
-  // Toggle dark mode
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
-
-  // Update body class based on dark mode
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('bg-gray-900', 'text-white');
-      document.body.classList.remove('bg-white', 'text-black');
-    } else {
-      document.body.classList.add('bg-white', 'text-black');
-      document.body.classList.remove('bg-gray-900', 'text-white');
-    }
-  }, [darkMode]);
+  const companyName = "Lumus Lights";
 
   return (
-    <Router>
-      <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
-        <NavigationBar pages={pages} companyName={companyName} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-        <main className="flex-grow pt-16">
-          <Routes>
-            {pages.map((page) => (
-              <Route key={page.path} path={page.path} element={page.component} />
-            ))}
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <DarkModeProvider>
+      <Router>
+        <AppContent pages={NavPages} companyName={companyName} />
+      </Router>
+    </DarkModeProvider>
   );
 };
 

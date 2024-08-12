@@ -1,0 +1,203 @@
+[
+    {
+      "discount": 10,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Modern Floor Lamp",
+      "productCategory": "Modern lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["Black", "White", "Gold"],
+      "currentPrice": "45.00",
+      "originalPrice": "50.00"
+    },
+    {
+      "discount": 15,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Elegant Table Lamp",
+      "productCategory": "Table lamps",
+      "productType": "Table Lamp",
+      "availableColors": ["Bronze", "White"],
+      "currentPrice": "30.00",
+      "originalPrice": "35.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Compact Desk Lamp",
+      "productCategory": "Desk lamps",
+      "productType": "Desk Lamp",
+      "availableColors": ["Black", "Silver"],
+      "currentPrice": "20.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 5,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Luxury Ceiling Light",
+      "productCategory": "Ceiling lights",
+      "productType": "Ceiling Light",
+      "availableColors": ["Gold", "White"],
+      "currentPrice": "120.00",
+      "originalPrice": "126.00"
+    },
+    {
+      "discount": 20,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Industrial Floor Lamp",
+      "productCategory": "Floor lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["Black", "Rust"],
+      "currentPrice": "70.00",
+      "originalPrice": "87.50"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Contemporary Desk Lamp",
+      "productCategory": "Desk lamps",
+      "productType": "Desk Lamp",
+      "availableColors": ["White", "Gray"],
+      "currentPrice": "25.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 8,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Vintage Table Lamp",
+      "productCategory": "Table lamps",
+      "productType": "Table Lamp",
+      "availableColors": ["Antique Brass", "Cream"],
+      "currentPrice": "28.00",
+      "originalPrice": "30.50"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Smart Modern Lamp",
+      "productCategory": "Modern lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["Black", "White"],
+      "currentPrice": "55.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 12,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Art Deco Table Lamp",
+      "productCategory": "Table lamps",
+      "productType": "Table Lamp",
+      "availableColors": ["Gold", "White"],
+      "currentPrice": "40.00",
+      "originalPrice": "45.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Classic Desk Lamp",
+      "productCategory": "Desk lamps",
+      "productType": "Desk Lamp",
+      "availableColors": ["Brass", "Black"],
+      "currentPrice": "22.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 25,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Chic Floor Lamp",
+      "productCategory": "Floor lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["Chrome", "White"],
+      "currentPrice": "85.00",
+      "originalPrice": "113.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Minimalist Ceiling Light",
+      "productCategory": "Ceiling lights",
+      "productType": "Ceiling Light",
+      "availableColors": ["White", "Silver"],
+      "currentPrice": "75.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 18,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Rustic Table Lamp",
+      "productCategory": "Table lamps",
+      "productType": "Table Lamp",
+      "availableColors": ["Rust", "Cream"],
+      "currentPrice": "35.00",
+      "originalPrice": "42.50"
+    },
+    {
+      "discount": 10,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Sleek Desk Lamp",
+      "productCategory": "Desk lamps",
+      "productType": "Desk Lamp",
+      "availableColors": ["Black", "White"],
+      "currentPrice": "27.00",
+      "originalPrice": "30.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Artistic Ceiling Light",
+      "productCategory": "Ceiling lights",
+      "productType": "Ceiling Light",
+      "availableColors": ["Gold", "Black"],
+      "currentPrice": "100.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 22,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Elegant Modern Lamp",
+      "productCategory": "Modern lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["White", "Gold"],
+      "currentPrice": "60.00",
+      "originalPrice": "77.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Classic Floor Lamp",
+      "productCategory": "Floor lamps",
+      "productType": "Floor Lamp",
+      "availableColors": ["Black", "Brass"],
+      "currentPrice": "90.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 15,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Modern Table Lamp",
+      "productCategory": "Table lamps",
+      "productType": "Table Lamp",
+      "availableColors": ["Black", "White"],
+      "currentPrice": "32.00",
+      "originalPrice": "37.00"
+    },
+    {
+      "discount": null,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Sleek Ceiling Light",
+      "productCategory": "Ceiling lights",
+      "productType": "Ceiling Light",
+      "availableColors": ["Silver", "White"],
+      "currentPrice": "80.00",
+      "originalPrice": null
+    },
+    {
+      "discount": 30,
+      "productImage": "https://light-workdo.myshopify.com/cdn/shop/products/nymane-work-lamp-w-charging-led-bulb-anthracite__0991757_pe819571_s5-removebg-preview_600x600.png",
+      "productTitle": "Vintage Desk Lamp",
+      "productCategory": "Desk lamps",
+      "productType": "Desk Lamp",
+      "availableColors": ["Copper", "Black"],
+      "currentPrice": "23.00",
+      "originalPrice": "33.00"
+    }
+  ]
+  

@@ -1,71 +1,87 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import '@fortawesome/fontawesome-free/css/all.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { useDarkMode } from './../Util/DarkModeContext';
+import ToggleSwitch from '../Cells/ToggleSwitch';
+import { faUser ,faShoppingCart,faBars } from '@fortawesome/free-solid-svg-icons';
 
-const NavigationBar = ({ pages, companyName, darkMode, toggleDarkMode }) => {
+const NavigationBar = ({ pages, companyName }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const { darkMode, toggleDarkMode } = useDarkMode();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
 
-  const isActive = (path) => {
-    return location.pathname === path;
-  };
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className={`bg-black text-white shadow-lg fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-black' : 'bg-black'}`}>
+    <nav className={`shadow-md fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between h-16 items-center">
+        <div className="flex justify-between items-center h-16">
+          {/* Company Name */}
           <div className="flex-shrink-0">
-            <span className="text-2xl font-semibold tracking-tighter text-primary">{companyName}</span>
+            <span className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              {companyName}
+            </span>
           </div>
-          <div className="hidden md:flex space-x-4">
+
+          {/* Navigation Links */}
+          <div className="hidden md:flex flex-grow items-center space-x-6 ml-10">
             {pages.map((page) => (
               <Link
                 key={page.path}
                 to={page.path}
-                className={`px-3 py-2 rounded-md text-sm font-medium ${isActive(page.path) ? 'bg-primary text-black' : 'hover:bg-primary hover:text-black'}`}
+                className={`relative text-md font-semibold tracking-tighter transition-all duration-300 ease-in-out ${isActive(page.path) ? 'text-primary border-b-2 border-primary' : 'hover:text-primary'} ${darkMode ? 'text-white' : 'text-secondary'}`}
               >
-                <i className={`${page.icon} mr-1`}></i>
+                <FontAwesomeIcon icon={page.icon} className="mr-2 text-md" />
                 {page.name}
               </Link>
             ))}
-            <button 
-              onClick={toggleDarkMode} 
-              className="px-3 py-2 rounded-md text-sm font-medium bg-primary hover:bg-yellow-400"
-            >
-              {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>}
-            </button>
           </div>
+
+          {/* Profile, Cart Icons & Dark Mode Toggle */}
+          <div className="flex items-center space-x-4">
+            <Link to="/profile" className="text-xl">
+              <FontAwesomeIcon icon={faUser} className="h-6 w-6" />
+            </Link>
+            <Link to="/cart" className="text-xl">
+              <FontAwesomeIcon icon={faShoppingCart} className="h-6 w-6" />
+            </Link>
+            <ToggleSwitch checked={darkMode} onChange={toggleDarkMode} />
+          </div>
+
+          {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button onClick={toggleMenu} className="text-white focus:outline-none">
-              {isOpen ? <i className="fas fa-times"></i> : <i className="fas fa-bars"></i>}
+            <button onClick={toggleMenu} className={`text-2xl focus:outline-none ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              {isOpen ? <FontAwesomeIcon icon={faTimes} className="h-6 w-6" /> : <FontAwesomeIcon icon={faBars} className="h-6 w-6" />}
             </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
       {isOpen && (
-        <div className="md:hidden bg-black">
+        <div className={`${darkMode ? 'bg-secondary' : 'bg-white'} md:hidden`}>
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {pages.map((page) => (
               <Link
                 key={page.path}
                 to={page.path}
-                className={`block px-3 py-2 rounded-md text-base font-medium ${isActive(page.path) ? 'bg-primary text-black' : 'hover:bg-primary hover:text-black'}`}
+                className={`block px-3 py-2 text-lg font-medium transition-all duration-300 ease-in-out ${isActive(page.path) ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} ${darkMode ? 'text-white' : 'text-secondary'}`}
                 onClick={() => setIsOpen(false)}
               >
-                <i className={`${page.icon} mr-1`}></i>
+                <FontAwesomeIcon icon={page.icon} className="mr-2 h-5 w-5" />
                 {page.name}
               </Link>
             ))}
-            <button 
-              onClick={toggleDarkMode} 
-              className="block w-full text-left px-3 py-2 rounded-md text-base font-medium bg-primary hover:bg-yellow-400"
+            <button
+              onClick={toggleDarkMode}
+              className={`block w-full text-left px-3 py-2 rounded-md text-lg font-medium transition-all duration-300 ease-in-out ${darkMode ? 'bg-primary hover:bg-yellow-400' : 'bg-gray-800 hover:bg-gray-700'}`}
             >
-              {darkMode ? <i className="fas fa-sun"></i> : <i className="fas fa-moon"></i>} 
-              {darkMode ? 'Light Mode' : 'Dark Mode'}
+              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} className="mr-2 h-5 w-5 inline" />
+              {darkMode ? ' Light Mode' : ' Dark Mode'}
             </button>
           </div>
         </div>
