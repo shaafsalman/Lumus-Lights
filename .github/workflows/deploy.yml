@@ -14,11 +14,16 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Set up SSH
-        uses: webfactory/ssh-agent@v0.5.3
-        with:
-          ssh-private-key: ${{ secrets.KEY_NAME }}
-        env:
-          SSH_PASSPHRASE: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > key.pem
+          chmod 600 key.pem
+          eval "$(ssh-agent -s)"
+          ssh-add key.pem
+
+      - name: Debug SSH Agent
+        run: |
+          eval "$(ssh-agent -s)"
+          ssh-add -l
 
       - name: Install dependencies
         run: |
@@ -31,21 +36,26 @@ jobs:
           npm run build
 
       - name: Deploy to cPanel
+        env:
+          CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
+          CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no kcjarr7hikqn@c0z.d04.mytemp.website << 'EOF'
-          # Navigate to the website directory
-          cd /home/kcjarr7hikqn/public_html/lumuslights.com
-
-          # Preserve .htaccess and .well-known folders
-          rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' /home/kcjarr7hikqn/public_html/lumuslights.com/ /tmp/deploy/
-          rm -rf /home/kcjarr7hikqn/public_html/lumuslights.com/*
-          rsync -av /tmp/deploy/ /home/kcjarr7hikqn/public_html/lumuslights.com/
-          mv /home/kcjarr7hikqn/frontend/dist/* /home/kcjarr7hikqn/public_html/lumuslights.com/
+          ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
+          cd $CPANEL_PATH
+          rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' $CPANEL_PATH/ /tmp/deploy/
+          rm -rf $CPANEL_PATH/*
+          rsync -av /tmp/deploy/ $CPANEL_PATH/
+          mv /home/kcjarr7hikqn/frontend/dist/* $CPANEL_PATH/
           EOF
 
       - name: Verify deployment
+        env:
+          CPANEL_USER: ${{ secrets.CPANEL_USER }}
+          CPANEL_SERVER: ${{ secrets.CPANEL_SERVER }}
+          CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
-          ssh -o StrictHostKeyChecking=no kcjarr7hikqn@c0z.d04.mytemp.website << 'EOF'
+          ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
           echo "Verifying deployment..."
-          ls -la /home/kcjarr7hikqn/public_html/lumuslights.com/
+          ls -la $CPANEL_PATH/
           EOF
