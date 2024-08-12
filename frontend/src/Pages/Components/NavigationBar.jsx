@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDarkMode } from './../Util/DarkModeContext';
-import ToggleSwitch from '../Cells/ToggleSwitch';
+import { useDarkMode } from '../../Util/DarkModeContext';
+import ToggleSwitch from '../../Cells/ToggleSwitch';
 import { faUser ,faShoppingCart,faBars } from '@fortawesome/free-solid-svg-icons';
 
 const NavigationBar = ({ pages, companyName }) => {

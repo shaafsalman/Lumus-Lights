@@ -5,9 +5,9 @@ import Home from './Pages/Home.jsx';
 import Products from './Pages/Products.jsx';
 import ProductDetail from './Pages/ProductDetail.jsx';
 import Contact from './Pages/Contact.jsx';
-import ProductMainPage from './Components/ProductMainPage.jsx';
-import NavigationBar from './Components/NavigationBar.jsx';
-import Footer from './Components/Footer.jsx';
+import ProductMainPage from './Pages/Components/ProductMainPage.jsx';
+import NavigationBar from './Pages/Components/NavigationBar.jsx';
+import Footer from './Pages/Components/Footer.jsx';
 
 
 

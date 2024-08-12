@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import HollowButton from '../Cells/HollowButton';
-import ScrollingProductList from '../Components/ScrollingProductList'; 
-import {useDarkMode } from '../Util/DarkModeContext';
+import HollowButton from '../../Cells/HollowButton';
+import ScrollingProductList from './ScrollingProductList'; 
+import {useDarkMode } from '../../Util/DarkModeContext';
 
 const CategoryShowcase = ({ 
   categories, 

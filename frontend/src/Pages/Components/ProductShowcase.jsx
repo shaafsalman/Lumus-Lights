@@ -1,6 +1,6 @@
 import React from 'react';
-import ProductCard from '../Cards/ProductCard';
-import Button from '../Cells/Button';
+import ProductCard from '../../Cards/ProductCard';
+import Button from '../../Cells/Button';
 import ScrollingProductList from './ScrollingProductList';
 
 const ProductShowcase = ({ 
