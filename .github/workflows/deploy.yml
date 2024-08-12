@@ -34,14 +34,17 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           sshpass -p $CPANEL_PASSWORD ssh -o StrictHostKeyChecking=no $CPANEL_USER@$CPANEL_SERVER << 'EOF'
+          # Navigate to the deployment directory
           cd $CPANEL_PATH
 
-          # Preserve .htaccess and .well-known folders
+          # Preserve .htaccess and .well-known folders, and backup existing files
           rsync -av --exclude='.git' --exclude='dist' --exclude='.well-known' --exclude='.htaccess' $CPANEL_PATH/ /tmp/deploy/
           rm -rf $CPANEL_PATH/*
           rsync -av /tmp/deploy/ $CPANEL_PATH/
-          mv /home/runner/work/your-repo/frontend/dist/* $CPANEL_PATH/
           EOF
+
+          # Deploy the new build files
+          rsync -av ${{ github.workspace }}/frontend/dist/ $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH/
 
       - name: Verify deployment
         env:
