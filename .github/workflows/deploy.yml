@@ -28,6 +28,10 @@ jobs:
           cd frontend
           npm run build
 
+      - name: Check dist directory
+        run: |
+          ls -la frontend/dist
+
       - name: Set up SSH
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -47,7 +51,7 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           echo "Deploying to cPanel..."
-          rsync -avz --delete --exclude='.htaccess' --exclude='.well-known'  $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH
+          rsync -avz --delete frontend/dist/ $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH
           echo "Deployment completed."
 
       - name: Verify deployment
