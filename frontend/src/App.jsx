@@ -27,7 +27,7 @@ const AppContent = ({ pages, companyName }) => {
           ))}
         </Routes>
       </main>
-      <Footer />
+      <Footer pages={pages} companyName={companyName} />
     </div>
   );
 };
