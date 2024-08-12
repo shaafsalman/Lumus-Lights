@@ -20,12 +20,12 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd cargo-frontend
+          cd frontend
           npm install
 
       - name: Build the project
         run: |
-          cd cargo-frontend
+          cd frontend
           npm run build
 
       - name: Set up SSH
