@@ -15,10 +15,12 @@ jobs:
 
       - name: Set up SSH
         run: |
-          echo "${{ secrets.DEPLOY_SSH_KEY }}" > key.pem
+          echo "${{ secrets.KEY_NAME }}" > key.pem
           chmod 600 key.pem
           eval "$(ssh-agent -s)"
           ssh-add key.pem
+        env:
+          SSH_PASSPHRASE: ${{ secrets.KEY_PASSWORD }}
 
       - name: Debug SSH Agent
         run: |
