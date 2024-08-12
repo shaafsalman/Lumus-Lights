@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
-import NavigationBar from './components/NavigationBar.jsx';
-import Footer from './components/Footer.jsx';
+import NavigationBar from './Components/NavigationBar.jsx';
+import Footer from './Components/Footer.jsx';
 
 import Home from './Pages/Home.jsx';
 import Products from './Pages/Products.jsx';
@@ -18,10 +18,29 @@ const App = () => {
 
   const companyName = "Lumus Lights"; 
 
+  // State for dark mode
+  const [darkMode, setDarkMode] = useState(false);
+
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  // Update body class based on dark mode
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('bg-gray-900', 'text-white');
+      document.body.classList.remove('bg-white', 'text-black');
+    } else {
+      document.body.classList.add('bg-white', 'text-black');
+      document.body.classList.remove('bg-gray-900', 'text-white');
+    }
+  }, [darkMode]);
+
   return (
     <Router>
-      <div className="flex flex-col min-h-screen">
-        <NavigationBar pages={pages} companyName={companyName} />
+      <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-gray-900 text-white' : 'bg-white text-black'}`}>
+        <NavigationBar pages={pages} companyName={companyName} darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
         <main className="flex-grow pt-16">
           <Routes>
             {pages.map((page) => (

@@ -4,7 +4,14 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        sans: ['"Century Gothic"', 'sans-serif'],
+      },
+      colors: {
+        primary: '#bea77f', 
+      },
+    },
   },
   plugins: [],
 }
