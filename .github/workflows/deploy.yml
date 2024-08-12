@@ -20,6 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd Lumus-Light
           cd frontend
           npm install
 
