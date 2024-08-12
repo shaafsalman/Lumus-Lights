@@ -20,8 +20,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          cd Lumus-Light
           cd frontend
+          ls -la  # List files to verify package.json is present
           npm install
 
       - name: Build the project
@@ -31,7 +31,8 @@ jobs:
 
       - name: Check dist directory
         run: |
-          ls -la frontend/dist
+          cd frontend
+          ls -la dist
 
       - name: Set up SSH
         env:
@@ -62,5 +63,5 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           echo "Verifying deployment..."
-          ssh -v -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
+          ssh -i ~/.ssh/id_rsa $CPANEL_USER@$CPANEL_SERVER "ls -la $CPANEL_PATH"
           echo "Deployment verification completed."
