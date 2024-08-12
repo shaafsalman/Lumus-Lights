@@ -47,7 +47,7 @@ jobs:
           CPANEL_PATH: ${{ secrets.CPANEL_PATH }}
         run: |
           echo "Deploying to cPanel..."
-          rsync -avz --delete --exclude='.htaccess' --exclude='.well-known' cargo-frontend/dist/ $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH
+          rsync -avz --delete --exclude='.htaccess' --exclude='.well-known'  $CPANEL_USER@$CPANEL_SERVER:$CPANEL_PATH
           echo "Deployment completed."
 
       - name: Verify deployment
