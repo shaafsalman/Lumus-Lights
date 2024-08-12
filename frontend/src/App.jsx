@@ -1,44 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import NavigationBar from './components/NavigationBar.jsx';
+import Footer from './components/Footer.jsx';
 
-// Import your components here
 import Home from './Pages/Home.jsx';
 import Products from './Pages/Products.jsx';
 import ProductDetail from './Pages/ProductDetail.jsx';
-import About from './pages/About.jsx';
+// import About from './Pages/About.jsx';
 import Contact from './Pages/Contact.jsx';
 
-// Basic layout with navigation
 const App = () => {
+  const [pages] = useState([
+    { path: '/', name: 'Home', component: <Home />, icon: 'fas fa-home' },
+    { path: '/products', name: 'Products', component: <Products />, icon: 'fas fa-box-open' },
+    { path: '/products/:id', name: 'Product Detail', component: <ProductDetail />, icon: 'fas fa-info-circle' },
+    // { path: '/about', name: 'About', component: <About />, icon: 'fas fa-users' },
+    { path: '/contact', name: 'Contact', component: <Contact />, icon: 'fas fa-envelope' },
+  ]);
+
   return (
     <Router>
-      <div className="min-h-screen flex flex-col">
-        <header className="bg-gray-800 text-white p-4">
-          <nav className="container mx-auto flex justify-between items-center">
-            <div className="text-xl">Lights Store</div>
-            <ul className="flex space-x-4">
-              <li><a href="/" className="hover:text-yellow-400">Home</a></li>
-              <li><a href="/products" className="hover:text-yellow-400">Products</a></li>
-              <li><a href="/about" className="hover:text-yellow-400">About</a></li>
-              <li><a href="/contact" className="hover:text-yellow-400">Contact</a></li>
-            </ul>
-          </nav>
-        </header>
-        <main className="flex-grow">
+      <div className="flex flex-col min-h-screen">
+        <NavigationBar pages={pages} />
+        <main className="flex-grow w-full h-full">
           <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/products/:id" element={<ProductDetail />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
+            {pages.map((page) => (
+              <Route key={page.path} path={page.path} element={page.component} />
+            ))}
           </Routes>
         </main>
-        <footer className="bg-gray-800 text-white p-4 text-center">
-          &copy; 2024 Lights Store. All rights reserved.
-        </footer>
+        <Footer />
       </div>
     </Router>
   );
 };
-
 export default App;
