@@ -4,21 +4,25 @@ import image from '../assets/contact-us.png';
 
 const Contact = () => {
   return (
-    <div className="flex min-h-screen">
+    <div className="flex flex-col md:flex-row min-h-screen">
       {/* Left Side - Heading with Background Image */}
-      <div className="flex-1 relative bg-primary text-white flex flex-col justify-center items-center p-10">
+      <div 
+        className="flex-1 bg-primary text-white flex flex-col justify-center items-center p-2 md:p-2 relative bg-cover bg-center"
 
-        <h1 className="text-4xl font-bold mb-4 relative z-10">Contact Us</h1>
-        <p className="text-lg text-center relative z-10">
+      >
+        <h1 className="text-3xl md:text-6xl font-bold  relative text-center md:text-left">
+          Contact Us
+        </h1>
+        <p className="text-base md:text-lg text-center relative ">
           We'd love to hear from you! Please reach out with any questions or comments you may have.
         </p>
       </div>
 
       {/* Right Side - Contact Form */}
-      <div className="flex-1 p-10">
-        <h2 className="text-2xl font-bold mb-6">Get in Touch</h2>
+      <div className="flex-1 p-10 md:p-10">
+        <h2 className="text-xl md:text-2xl font-bold mb-4">Get in Touch</h2>
         <form
-          className="space-y-4"
+          className="space-y-3"
           onSubmit={(e) => {
             e.preventDefault();
             // Handle form submission here
@@ -60,7 +64,7 @@ const Contact = () => {
             ></textarea>
           </div>
 
-          <Button text="Send Message" />
+          <Button text="Send Message" className="w-full md:w-auto" />
         </form>
       </div>
     </div>

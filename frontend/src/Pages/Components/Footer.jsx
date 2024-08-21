@@ -1,50 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { useDarkMode } from './../../Util/DarkModeContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faTwitter, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
 import Button from '../../Cells/Button';
 
-const ContactUs = ({ pages, companyName }) => {
-  const { darkMode } = useDarkMode();
+const Footer = ({ pages, companyName }) => {
   const socialMediaLinks = [
     { href: 'https://facebook.com', icon: faFacebookF },
     { href: 'https://twitter.com', icon: faTwitter },
     { href: 'https://instagram.com', icon: faInstagram },
     { href: 'https://linkedin.com', icon: faLinkedin }
   ];
-  
+
   return (
-    <div className={`w-full flex p-10 ${darkMode ? 'bg-black' : 'bg-white'}`}>
-      <div className={` w-screen px-4 ${darkMode ? 'text-white' : 'text-black'} flex flex-col`}>
-        <div className="w-full text-7xl font-bold">
-          <h1 className="w-full md:w-2/3">
-            How can we help you get in touch
-          </h1>
+    <div className="flex flex-col p-8 md:p-20 bg-secondary text-white">
+      <div className="w-full flex flex-col items-center md:items-start">
+        <div className="text-3xl md:text-7xl font-bold text-center md:text-left mb-4 md:mb-6">
+          How can we help you get in touch
         </div>
-        <div className="flex mt-8 flex-col md:flex-row md:justify-between">
-          <p className={`w-full md:w-2/3 ${darkMode ? 'text-gray-400' : 'text-gray-700'}`}>
+        <div className="flex flex-col md:flex-row md:justify-between w-full text-center md:text-left">
+          <p className="text-sm md:text-base text-gray-400 mb-4 md:mb-0 md:w-2/3">
             To ensure that all Wikipedia content is verifiable, anyone may question an uncited claim. If your work has been tagged
           </p>
-          <div className="w-44 pt-6 md:pt-0">
-            <Button
-            text='Contact Us'
-            />
+          <div className="w-full md:w-auto">
+            <Button text="Contact Us" className="mx-auto md:mx-0" />
           </div>
         </div>
-        <div className="flex flex-col">
-        <div className="mt-12 flex justify-center space-x-4">
-        {pages.map((page) => (
-              <div key={page.path}>
-                <Link to={page.path} className={`text-base ${darkMode ? 'text-white' : 'text-black'}`}>
-                <FontAwesomeIcon icon={page.icon} className="mr-2 text-md" />
+        <div className="flex flex-col items-center mt-6 md:mt-8 w-full">
+          <div className="flex justify-center md:justify-start space-x-4 flex-wrap">
+            {pages.map((page) => (
+              <Link 
+                key={page.path} 
+                to={page.path} 
+                className="text-sm md:text-base text-white flex items-center mb-2"
+              >
+                <FontAwesomeIcon icon={page.icon} className="mr-2" />
                 {page.name}
-                                </Link>
-              </div>
+              </Link>
             ))}
           </div>
-          <div className="mt-12 flex justify-center space-x-4">
-          {socialMediaLinks.map(({ href, icon }) => (
+          <div className="mt-6 flex justify-center space-x-4">
+            {socialMediaLinks.map(({ href, icon }) => (
               <a 
                 key={href} 
                 href={href} 
@@ -52,7 +48,7 @@ const ContactUs = ({ pages, companyName }) => {
                 rel="noopener noreferrer" 
                 className="text-primary hover:text-gray-300"
               >
-                <FontAwesomeIcon icon={icon} size="2x" />
+                <FontAwesomeIcon icon={icon} size="lg" />
               </a>
             ))}
           </div>
@@ -62,4 +58,4 @@ const ContactUs = ({ pages, companyName }) => {
   );
 };
 
-export default ContactUs;
+export default Footer;
