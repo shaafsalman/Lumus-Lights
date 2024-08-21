@@ -1,6 +1,6 @@
 
 
-const  backendUrl = "https://localhost:8080";
+const  backendUrl = "https://lumus-lights-backend.onrender.com";
 
 export default backendUrl;
 
