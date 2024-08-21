@@ -11,7 +11,7 @@ const ToggleSwitch = ({ checked, onChange }) => {
         className="sr-only"
       />
       <div
-        className={`relative w-16 h-8 bg-gray-300 rounded-full transition-colors duration-300 ${checked ? 'bg-yellow-400' : 'bg-gray-300'}`}
+        className={`relative w-16 h-8 bg-gray-300 rounded-full transition-colors duration-300 ${checked ? 'bg-primary' : 'bg-gray-300'}`}
       >
         <div
           className={`absolute top-1 left-1 w-6 h-6 bg-white rounded-full shadow-md transition-transform duration-300 ${checked ? 'translate-x-8' : ''}`}

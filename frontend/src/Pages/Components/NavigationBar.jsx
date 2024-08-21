@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDarkMode } from '../../Util/DarkModeContext';
 import ToggleSwitch from '../../Cells/ToggleSwitch';
-import { faUser ,faShoppingCart,faBars } from '@fortawesome/free-solid-svg-icons';
+import { faUser ,faShoppingCart,faBars,faTimes ,faSun,faMoon   } from '@fortawesome/free-solid-svg-icons';
 
 const NavigationBar = ({ pages, companyName }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,7 @@ const NavigationBar = ({ pages, companyName }) => {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className={`shadow-md fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
+    <nav className={`fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           {/* Company Name */}
@@ -78,9 +78,9 @@ const NavigationBar = ({ pages, companyName }) => {
             ))}
             <button
               onClick={toggleDarkMode}
-              className={`block w-full text-left px-3 py-2 rounded-md text-lg font-medium transition-all duration-300 ease-in-out ${darkMode ? 'bg-primary hover:bg-yellow-400' : 'bg-gray-800 hover:bg-gray-700'}`}
+              className={`text-white block w-full text-left px-3 py-2 rounded-md text-lg font-medium transition-all duration-300 ease-in-out ${darkMode ? 'bg-primary' : 'bg-gray-800 hover:bg-gray-700'}`}
             >
-              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} className="mr-2 h-5 w-5 inline" />
+              <FontAwesomeIcon icon={darkMode ? faSun : faMoon} className="mr-2 h-5 w-5 inline text-white" />
               {darkMode ? ' Light Mode' : ' Dark Mode'}
             </button>
           </div>

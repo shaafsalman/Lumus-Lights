@@ -11,22 +11,22 @@ const ProductShowcase = ({
 }) => {
   return (
     <div 
-      className="flex flex-col items-center justify-center text-white bg-center bg-cover h-screen w-screen"
+      className="flex flex-col items-center  text-white bg-center bg-cover h-screen w-screen"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
-      <div className="flex flex-col md:flex-row w-full h-full bg-opacity-50 p-10 rounded-lg">
-        <div className="flex flex-col justify-center w-full md:w-1/3 p-4 text-center md:text-left">
-          <h1 className="text-4xl font-bold mb-4">{title}</h1>
-          <p className="mb-8">{description}</p>
-          <div className="mb-8">
+      <div className="flex flex-col lg:mt-8 md:flex-row w-full max-w-screen-xl mx-auto bg-opacity-50 p-6 md:p-2 rounded-lg">
+        <div className="flex flex-col justify-center w-full md:w-1/3 text-left md:text-left">
+          <h1 className="text-2xl md:text-4xl font-bold mb-2 md:mb-4">{title}</h1>
+          <p className="text-sm md:text-base mb-4 md:mb-8">{description}</p>
+          <div className="mb-4 md:mb-8">
             <Button text='All Products' />
           </div>
         </div>
-        <div className="w-full md:w-2/3 ">
+        <div className="w-full md:w-2/3">
           {products.length > 0 ? (
             <ScrollingProductList products={products} productsPerRow={2} />
           ) : (
-            <p className="text-lg">No products available.</p>
+            <p className="text-sm md:text-lg">No products available.</p>
           )}
         </div>
       </div>

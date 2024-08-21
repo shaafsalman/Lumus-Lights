@@ -3,7 +3,7 @@ import ProductCard from '../../Cards/ProductCard';
 import RoundButton from '../../Cells/RoundButton';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'; 
 
-const ScrollingProductList = ({ products, productsPerRow = 4 }) => {
+const ScrollingProductList = ({ products, productsPerRow = 3 }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const containerRef = useRef(null);
   const productWidth = useRef(300); 
@@ -56,7 +56,7 @@ const ScrollingProductList = ({ products, productsPerRow = 4 }) => {
       <RoundButton
         onClick={() => handleScroll(1)}
         icon={faArrowRight}
-        className="absolute right-0 z-10" // Positioning the button over the last card
+        className="absolute right-0 z-10" 
       />
     </div>
   );

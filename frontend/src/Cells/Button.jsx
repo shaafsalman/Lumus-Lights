@@ -1,7 +1,7 @@
 import React from 'react';
 
 const Button = ({
-  text = "ADD TO CART",
+  text = "Add To Cart",
   onClick,
   disabled = false,
   loading = false,
@@ -14,7 +14,7 @@ const Button = ({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`w-full text-xs uppercase ${buttonColor} ${borderColor} border-2 px-4 py-2 rounded-lg font-semibold flex items-center justify-center transition-all duration-300 ease-in-out
+      className={`w-full text-xs sm:text-xs  ${buttonColor} ${borderColor} border-2 px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center justify-center transition-all duration-300 ease-in-out
         ${loading ? "cursor-not-allowed opacity-75" : "hover:bg-transparent hover:border-current hover:text-current"}
       `}
       style={{
@@ -22,11 +22,11 @@ const Button = ({
       }}
     >
       {loading ? (
-        <i className="fas fa-spinner fa-spin mr-2"></i>
+        <i className="fas fa-spinner fa-spin mr-1 sm:mr-2 text-xs sm:text-xs"></i>
       ) : (
         <>
           {text}
-          <i className={`${iconClass} ml-2`}></i>
+          <i className={`${iconClass} ml-1 sm:ml-2 text-xs sm:text-xs`}></i>
         </>
       )}
     </button>

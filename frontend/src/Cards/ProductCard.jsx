@@ -26,7 +26,7 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
   };
 
   return (
-    <div className={`relative rounded-lg p-2 border shadow-lg w-72 h-auto ${darkMode ? 'bg-opacity-10 text-white border-[#bea77f] backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}>
+    <div className={`relative rounded-lg p-2 border shadow-lg lg:w-72  w-48 h-auto ${darkMode ? 'bg-opacity-10 text-white border-[#bea77f] backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}>
       {/* Discount Badge */}
       {discount && (
         <div className={`absolute font-bold top-2 left-2 text-sm tracking-tighter px-2 py-1 rounded-full ${darkMode ? 'bg-black bg-opacity-70 text-[#bea77f]' : 'bg-yellow-400 text-black'}`}>
@@ -38,30 +38,30 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
       <img
         src={productImage}
         alt={productTitle}
-        className="w-full h-48 object-scale-down mb-4 rounded"
+        className="w-full lg:h-48 h-28 object-scale-down"
       />
 
       {/* Product Details */}
-      <div className="mb-4">
-        <h2 className={`text-sm mb-1 ${darkMode ? 'text-white' : 'text-secondary'}`}>{productCategory}</h2>
-        <h3 className={`text-xl tracking-tighter font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
+      <div className="mb-2">
+        <h2 className={`lg:text-sm text-xs mb-1 ${darkMode ? 'text-white' : 'text-secondary'}`}>{productCategory}</h2>
+        <h3 className={`lg:text-xl  tracking-tighter font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
           {productTitle}
         </h3>
         <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{productType}</p>
       </div>
 
       {/* Color Selection */}
-      <div className="mb-4">
+      <div className="lg:mb-4 mb-2">
         <DropDown values={availableColors} />
       </div>
 
       {/* Price and Buttons */}
-      <div className="flex flex-col gap-2 mb-4 px-4">
+      <div className="flex flex-col gap-2 lg:mb-4 mb-1 lg:px-6 px-2">
         <div className="flex justify-between items-center">
           <div>
-            <span className={`text-lg font-semibold tracking-tighter ${darkMode ? 'text-white' : 'text-secondary'}`}>{currentPrice} PKR</span>
+            <span className={`lg:text-lg  font-semibold tracking-tighter ${darkMode ? 'text-white' : 'text-secondary'}`}>{currentPrice} PKR</span>
             {originalPrice && (
-              <span className={`line-through ml-2 text-sm ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              <span className={`line-through ml-2 text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>
                 {originalPrice} PKR
               </span>
             )}
@@ -69,7 +69,7 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
         </div>
         
         {/* Full-Width Buttons */}
-     <div className="w-full flex flex-col-2 gap-1">
+        <div className="w-full flex flex-col gap-1">
           <Button
             onClick={handleViewProduct}  
             text="View"

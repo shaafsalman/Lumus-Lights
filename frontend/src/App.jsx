@@ -18,7 +18,7 @@ const AppContent = ({ pages, companyName }) => {
   const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
+    <div className={`flex flex-col  overflow-x-hidden min-h-screen ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
       <NavigationBar pages={pages} companyName={companyName} />
       <main className="flex-grow pt-16">
         <Routes>

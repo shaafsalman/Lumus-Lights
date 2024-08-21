@@ -6,14 +6,12 @@ import productsData from '../data/products.json';
 const bgImage = "https://light-workdo.myshopify.com/cdn/shop/files/home-banner.png";
 
 const Home = () => {
-  // Assuming productsData is the imported JSON data
   const products = productsData;
 
   const categories = [...new Set(products.map(product => product.productCategory))];
 
   return (
-    <div className="min-h-screen flex flex-col mb-10">
-      {/* Product Showcase */}
+    <div className="w-screen flex flex-col">
       <ProductShowcase 
         products={products}
         title="Modern And Minimalist Lamps" 
@@ -21,13 +19,11 @@ const Home = () => {
         backgroundImage={bgImage}
       />
 
-      {/* Category Showcase */}
       <CategoryShowcase 
         categories={categories}
         products={products}
         title="Explore Our Categories"
         description="Browse our wide range of lamps categorized by type and design. Find the perfect lamp for your needs."
-        backgroundImage={bgImage}
       />
     </div>
   );

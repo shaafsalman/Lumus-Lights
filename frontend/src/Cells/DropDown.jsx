@@ -5,10 +5,10 @@ const DropDown = ({ values, heading="Color" }) => {
 
   return (
     <div>
-      <label className="block text-sm mb-1">{heading}</label>
+      <label className="block text-xs mb-1">{heading}</label>
       <div className="relative">
         <select
-          className="w-full text-white p-1.5 rounded-md border border-white bg-transparent appearance-none text-sm"
+          className="w-full text-white p-1.5 rounded-md border border-white bg-transparent appearance-none lg:text-sm text-xs"
           defaultValue={defaultValue}
         >
           {values.map((value, index) => (
