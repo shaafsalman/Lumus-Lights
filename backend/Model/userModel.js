@@ -6,10 +6,24 @@ const getUserByEmail = (email, callback) => {
     if (err) {
       return callback(err, null);
     }
-    callback(null, results[0]); 
+    const user = results.length > 0 ? results[0] : null;
+    callback(null, user);
+  });
+};
+
+const createUser = (userData, callback) => {
+  const { email, password } = userData;
+  const query = 'INSERT INTO users (email, password) VALUES (?, ?)';
+  
+  db.query(query, [email, password], (err, results) => {
+    if (err) {
+      return callback(err, null);
+    }
+    callback(null, { id: results.insertId, email });
   });
 };
 
 module.exports = {
-  getUserByEmail
+  getUserByEmail,
+  createUser,
 };

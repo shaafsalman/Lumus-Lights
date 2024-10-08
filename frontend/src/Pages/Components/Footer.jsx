@@ -2,9 +2,10 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFacebookF, faTwitter, faInstagram, faLinkedin } from '@fortawesome/free-brands-svg-icons';
-import Button from '../../Cells/Button';
+import { getCompanyName, company } from '../../CompanyDetails';
+import Button from '../../ui/Button';
 
-const Footer = ({ pages, companyName }) => {
+const Footer = ({ page }) => {
   const socialMediaLinks = [
     { href: 'https://facebook.com', icon: faFacebookF },
     { href: 'https://twitter.com', icon: faTwitter },
@@ -28,13 +29,13 @@ const Footer = ({ pages, companyName }) => {
         </div>
         <div className="flex flex-col items-center mt-6 md:mt-8 w-full">
           <div className="flex justify-center md:justify-start space-x-4 flex-wrap">
-            {pages.map((page) => (
+            {company.pages.map((page) => ( 
               <Link 
                 key={page.path} 
                 to={page.path} 
                 className="text-sm md:text-base text-white flex items-center mb-2"
               >
-                <FontAwesomeIcon icon={page.icon} className="mr-2" />
+                {page.icon && <FontAwesomeIcon icon={page.icon} className="mr-2" />}
                 {page.name}
               </Link>
             ))}

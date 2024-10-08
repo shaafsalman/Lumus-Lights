@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import HollowButton from '../../Cells/HollowButton';
+import HollowButton from '../../ui/HollowButton';
 import ScrollingProductList from './ScrollingProductList'; 
 import { useDarkMode } from '../../Util/DarkModeContext';
 

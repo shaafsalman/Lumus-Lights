@@ -1,25 +1,25 @@
 const express = require('express');
 const cors = require('cors');
 const app = express();
+require('dotenv').config();  // Load .env variables
+
 const PORT = process.env.PORT || 1122;
 
-const db = require('./db'); 
-
 const corsOptions = {
-  origin: 'https://lumuslights.com', 
+  origin: process.env.CORS_ORIGIN || 'https://lumuslights.com', 
   methods: 'GET, POST, PUT, DELETE, OPTIONS',
   allowedHeaders: 'Content-Type, Authorization',
 };
 
 app.use(cors(corsOptions));
-app.use(express.json()); 
+app.use(express.json());
 
 const authRoutes = require('./Route/authRoute');
-app.use('/api', authRoutes);
+app.use('/auth', authRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
-  res.send('Hello, World!');
+  res.send('Lumus Backend Working on localhost');
 });
 
 // Global error handling middleware
@@ -28,7 +28,7 @@ app.use((err, req, res, next) => {
   res.status(500).json({ message: 'Something went wrong!' });
 });
 
-// Start the server
+// Start the server on PORT 1122 or from .env
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`Server is running at http://localhost:${PORT}`);
 });

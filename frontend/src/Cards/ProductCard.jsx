@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';  
-import Button from '../Cells/Button';
-import DropDown from '../Cells/DropDown';
+import Button from '../ui/Button.jsx';
+import DropDown from '../ui/DropDown.jsx';
 import { useDarkMode } from '../Util/DarkModeContext.jsx';
 
 const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {

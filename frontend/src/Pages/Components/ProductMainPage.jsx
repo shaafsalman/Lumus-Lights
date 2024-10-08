@@ -2,8 +2,8 @@ import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faStar, faShareAlt, faHeart } from '@fortawesome/free-solid-svg-icons';
-import DropDown from '../../Cells/DropDown';
-import Button from '../../Cells/Button';
+import DropDown from '../../ui/DropDown';
+import Button from '../../ui/Button';
 import { faFacebookF, faInstagram, faPinterestP, faWhatsapp } from '@fortawesome/free-brands-svg-icons';
 
 

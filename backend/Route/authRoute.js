@@ -14,5 +14,10 @@ router.post('/login', (req, res) => {
   console.log('Login attempt received');
   authController.authenticateUser(req, res);
 });
+router.post('/register', (req, res) => {
+  console.log('register attempt received');
+  authController.registerUser (req, res);
+});
+
 
 module.exports = router;
