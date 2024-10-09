@@ -14,32 +14,25 @@ CREATE TABLE Products (
     FOREIGN KEY (category_id) REFERENCES Categories(id)
 );
 
--- Create Product_SKUs table
+-- Create Product_SKUs table with additional attributes
 CREATE TABLE Product_SKUs (
     id INT AUTO_INCREMENT PRIMARY KEY,
     product_id INT,
     sku VARCHAR(100) UNIQUE,
     price DECIMAL(10, 2),
     stock INT,
-    color VARCHAR(50),
-    size VARCHAR(50),  -- If applicable
-    FOREIGN KEY (product_id) REFERENCES Products(id)
-);
-
--- Create Product_Attributes table
-CREATE TABLE Product_Attributes (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
-    attribute_name VARCHAR(100),
-    attribute_value VARCHAR(255),
+    color VARCHAR(50),  -- Each SKU corresponds to a specific color
+    size VARCHAR(50),   -- If applicable
+    wattage DECIMAL(5, 2),  -- New attribute for wattage
+    voltage DECIMAL(5, 2),   -- New attribute for voltage
     FOREIGN KEY (product_id) REFERENCES Products(id)
 );
 
 -- Create Product_Images table
 CREATE TABLE Product_Images (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    product_id INT,
+    sku_id INT,  -- Link images to specific SKUs
     image_path VARCHAR(255),
     is_primary BOOLEAN DEFAULT FALSE,
-    FOREIGN KEY (product_id) REFERENCES Products(id)
+    FOREIGN KEY (sku_id) REFERENCES Product_SKUs(id)
 );

@@ -1,8 +1,10 @@
 import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDoubleLeft, faAngleLeft, faAngleRight, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { useDarkMode } from '../Util/DarkModeContext';
 
 const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "primary", bgHover = "primaryHover" }) => {
+  const { darkMode } = useDarkMode(); // Use the dark mode context
   const pageNumbers = [];
   const totalPages = Math.ceil(totalItems / itemsPerPage);
 
@@ -31,17 +33,17 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
   }
 
   return (
-    <nav className="flex items-center justify-between pagination-container fixed bottom-0 right-10 z-20">
+    <nav className={`flex items-center justify-between pagination-container fixed bottom-0 right-10 z-20 ${darkMode ? ' text-white' : ' text-secondary'}`}>
       {/* Left Side: Showing Entries */}
-      <div className="text-sm m-4 mb-10 p-4 text-gray-600  rounded-md ">
-  <span className="font-medium">Showing</span> 
-  <span className="font-semibold text-gray-800"> {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)} </span>
-  <span className="font-medium">to</span> 
-  <span className="font-semibold text-gray-800"> {Math.min(currentPage * itemsPerPage, totalItems)} </span> 
-  <span className="font-medium">of</span> 
-  <span className="font-semibold text-gray-800"> {totalItems} </span> 
-  <span className="font-medium">entries</span>
-</div>
+      <div className={`text-sm m-4 mb-10 p-4 rounded-md ${darkMode ? 'text-gray-400' : 'text-gray-600'}`}>
+        <span className="font-medium">Showing</span>
+        <span className="font-semibold"> {Math.min((currentPage - 1) * itemsPerPage + 1, totalItems)} </span>
+        <span className="font-medium">to</span>
+        <span className="font-semibold"> {Math.min(currentPage * itemsPerPage, totalItems)} </span>
+        <span className="font-medium">of</span>
+        <span className="font-semibold"> {totalItems} </span>
+        <span className="font-medium">entries</span>
+      </div>
 
       {/* Right Side: Pagination Controls */}
       <ul className="inline-flex space-x-2 mb-6">
@@ -50,7 +52,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
             <li>
               <button
                 onClick={() => handlePageChange(1)}
-                className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`px-3 py-1 rounded-md ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
                 <FontAwesomeIcon icon={faAngleDoubleLeft} />
               </button>
@@ -58,7 +60,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
             <li>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
-                className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`px-3 py-1 rounded-md ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
                 <FontAwesomeIcon icon={faAngleLeft} />
               </button>
@@ -72,7 +74,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
               className={`px-3 py-1 rounded-md ${
                 currentPage === number
                   ? `bg-${bg} hover:bg-${bgHover} text-white`
-                  : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+                  : darkMode ? 'bg-gray-600 text-gray-300 hover:bg-gray-500' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
               {number}
@@ -84,7 +86,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
             <li>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
-                className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`px-3 py-1 rounded-md ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
                 <FontAwesomeIcon icon={faAngleRight} />
               </button>
@@ -92,7 +94,7 @@ const Pagination = ({ itemsPerPage, totalItems, paginate, currentPage, bg = "pri
             <li>
               <button
                 onClick={() => handlePageChange(totalPages)}
-                className="px-3 py-1 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300"
+                className={`px-3 py-1 rounded-md ${darkMode ? 'bg-gray-700 text-gray-300 hover:bg-gray-600' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'}`}
               >
                 <FontAwesomeIcon icon={faAngleDoubleRight} />
               </button>

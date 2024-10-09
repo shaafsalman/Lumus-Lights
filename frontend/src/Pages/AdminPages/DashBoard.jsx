@@ -7,10 +7,10 @@ const DashBoard = () => {
   const { darkMode } = useDarkMode();
 
   return (
-    <div className={`flex h-full ${darkMode ? 'bg-gray-800 text-white' : 'bg-gray-100 text-black'}`}>
+    <div className={`flex h-full`}>
       
       {/* Main Content */}
-      <main className={`flex-1 p-8 ${darkMode ? 'bg-gray-800 text-white' : 'bg-white text-black'}`}>
+      <main className={`flex-1 p-1`}>
         <h2 className="text-3xl font-bold mb-6 tracking-tighter">Welcome to Your Dashboard</h2>
         <div className="bg-white p-6 rounded-lg shadow-lg">
           <h3 className="text-xl font-semibold mb-4">Recent Activity</h3>

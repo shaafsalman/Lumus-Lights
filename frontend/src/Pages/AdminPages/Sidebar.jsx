@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom'; // Import useLocation
 import { useDarkMode } from '../../Util/DarkModeContext';
-import ToggleSwitch from '../../ui/ToggleSwitch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBoxOpen, faTag, faAngleDown, faAngleUp } from '@fortawesome/free-solid-svg-icons';
+
 
 const menuItems = [
   {
@@ -18,6 +18,7 @@ const menuItems = [
 const Sidebar = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [collapsedSections, setCollapsedSections] = useState({});
+  const location = useLocation(); // Get the current location
 
   const toggleSection = (section) => {
     setCollapsedSections({
@@ -27,30 +28,34 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`h-full p-6`}>
-      <h1 className="text-2xl font-bold mb-6 text-center">Lumus Lights</h1>
-      <ToggleSwitch checked={darkMode} onChange={toggleDarkMode} />
+    <aside className={`h-full p-4 shadow-sm`}>
       <nav>
-        <ul className="space-y-4 mt-4">
+        <ul className="space-y-3 mt-4">
           {menuItems.map((section, sectionIndex) => (
-            <div key={sectionIndex} className="pb-3">
+            <div key={sectionIndex}>
               <div
-                className={`px-5 py-3 text-sm cursor-pointer flex justify-between ${darkMode ? 'text-white' : 'text-black'}`}
+                className={`px-1 py-2 text-xl font-semibold  cursor-pointer flex justify-between items-center ${darkMode ? 'text-white' : 'text-black'}`}
                 onClick={() => toggleSection(section.section)}
               >
                 <span>{section.section}</span>
-                <FontAwesomeIcon icon={collapsedSections[section.section] ? faAngleDown : faAngleUp} />
+                <FontAwesomeIcon className = " ml-2 "icon={collapsedSections[section.section] ? faAngleDown : faAngleUp} />
               </div>
               {!collapsedSections[section.section] && (
-                <ul>
+                <ul className="pl-4">
                   {section.items.map((item, itemIndex) => (
                     <li key={itemIndex}>
                       <NavLink
                         to={item.path}
-                        className={`block px-4 py-2 rounded transition duration-300 ${darkMode ? 'text-white hover:bg-gray-700' : 'text-gray-800 hover:bg-gray-200'} hover:shadow-lg`}
+                        className={({ isActive }) =>
+                          `flex items-center px-4 py-2 rounded-md transition duration-300 ${
+                            isActive
+                              ? `${darkMode ? 'text-white text-lg' : 'text-white text-lg'} bg-primary` // Larger text for active item
+                              : `${darkMode ? 'text-white hover:text-primary' : 'text-secondary hover:text-gray-400'}`
+                          }`
+                        }
                       >
-                        <FontAwesomeIcon icon={item.icon} className="mr-3" />
-                        {item.name}
+                        <FontAwesomeIcon icon={item.icon} className="mr-2" />
+                        <span className="text-base">{item.name}</span>
                       </NavLink>
                     </li>
                   ))}

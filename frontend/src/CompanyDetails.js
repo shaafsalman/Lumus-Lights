@@ -1,4 +1,4 @@
-import {faEnvelope, faUser, faShoppingCart, faBars, faTimes, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
+import {faEnvelope, faHome,faLightbulb  } from '@fortawesome/free-solid-svg-icons';
 
 
 
@@ -22,8 +22,8 @@ const company = {
       { name: "Rumaisa Qadeer", role: "Data Ethics Specialist" },
   ],
   pages: [
-      { path: '/', name: 'Home' },
-      { path: '/products', name: 'Products' },
+      { path: '/', name: 'Home' , icon: faHome},
+      { path: '/products', name: 'Products' , icon: faLightbulb},
       { path: '/contact', name: 'Contact', icon: faEnvelope },
   ]
 };

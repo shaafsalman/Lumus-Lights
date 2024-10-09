@@ -1,126 +1,153 @@
+// src/pages/ManageProducts.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from '../../ui/Table';
-import ProductModal from './ProductModal';
+import ProductModal from '../../ui/ProductModal';
+import backendUrl from '../../Util/backendURL';
+import ActionButton from '../../ui/ActionButton';
+import NoDataFound from '../../ui/NoDataFound';
+import SearchBar from '../../ui/SearchBar';
+import MessageCard from '../../ui/MessageCard';
+
+const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editingProduct, setEditingProduct] = useState(null);
-  const [loading, setLoading] = useState(true); // Handle loading state
-  const [error, setError] = useState(null); // Handle error state
-  const [productName, setProductName] = useState('');
-  const [productCategory, setProductCategory] = useState('');
-  const [productPrice, setProductPrice] = useState('');
+  const [productDetails, setProductDetails] = useState({
+    name: '',
+    description: '',
+    category_id: '',
+    brand: '',
+    skus: [],
+  });
+  const [editingProductId, setEditingProductId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [categories, setCategories] = useState([]);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchProducts();
+    fetchCategories();
   }, []);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get('/api/products'); // Replace with your API endpoint
+      const response = await axios.get(`${apiUrl}/api/products`);
       setProducts(response.data);
-      setLoading(false);
     } catch (error) {
       setError('Error fetching products');
+    } finally {
       setLoading(false);
-      console.error('Error fetching products:', error);
     }
   };
 
-  const handleAddOrUpdateProduct = async () => {
+  const fetchCategories = async () => {
     try {
-      const productData = {
-        name: productName,
-        category: productCategory,
-        price: productPrice,
-      };
-      if (editingProduct) {
-        await axios.put(`/api/products/${editingProduct.id}`, productData);
-      } else {
-        await axios.post('/api/products', productData);
+      const response = await axios.get(`${apiUrl}/api/categories`);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+    }
+  };
+
+  const openAddModal = () => {
+    setProductDetails({
+      name: '',
+      description: '',
+      category_id: '',
+      brand: '',
+      skus: [],
+    });
+    setEditingProductId(null);
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (product) => {
+    setProductDetails(product);
+    setEditingProductId(product.id);
+    setIsModalOpen(true);
+  };
+
+  const handleDeleteProduct = async (productId) => {
+    if (window.confirm('Are you sure you want to delete this product?')) {
+      try {
+        await axios.delete(`${apiUrl}/api/products/${productId}`);
+        fetchProducts();
+        setSuccessMessage('Product deleted successfully!');
+      } catch (error) {
+        setError('Error deleting product');
       }
-      setProductName('');
-      setProductCategory('');
-      setProductPrice('');
-      setEditingProduct(null);
-      fetchProducts();
-      setModalOpen(false);
-    } catch (error) {
-      setError('Error adding/updating product');
     }
   };
 
-  const handleEditProduct = (product) => {
-    setProductName(product.name);
-    setProductCategory(product.category);
-    setProductPrice(product.price);
-    setEditingProduct(product);
-    setModalOpen(true);
-  };
-
-  const handleDeleteProduct = async (id) => {
-    try {
-      await axios.delete(`/api/products/${id}`);
-      fetchProducts();
-    } catch (error) {
-      setError('Error deleting product');
-    }
-  };
+  const filteredProducts = products.filter(product =>
+    product.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const columns = [
-    { key: 'id', label: 'ID' },
-    { key: 'name', label: 'Product Name' },
-    { key: 'category', label: 'Category' },
-    { key: 'price', label: 'Price' },
+    { title: 'Name', field: 'name' },
+    { title: 'Description', field: 'description' },
+    { title: 'Brand', field: 'brand' },
+    { title: 'Category', field: 'category_id' },
+    { title: 'Actions', field: 'actions' }, // Assuming you handle actions in the Table component
   ];
 
-  if (loading) {
-    return <p>Loading products...</p>;
-  }
-
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Manage Products</h2>
-
-      {/* Add / Update Form Modal */}
-      <button
-        onClick={() => { setModalOpen(true); setEditingProduct(null); }}
-        className="bg-green-500 text-white rounded p-2 mb-4"
-      >
-        Add Product
-      </button>
-
-      {error && (
-        <p className="bg-red-100 text-red-700 p-4 rounded mb-4">
-          {error}
-        </p>
+    <div>
+      {(error || successMessage) && (
+        <MessageCard
+          type={error ? 'error' : 'success'}
+          message={error || successMessage}
+          onClose={() => {
+            setError(null);
+            setSuccessMessage(null);
+          }}
+        />
       )}
-
-      {/* Display table with products */}
-      <Table
-        columns={columns}
-        data={products}
-        handleEdit={handleEditProduct}
-        handleDelete={handleDeleteProduct}
-        identifierKey="id"
-      />
-
-      {/* Product Modal for Adding/Updating */}
-      <ProductModal
-        open={modalOpen}
-        onClose={() => setModalOpen(false)}
-        product={{
-          name: productName,
-          category: productCategory,
-          price: productPrice,
-        }}
-        setProductName={setProductName}
-        setProductCategory={setProductCategory}
-        setProductPrice={setProductPrice}
-        onSave={handleAddOrUpdateProduct}
-      />
+      <div className="flex-1 flex flex-col p-2">
+        <SearchBar
+          whatToSearch="Products"
+          searchTerm={searchTerm}
+          handleSearch={setSearchTerm}
+          handleReload={fetchProducts}
+          actionButton={
+            <ActionButton onClick={openAddModal} text="Add Product" className="ml-auto mb-4" />
+          }
+        />
+        
+        {loading ? (
+          <p>Loading...</p>
+        ) : filteredProducts.length > 0 ? (
+          <Table
+            columns={columns}
+            data={filteredProducts}
+            handleEdit={openEditModal}
+            handleDelete={handleDeleteProduct}
+            identifierKey="id"
+          />
+        ) : (
+          <NoDataFound />
+        )}
+        
+        <ProductModal
+          isOpen={isModalOpen}
+          onClose={() => setIsModalOpen(false)}
+          editingProductId={editingProductId}
+          productDetails={productDetails}
+          setProductDetails={setProductDetails}
+          buttonLoading={buttonLoading}
+          setButtonLoading={setButtonLoading}
+          setSuccessMessage={setSuccessMessage}
+          setError={setError}
+          fetchProducts={fetchProducts}
+          categories={categories} // Pass categories to the modal
+        />
+      </div>
     </div>
   );
 };

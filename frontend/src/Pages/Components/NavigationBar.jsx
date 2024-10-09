@@ -4,7 +4,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDarkMode } from '../../Util/DarkModeContext';
 import ToggleSwitch from '../../ui/ToggleSwitch';
 import { faUser, faShoppingCart, faBars, faTimes, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import { getCompanyName, company } from '../../CompanyDetails'; // Import the company object
+import { getCompanyName, company } from '../../CompanyDetails';
+
+import logoLight from './../../assets/logoLight.png'; 
+import logoDark from './../../assets/logoDark.png'; 
 
 const NavigationBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -18,6 +21,12 @@ const NavigationBar = () => {
     <nav className={`fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
+          {/* Logo based on dark mode */}
+          <img 
+            src={darkMode ? logoDark : logoLight} 
+            alt="Company Logo" 
+            className="h-10 w-auto mr-2 transition-all duration-300"
+          />
           <span className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
             {getCompanyName()}
           </span>

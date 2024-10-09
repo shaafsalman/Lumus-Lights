@@ -1,21 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from '../../ui/Table';
+import Modal from '../../ui/Modal'; 
+import backendUrl from '../../Util/backendURL';
+import Input from '../../ui/Input'; 
+import ActionButton from '../../ui/ActionButton';
+import NoDataFound from '../../ui/NoDataFound';
+import SearchBar from '../../ui/SearchBar'; 
+import MessageCard from '../../ui/MessageCard';
+
+const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
 const ManageCategories = () => {
   const [categories, setCategories] = useState([]);
   const [categoryName, setCategoryName] = useState('');
   const [editingCategoryId, setEditingCategoryId] = useState(null);
-  const [loading, setLoading] = useState(true); // Handle loading state
-  const [error, setError] = useState(null); // Handle error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [buttonLoading, setButtonLoading] = useState(false);
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchCategories();
   }, []);
 
   const fetchCategories = async () => {
+    setLoading(true);
     try {
-      const response = await axios.get('/api/categories');
+      const response = await axios.get(`${apiUrl}/api/categories`);
       setCategories(response.data);
       setLoading(false);
     } catch (error) {
@@ -25,75 +39,113 @@ const ManageCategories = () => {
     }
   };
 
+  // Add or update category
   const handleAddOrUpdateCategory = async () => {
+    setButtonLoading(true);
     try {
       if (editingCategoryId) {
-        await axios.put(`/api/categories/${editingCategoryId}`, { name: categoryName });
+        await axios.put(`${apiUrl}/api/categories/${editingCategoryId}`, { name: categoryName });
+        setSuccessMessage('Category updated successfully!');
       } else {
-        await axios.post('/api/categories', { name: categoryName });
+        await axios.post(`${apiUrl}/api/categories`, { name: categoryName });
+        setSuccessMessage('Category added successfully!');
       }
       setCategoryName('');
-      setEditingCategoryId(null);
-      fetchCategories();
+      setEditingCategoryId(null); 
+      fetchCategories(); 
+      setIsModalOpen(false); 
     } catch (error) {
       setError('Error adding/updating category');
     }
+    setButtonLoading(false);
   };
 
-  const handleEditCategory = (category) => {
+  const openAddModal = () => {
+    setCategoryName(''); 
+    setEditingCategoryId(null);
+    setIsModalOpen(true); 
+  };
+
+  const openEditModal = (category) => {
     setCategoryName(category.name);
     setEditingCategoryId(category.id);
+    setIsModalOpen(true);
   };
 
+  // Delete a category
   const handleDeleteCategory = async (id) => {
     try {
-      await axios.delete(`/api/categories/${id}`);
-      fetchCategories();
+      await axios.delete(`${apiUrl}/api/categories/${id}`);
+      setSuccessMessage('Category deleted successfully!');
+      fetchCategories(); 
     } catch (error) {
       setError('Error deleting category');
     }
   };
 
+  const filteredCategories = categories.filter(category =>
+    category.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   const columns = [
-    { key: 'id', label: 'ID' },
+    // { key: 'id', label: 'ID' },
     { key: 'name', label: 'Category Name' },
   ];
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-bold mb-4">Manage Categories</h2>
-
-      {/* Add / Update Form */}
-      <div className="mb-4">
-        <input
-          type="text"
-          value={categoryName}
-          onChange={(e) => setCategoryName(e.target.value)}
-          placeholder="Category Name"
-          className="border rounded p-2 mb-2"
+    <div className="flex mx-auto min-h-[85vh]">
+      {(error || successMessage) && (
+        <MessageCard
+          type={error ? 'error' : 'success'}
+          message={error || successMessage}
+          onClose={() => {
+            setError(null);
+            setSuccessMessage(null);
+          }}
         />
-        <button
-          onClick={handleAddOrUpdateCategory}
-          className="bg-blue-500 text-white rounded p-2"
-        >
-          {editingCategoryId ? 'Update Category' : 'Add Category'}
-        </button>
-      </div>
-
-      {error && (
-        <p className="bg-red-100 text-red-700 p-4 rounded mb-4">
-          {error}
-        </p>
       )}
+      <div className="flex-1 flex flex-col p-2">
+        {/* SearchBar Component */}
+        <SearchBar 
+          whatToSearch="Categories"
+          searchTerm={searchTerm}
+          handleSearch={setSearchTerm}
+          handleReload={fetchCategories} 
+          actionButton={<ActionButton onClick={openAddModal} text="Add Category" className="ml-auto mb-4"></ActionButton>} 
+        />
 
-      {/* Display table with categories */}
-      <Table
-        columns={columns}
-        data={categories}
-        handleEdit={handleEditCategory}
-        handleDelete={handleDeleteCategory}
-        identifierKey="id"
-      />
+        {filteredCategories.length > 0 ? (
+          <Table
+            columns={columns}
+            data={filteredCategories}
+            handleEdit={openEditModal}
+            handleDelete={handleDeleteCategory}
+            identifierKey="id"
+          />
+        ) : (
+          <NoDataFound />
+        )}
+
+        {/* Add/Edit Modal */}
+        {isModalOpen && (
+          <Modal
+            title={editingCategoryId ? 'Edit Category' : 'Add Category'}
+            isOpen={isModalOpen}
+            onClose={() => setIsModalOpen(false)}
+            onSave={handleAddOrUpdateCategory}
+            buttonText={editingCategoryId ? 'Update' : 'Add'}
+            buttonLoading={buttonLoading}
+            saveButtonDisabled={categoryName.trim() === ''} 
+          >
+            <Input
+              type="text"
+              value={categoryName}
+              onChange={(e) => setCategoryName(e.target.value)}
+              placeholder="Category Name"
+            />
+          </Modal>
+        )}
+      </div>
     </div>
   );
 };
