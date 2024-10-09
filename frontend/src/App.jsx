@@ -18,7 +18,7 @@ import ManageCategories from './Pages/AdminPages/ManageCategories';
 import ManageProducts from './Pages/AdminPages/ManageProducts';
 import ProfileHeader from './ui/ProfileHeader';
 import AdminNavbar from './ui/AdminNavbar';
-import Dashboard from './Pages/AdminPages/Dashboard'; 
+import Dashboard from './Pages/AdminPages/Dashboard.jsx'; 
 
 
 // Helper function to check token validity

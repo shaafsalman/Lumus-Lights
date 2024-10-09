@@ -1,7 +1,7 @@
 // DashBoard.js
 import React from 'react';
 
-const DashBoard = () => {
+const Dashboard = () => {
 
   return (
     <div className={`flex h-full`}>
@@ -17,4 +17,4 @@ const DashBoard = () => {
   );
 };
 
-export default DashBoard;
+export default Dashboard;
