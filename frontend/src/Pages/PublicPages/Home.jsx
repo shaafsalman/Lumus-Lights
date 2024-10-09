@@ -1,7 +1,7 @@
 import React from 'react';
-import ProductShowcase from './../Components/ProductShowcase';
-import CategoryShowcase from './../Components/CategoryShowcase'; 
-import productsData from '../data/products.json'; 
+import ProductShowcase from '../../Components/ProductShowcase';
+import CategoryShowcase from '../../Components/CategoryShowcase'; 
+import productsData from '../../data/products.json'; 
 
 const bgImage = "https://light-workdo.myshopify.com/cdn/shop/files/home-banner.png";
 

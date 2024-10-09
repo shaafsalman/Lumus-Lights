@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 
-import Home from './Pages/Home';
-import Products from './Pages/Products';
-import ProductDetail from './Pages/ProductDetail';
-import Contact from './Pages/Contact';
-import Login from './Pages/Login';
-import Register from './Pages/Register';
+import Home from './Pages/PublicPages/Home';
+import Products from './Pages/PublicPages/Products';
+import ProductDetail from './Pages/PublicPages/ProductDetail';
+import Contact from './Pages/PublicPages/Contact';
+import Login from './Pages/PublicPages/Login';
+import Register from './Pages/PublicPages/Register';
 import ProductMainPage from './Components/ProductMainPage';
 import NavigationBar from './Components/NavigationBar';
 import Footer from './Components/Footer';
