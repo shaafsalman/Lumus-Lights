@@ -1,14 +1,10 @@
 // DashBoard.js
 import React from 'react';
-import Sidebar from './Sidebar';
-import { useDarkMode } from '../../Util/DarkModeContext';
 
 const DashBoard = () => {
-  const { darkMode } = useDarkMode();
 
   return (
     <div className={`flex h-full`}>
-      
       {/* Main Content */}
       <main className={`flex-1 p-1`}>
         <h2 className="text-3xl font-bold mb-6 tracking-tighter">Welcome to Your Dashboard</h2>
