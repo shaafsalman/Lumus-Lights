@@ -5,12 +5,11 @@ import Home from './Pages/Home';
 import Products from './Pages/Products';
 import ProductDetail from './Pages/ProductDetail';
 import Contact from './Pages/Contact';
-import ProductMainPage from './Pages/Components/ProductMainPage';
 import Login from './Pages/Login';
 import Register from './Pages/Register';
-
-import NavigationBar from './Pages/Components/NavigationBar';
-import Footer from './Pages/Components/Footer';
+import ProductMainPage from './Components/ProductMainPage';
+import NavigationBar from './Components/NavigationBar';
+import Footer from './Components/Footer';
 import { useDarkMode, DarkModeProvider } from './Util/DarkModeContext';
 import Dashboard from './Pages/AdminPages/Dashboard'; 
 import Sidebar from './Pages/AdminPages/Sidebar';

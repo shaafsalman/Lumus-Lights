@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ProductCard from '../../Cards/ProductCard';
-import RoundButton from '../../ui/RoundButton';
+import ProductCard from '.././Cards/ProductCard';
+import RoundButton from '.././ui/RoundButton';
 import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'; 
 
 const ScrollingProductList = ({ products, productsPerRow = 3 }) => {

@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useDarkMode } from '../../Util/DarkModeContext';
-import ToggleSwitch from '../../ui/ToggleSwitch';
+import { useDarkMode } from '.././Util/DarkModeContext';
+import ToggleSwitch from '.././ui/ToggleSwitch';
 import { faUser, faShoppingCart, faBars, faTimes, faSun, faMoon } from '@fortawesome/free-solid-svg-icons';
-import { getCompanyName, company } from '../../CompanyDetails';
+import { getCompanyName, company } from '.././CompanyDetails';
 
-import logoLight from './../../assets/logoLight.png'; 
-import logoDark from './../../assets/logoDark.png'; 
+import logoLight from '././../assets/logoLight.png'; 
+import logoDark from '././../assets/logoDark.png'; 
 
 const NavigationBar = () => {
   const [isOpen, setIsOpen] = useState(false);
