@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
+import { useDarkMode, DarkModeProvider } from './Util/DarkModeContext';
 
 import Home from './Pages/PublicPages/Home';
 import Products from './Pages/PublicPages/Products';
@@ -10,13 +11,14 @@ import Register from './Pages/PublicPages/Register';
 import ProductMainPage from './Components/ProductMainPage';
 import NavigationBar from './Components/NavigationBar';
 import Footer from './Components/Footer';
-import { useDarkMode, DarkModeProvider } from './Util/DarkModeContext';
-import Dashboard from './Pages/AdminPages/Dashboard'; 
+
+
 import Sidebar from './Pages/AdminPages/Sidebar';
 import ManageCategories from './Pages/AdminPages/ManageCategories';
 import ManageProducts from './Pages/AdminPages/ManageProducts';
 import ProfileHeader from './ui/ProfileHeader';
 import AdminNavbar from './ui/AdminNavbar';
+import Dashboard from './Pages/AdminPages/Dashboard'; 
 
 
 // Helper function to check token validity
