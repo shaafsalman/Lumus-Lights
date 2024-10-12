@@ -1,15 +1,16 @@
 const pool = require('../db');
 
-// Fetch all categories
-const fetchCategories = (callback) => {
-  pool.query('SELECT * FROM Categories', (err, results) => {
+// Helper function for query execution
+const executeQuery = (query, params, callback) => {
+  pool.query(query, params, (err, results) => {
     if (err) {
-      return callback(new Error('Error fetching categories: ' + err.message), null);
+      return callback(new Error(err.message), null);
     }
     callback(null, results);
   });
 };
 
+// Fetch all products along with their SKUs and images
 const fetchProducts = (callback) => {
   const query = `
     SELECT 
@@ -33,137 +34,97 @@ const fetchProducts = (callback) => {
     LEFT JOIN Product_Images img ON sku.id = img.sku_id
     ORDER BY p.id, sku.id;
   `;
-  
-  pool.query(query, [], (err, results) => {
-    if (err) {
-      return callback(new Error('Error fetching products: ' + err.message), null);
-    }
 
-    // Process the results into a nested structure
+  executeQuery(query, [], (err, results) => {
+    if (err) return callback(err, null);
+
     const productsMap = new Map();
 
     results.forEach(row => {
-      const {
-        product_id,
-        product_name,
-        description,
-        category_id,
-        brand,
-        sku_id,
-        sku,
-        price,
-        stock,
-        color,
-        size,
-        wattage,
-        voltage,
-        image_path,
-        is_primary
-      } = row;
+      const productId = row.product_id;
+      const product = productsMap.get(productId) || {
+        id: productId,
+        name: row.product_name,
+        description: row.description,
+        category_id: row.category_id,
+        brand: row.brand,
+        skus: [],
+      };
 
-      // If product doesn't exist in map, create a new entry
-      if (!productsMap.has(product_id)) {
-        productsMap.set(product_id, {
-          id: product_id,
-          name: product_name,
-          description,
-          category_id,
-          brand,
-          skus: [],
-        });
+      if (!productsMap.has(productId)) {
+        productsMap.set(productId, product);
       }
 
-      const product = productsMap.get(product_id);
-
-      // If SKU exists, append the image to that SKU, otherwise add a new SKU
-      let skuIndex = product.skus.findIndex(s => s.id === sku_id);
-      if (sku_id && skuIndex === -1) {
-        product.skus.push({
-          id: sku_id,
-          sku,
-          price,
-          stock,
-          color,
-          size,
-          wattage,
-          voltage,
+      const skuId = row.sku_id;
+      if (skuId) {
+        const sku = product.skus.find(s => s.id === skuId) || {
+          id: skuId,
+          sku: row.sku,
+          price: row.price,
+          stock: row.stock,
+          color: row.color,
+          size: row.size,
+          wattage: row.wattage,
+          voltage: row.voltage,
           images: [],
-        });
-        skuIndex = product.skus.length - 1;
-      }
+        };
 
-      if (image_path) {
-        product.skus[skuIndex].images.push({
-          image_path,
-          is_primary,
-        });
+        if (!product.skus.find(s => s.id === skuId)) {
+          product.skus.push(sku);
+        }
+
+        if (row.image_path) {
+          sku.images.push({ image_path: row.image_path, is_primary: row.is_primary });
+        }
       }
     });
 
-    // Convert map values to an array
-    const productsArray = Array.from(productsMap.values());
-    
-    callback(null, productsArray);
+    callback(null, Array.from(productsMap.values()));
   });
 };
 
-
-// Add a new category
-const addCategory = (name, callback) => {
-  const query = 'INSERT INTO Categories (name) VALUES (?)';
-  
-  pool.query(query, [name], (err, results) => {
-    if (err) {
-      return callback(new Error('Error adding category: ' + err.message), null);
-    }
-    callback(null, results.insertId); // Return the new category ID
-  });
-};
-
-// Delete a category by ID
-const deleteCategory = (id, callback) => {
-  const query = 'DELETE FROM Categories WHERE id = ?';
-  
-  pool.query(query, [id], (err) => {
-    if (err) {
-      return callback(new Error('Error deleting category: ' + err.message), null);
-    }
-    callback(null, { message: 'Category deleted successfully' });
-  });
-};
-
+// Add a new product
 const addProduct = (name, description, categoryId, brand, callback) => {
-  const query = 'INSERT INTO Products (name, description, category_id, brand) VALUES (?, ?, ?, ?)';
-  
-  pool.query(query, [name, description, categoryId, brand], (err, results) => {
-    if (err) {
-      return callback(new Error('Error adding product: ' + err.message), null);
-    }
-    callback(null, results.insertId); // Return the new product ID
+  executeQuery('INSERT INTO Products (name, description, category_id, brand) VALUES (?, ?, ?, ?)', [name, description, categoryId, brand], (err, results) => {
+    if (err) return callback(err, null);
+    callback(null, results.insertId);
   });
 };
 
+// Add a new SKU
 const addSKU = (productId, sku, price, stock, color, size, wattage, voltage, callback) => {
-  const query = 'INSERT INTO Product_SKUs (product_id, sku, price, stock, color, size, wattage, voltage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)';
-  
-  pool.query(query, [productId, sku, price, stock, color, size, wattage, voltage], (err, results) => {
-    if (err) {
-      return callback(new Error('Error adding SKU: ' + err.message), null);
-    }
-    callback(null, results.insertId); // Return the new SKU ID
-  });
+  executeQuery('INSERT INTO Product_SKUs (product_id, sku, price, stock, color, size, wattage, voltage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+    [productId, sku, price, stock, color, size, wattage, voltage], (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.insertId);
+    });
 };
 
-
+// Add a new image
 const addImage = (skuId, imagePath, isPrimary, callback) => {
-  const query = 'INSERT INTO Product_Images (sku_id, image_path, is_primary) VALUES (?, ?, ?)';
-  
-  pool.query(query, [skuId, imagePath, isPrimary], (err, results) => {
-    if (err) {
-      return callback(new Error('Error adding image: ' + err.message), null);
-    }
-    callback(null, results.insertId); // Return the new image ID
-  });
+  executeQuery('INSERT INTO Product_Images (sku_id, image_path, is_primary) VALUES (?, ?, ?)', 
+    [skuId, imagePath, isPrimary], (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.insertId);
+    });
+};
+
+// Update a SKU by ID
+const updateSKU = (skuId, sku, price, stock, color, size, wattage, voltage, callback) => {
+  executeQuery(`UPDATE Product_SKUs SET sku = ?, price = ?, stock = ?, color = ?, size = ?, wattage = ?, voltage = ? WHERE id = ?`, 
+    [sku, price, stock, color, size, wattage, voltage, skuId], (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.affectedRows);
+    });
+};
+
+// Update an image by ID
+const updateImage = (imageId, imagePath, isPrimary, callback) => {
+  executeQuery(`UPDATE Product_Images SET image_path = ?, is_primary = ? WHERE id = ?`, 
+    [imagePath, isPrimary, imageId], (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.affectedRows);
+    });
 };
 
 // Update a product by ID, including updating SKUs and images if necessary
@@ -171,95 +132,82 @@ const updateProduct = (req, res) => {
   const { id } = req.params;
   const { name, description, categoryId, brand, skus, images } = req.body;
 
-  productModel.updateProduct(id, name, description, categoryId, brand, (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
+  executeQuery('UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ? WHERE id = ?', 
+    [name, description, categoryId, brand, id], (err, result) => {
+      if (err) return res.status(500).json({ message: 'Internal server error' });
 
-    // Update SKUs if provided
-    if (skus && Array.isArray(skus)) {
-      const skuPromises = skus.map(sku => 
-        new Promise((resolve, reject) => {
-          productModel.updateSKU(sku.id, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage, (err) => {
-            if (err) return reject(err);
-            resolve();
-          });
-        })
-      );
-
-      Promise.all(skuPromises)
-        .then(() => {
-          // Update images if provided
-          if (images && Array.isArray(images)) {
-            const imagePromises = images.map(image => 
-              new Promise((resolve, reject) => {
-                productModel.updateImage(image.id, image.image_path, image.is_primary, (err) => {
-                  if (err) return reject(err);
-                  resolve();
-                });
-              })
-            );
-
-            return Promise.all(imagePromises);
-          }
-        })
-        .then(() => {
-          res.status(200).json({ message: 'Product updated successfully', result });
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).json({ message: 'Failed to update SKUs or images' });
+      const updatePromises = [];
+      if (skus && Array.isArray(skus)) {
+        skus.forEach(sku => {
+          updatePromises.push(new Promise((resolve, reject) => {
+            updateSKU(sku.id, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage, (err) => {
+              if (err) return reject(err);
+              resolve();
+            });
+          }));
         });
-    } else {
-      res.status(200).json(result);
-    }
-  });
+      }
+
+      if (images && Array.isArray(images)) {
+        images.forEach(image => {
+          updatePromises.push(new Promise((resolve, reject) => {
+            updateImage(image.id, image.image_path, image.is_primary, (err) => {
+              if (err) return reject(err);
+              resolve();
+            });
+          }));
+        });
+      }
+
+      Promise.all(updatePromises)
+        .then(() => res.status(200).json({ message: 'Product updated successfully', result }))
+        .catch(() => res.status(500).json({ message: 'Failed to update SKUs or images' }));
+    });
 };
 
 // Delete a product by ID along with its SKUs and images
 const removeProduct = (req, res) => {
   const { id } = req.params;
 
-  productModel.deleteProduct(id, (err, result) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Internal server error' });
-    }
+  deleteProduct(id, (err, result) => {
+    if (err) return res.status(500).json({ message: 'Internal server error' });
 
-    productModel.deleteSKUsByProductId(id, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Failed to delete SKUs' });
-      }
+    deleteSKUsByProductId(id, (err) => {
+      if (err) return res.status(500).json({ message: 'Failed to delete SKUs' });
 
-      productModel.deleteImagesByProductId(id, (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: 'Failed to delete images' });
-        }
-
+      deleteImagesByProductId(id, (err) => {
+        if (err) return res.status(500).json({ message: 'Failed to delete images' });
         res.status(200).json({ message: 'Product deleted successfully', result });
       });
     });
   });
 };
 
+// Delete a product by ID
+const deleteProduct = (id, callback) => {
+  executeQuery('DELETE FROM Products WHERE id = ?', [id], callback);
+};
 
+// Delete SKUs by product ID
+const deleteSKUsByProductId = (productId, callback) => {
+  executeQuery('DELETE FROM Product_SKUs WHERE product_id = ?', [productId], callback);
+};
 
+// Delete images by SKU ID
+const deleteImagesByProductId = (productId, callback) => {
+  executeQuery('DELETE FROM Product_Images WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)', [productId], callback);
+};
 
 module.exports = {
-  fetchCategories,
   fetchProducts,
-  addCategory,
   addProduct,
   addSKU,
   addImage,
   updateProduct,
+  removeProduct,
   updateSKU,
   updateImage,
   deleteProduct,
   deleteSKUsByProductId,
   deleteImagesByProductId,
-  deleteCategory
 };
