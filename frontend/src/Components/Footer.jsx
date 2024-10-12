@@ -54,6 +54,7 @@ const Footer = ({ page }) => {
             ))}
           </div>
         </div>
+        
       </div>
     </div>
   );

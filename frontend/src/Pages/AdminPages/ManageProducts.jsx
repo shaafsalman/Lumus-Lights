@@ -1,4 +1,3 @@
-// src/pages/ManageProducts.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Table from '../../ui/Table';
@@ -19,6 +18,7 @@ const ManageProducts = () => {
     category_id: '',
     brand: '',
     skus: [],
+    status: true,
   });
   const [editingProductId, setEditingProductId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -39,6 +39,7 @@ const ManageProducts = () => {
     try {
       const response = await axios.get(`${apiUrl}/api/products`);
       setProducts(response.data);
+      console.log(response.data);
     } catch (error) {
       setError('Error fetching products');
     } finally {
@@ -62,6 +63,7 @@ const ManageProducts = () => {
       category_id: '',
       brand: '',
       skus: [],
+      status: true,
     });
     setEditingProductId(null);
     setIsModalOpen(true);
@@ -85,16 +87,26 @@ const ManageProducts = () => {
     }
   };
 
+  const handleToggleStatus = async (productId, currentStatus) => {
+    try {
+      await axios.patch(`${apiUrl}/api/products/${productId}/status`, { status: !currentStatus });
+      fetchProducts();
+      setSuccessMessage('Product status updated successfully!');
+    } catch (error) {
+      setError('Error updating product status');
+    }
+  };
+
   const filteredProducts = products.filter(product =>
     product.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const columns = [
-    { title: 'Name', field: 'name' },
-    { title: 'Description', field: 'description' },
-    { title: 'Brand', field: 'brand' },
-    { title: 'Category', field: 'category_id' },
-    { title: 'Actions', field: 'actions' }, // Assuming you handle actions in the Table component
+    { label: 'Name', key: 'name' },
+    { label: 'Description', key: 'description' },
+    { label: 'Brand', key: 'brand' },
+    { label: 'Category', key: 'category_id' },
+    { label: 'Status', key: 'status' }, 
   ];
 
   return (
@@ -119,7 +131,7 @@ const ManageProducts = () => {
             <ActionButton onClick={openAddModal} text="Add Product" className="ml-auto mb-4" />
           }
         />
-        
+
         {loading ? (
           <p>Loading...</p>
         ) : filteredProducts.length > 0 ? (
@@ -128,12 +140,13 @@ const ManageProducts = () => {
             data={filteredProducts}
             handleEdit={openEditModal}
             handleDelete={handleDeleteProduct}
+            handleToggleStatus={handleToggleStatus} 
             identifierKey="id"
           />
         ) : (
           <NoDataFound />
         )}
-        
+
         <ProductModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}

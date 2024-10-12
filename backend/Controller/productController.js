@@ -13,8 +13,7 @@ const getCategories = (req, res) => {
 
 // Fetch all products with optional filtering by category
 const getProducts = (req, res) => {
-  const { categoryId } = req.query; // Assume categoryId is passed as a query parameter
-  productModel.fetchProducts(categoryId, (err, products) => {
+  productModel.fetchProducts((err, products) => {
     if (err) {
       console.error(err);
       return res.status(500).json({ message: 'Internal server error' });
@@ -48,11 +47,9 @@ const removeCategory = (req, res) => {
 };
 
 
-// Add a new product along with its SKU(s) and images
 const createProduct = (req, res) => {
-  const { name, description, categoryId, brand, skus, images } = req.body; // Get product data from the request body
-  
-  // First, insert the product data
+  const { name, description, categoryId, brand, skus, images } = req.body;
+
   productModel.addProduct(name, description, categoryId, brand, (err, productId) => {
     if (err) {
       console.error(err);
@@ -62,7 +59,12 @@ const createProduct = (req, res) => {
     // If SKUs are provided, insert them
     if (skus && Array.isArray(skus)) {
       const skuPromises = skus.map(sku => 
-        productModel.addSKU(productId, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage)
+        new Promise((resolve, reject) => {
+          productModel.addSKU(productId, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage, (err, skuId) => {
+            if (err) reject(err);
+            resolve(skuId);
+          });
+        })
       );
 
       Promise.all(skuPromises)
@@ -70,9 +72,13 @@ const createProduct = (req, res) => {
           // If images are provided, insert them
           if (images && Array.isArray(images)) {
             const imagePromises = images.map(image => 
-              productModel.addImage(skuIds[0], image.image_path, image.is_primary) // Assuming the first SKU for the primary image
+              new Promise((resolve, reject) => {
+                productModel.addImage(skuIds[0], image.image_path, image.is_primary, (err) => {
+                  if (err) reject(err);
+                  resolve();
+                });
+              })
             );
-
             return Promise.all(imagePromises);
           }
         })
@@ -89,73 +95,73 @@ const createProduct = (req, res) => {
   });
 };
 
-// Update a product by ID, including updating SKUs and images if necessary
-const updateProduct = (req, res) => {
-  const { id } = req.params; // Get product ID from request parameters
-  const { name, description, categoryId, brand, skus, images } = req.body; // Get updated data from request body
+
+const updateProduct = (id, name, description, categoryId, brand, callback) => {
+  const query = 'UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ? WHERE id = ?';
   
-  productModel.updateProduct(id, name, description, categoryId, brand, (err, result) => {
+  pool.query(query, [name, description, categoryId, brand, id], (err) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Internal server error' });
+      return callback(new Error('Error updating product: ' + err.message), null);
     }
-
-    // Update SKUs if provided
-    if (skus && Array.isArray(skus)) {
-      const skuPromises = skus.map(sku => 
-        productModel.updateSKU(sku.id, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage)
-      );
-
-      Promise.all(skuPromises)
-        .then(() => {
-          // Update images if provided
-          if (images && Array.isArray(images)) {
-            const imagePromises = images.map(image => 
-              productModel.updateImage(image.id, image.image_path, image.is_primary) // Assuming you have an ID for the image
-            );
-
-            return Promise.all(imagePromises);
-          }
-        })
-        .then(() => {
-          res.status(200).json({ message: 'Product updated successfully', result });
-        })
-        .catch(err => {
-          console.error(err);
-          res.status(500).json({ message: 'Failed to update SKUs or images' });
-        });
-    } else {
-      res.status(200).json(result);
-    }
+    callback(null, { message: 'Product updated successfully' });
   });
 };
 
-// Delete a product by ID along with its SKUs and images
-const removeProduct = (req, res) => {
-  const { id } = req.params; // Get product ID from request parameters
+const updateSKU = (id, sku, price, stock, color, size, wattage, voltage, callback) => {
+  const query = 'UPDATE Product_SKUs SET sku = ?, price = ?, stock = ?, color = ?, size = ?, wattage = ?, voltage = ? WHERE id = ?';
   
-  productModel.deleteProduct(id, (err, result) => {
+  pool.query(query, [sku, price, stock, color, size, wattage, voltage, id], (err) => {
     if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Internal server error' });
+      return callback(new Error('Error updating SKU: ' + err.message), null);
     }
+    callback(null, { message: 'SKU updated successfully' });
+  });
+};
 
-    // Optionally, you might want to delete SKUs and images related to the product here
-    productModel.deleteSKUsByProductId(id, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Failed to delete SKUs' });
-      }
+const updateImage = (id, imagePath, isPrimary, callback) => {
+  const query = 'UPDATE Product_Images SET image_path = ?, is_primary = ? WHERE id = ?';
+  
+  pool.query(query, [imagePath, isPrimary, id], (err) => {
+    if (err) {
+      return callback(new Error('Error updating image: ' + err.message), null);
+    }
+    callback(null, { message: 'Image updated successfully' });
+  });
+};
 
-      productModel.deleteImagesByProductId(id, (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: 'Failed to delete images' });
-        }
+const deleteProduct = (id, callback) => {
+  const query = 'DELETE FROM Products WHERE id = ?';
+  
+  pool.query(query, [id], (err) => {
+    if (err) {
+      return callback(new Error('Error deleting product: ' + err.message), null);
+    }
+    callback(null, { message: 'Product deleted successfully' });
+  });
+};
 
-        res.status(200).json({ message: 'Product deleted successfully', result });
-      });
-    });
+const deleteSKUsByProductId = (productId, callback) => {
+  const query = 'DELETE FROM Product_SKUs WHERE product_id = ?';
+  
+  pool.query(query, [productId], (err) => {
+    if (err) {
+      return callback(new Error('Error deleting SKUs: ' + err.message), null);
+    }
+    callback(null, { message: 'SKUs deleted successfully' });
+  });
+};
+
+const deleteImagesByProductId = (productId, callback) => {
+  const query = `
+    DELETE FROM Product_Images
+    WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)
+  `;
+  
+  pool.query(query, [productId], (err) => {
+    if (err) {
+      return callback(new Error('Error deleting images: ' + err.message), null);
+    }
+    callback(null, { message: 'Images deleted successfully' });
   });
 };
 
