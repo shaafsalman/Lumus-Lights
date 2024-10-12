@@ -18,6 +18,7 @@ const fetchProducts = (callback) => {
       p.name AS product_name, 
       p.description, 
       p.category_id, 
+      c.name AS category_name,  
       p.brand,
       sku.id AS sku_id,
       sku.sku, 
@@ -32,6 +33,7 @@ const fetchProducts = (callback) => {
     FROM Products p
     LEFT JOIN Product_SKUs sku ON p.id = sku.product_id
     LEFT JOIN Product_Images img ON sku.id = img.sku_id
+    LEFT JOIN Categories c ON p.category_id = c.id  
     ORDER BY p.id, sku.id;
   `;
 
@@ -47,6 +49,7 @@ const fetchProducts = (callback) => {
         name: row.product_name,
         description: row.description,
         category_id: row.category_id,
+        category_name: row.category_name,  // Including category name
         brand: row.brand,
         skus: [],
       };
@@ -85,6 +88,8 @@ const fetchProducts = (callback) => {
 
 // Add a new product
 const addProduct = (name, description, categoryId, brand, callback) => {
+  
+  console.log("in model",name, description, categoryId, brand);
   executeQuery('INSERT INTO Products (name, description, category_id, brand) VALUES (?, ?, ?, ?)', [name, description, categoryId, brand], (err, results) => {
     if (err) return callback(err, null);
     callback(null, results.insertId);

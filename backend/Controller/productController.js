@@ -13,11 +13,12 @@ const getProducts = (req, res) => {
 
 // Add or update a product
 const addOrUpdateProduct = (req, res) => {
-  const { id, name, description, categoryId, brand, skus, images } = req.body;
+  const { id, name, description, category_id, brand, skus, images } = req.body;
 
-  // If an ID is provided, update the product
+
+  console.log("request",req.body); 
   if (id) {
-    productModel.updateProduct(id, name, description, categoryId, brand, (err) => {
+    productModel.updateProduct(id, name, description, category_id, brand, (err) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: 'Failed to update product' });
@@ -26,7 +27,7 @@ const addOrUpdateProduct = (req, res) => {
     });
   } else {
     // Otherwise, create a new product
-    productModel.addProduct(name, description, categoryId, brand, (err, productId) => {
+    productModel.addProduct(name, description, category_id, brand, (err, productId) => {
       if (err) {
         console.error(err);
         return res.status(500).json({ message: 'Internal server error' });
@@ -59,14 +60,14 @@ const addOrUpdateProduct = (req, res) => {
             }
           })
           .then(() => {
-            res.status(201).json({ id: productId, name, description, categoryId, brand });
+            res.status(201).json({ id: productId, name, description, category_id, brand });
           })
           .catch(err => {
             console.error(err);
             res.status(500).json({ message: 'Failed to create SKUs or images' });
           });
       } else {
-        res.status(201).json({ id: productId, name, description, categoryId, brand });
+        res.status(201).json({ id: productId, name, description, category_id, brand });
       }
     });
   }

@@ -74,10 +74,12 @@ const ProductModal = ({
         description: '',
         category_id: '',
         brand: '',
-        skus: [], // Reset SKUs
+        skus: [], 
       });
-      fetchProducts(); // Refresh product list
-      onClose(); // Close modal
+
+      console.log(productDetails);
+      fetchProducts(); 
+      onClose(); 
     } catch (error) {
       setError('Error adding/updating product');
     }

@@ -102,10 +102,11 @@ const ManageProducts = () => {
   );
 
   const columns = [
+    { label: 'Model', key: 'id' },
     { label: 'Name', key: 'name' },
     { label: 'Description', key: 'description' },
     { label: 'Brand', key: 'brand' },
-    { label: 'Category', key: 'category_id' },
+    { label: 'Category', key: 'category_name' },
     { label: 'Status', key: 'status' }, 
   ];
 
