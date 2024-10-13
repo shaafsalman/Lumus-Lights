@@ -20,6 +20,7 @@ const fetchProducts = (callback) => {
       p.category_id, 
       c.name AS category_name,  
       p.brand,
+      p.thumbnail,  
       sku.id AS sku_id,
       sku.sku, 
       sku.price, 
@@ -49,8 +50,9 @@ const fetchProducts = (callback) => {
         name: row.product_name,
         description: row.description,
         category_id: row.category_id,
-        category_name: row.category_name,  // Including category name
+        category_name: row.category_name,
         brand: row.brand,
+        thumbnail: row.thumbnail,  
         skus: [],
       };
 
@@ -86,14 +88,15 @@ const fetchProducts = (callback) => {
   });
 };
 
-// Add a new product
-const addProduct = (name, description, categoryId, brand, callback) => {
-  
-  console.log("in model",name, description, categoryId, brand);
-  executeQuery('INSERT INTO Products (name, description, category_id, brand) VALUES (?, ?, ?, ?)', [name, description, categoryId, brand], (err, results) => {
-    if (err) return callback(err, null);
-    callback(null, results.insertId);
-  });
+// Add a new product with thumbnail file path
+const addProduct = (name, description, categoryId, brand, thumbnail, callback) => {
+  console.log(thumbnail);
+  executeQuery('INSERT INTO Products (name, description, category_id, brand, thumbnail) VALUES (?, ?, ?, ?, ?)', 
+    [name, description, categoryId, brand, thumbnail], 
+    (err, results) => {
+      if (err) return callback(err, null);
+      callback(null, results.insertId);
+    });
 };
 
 // Add a new SKU
@@ -135,10 +138,10 @@ const updateImage = (imageId, imagePath, isPrimary, callback) => {
 // Update a product by ID, including updating SKUs and images if necessary
 const updateProduct = (req, res) => {
   const { id } = req.params;
-  const { name, description, categoryId, brand, skus, images } = req.body;
+  const { name, description, categoryId, brand, skus, images, thumbnail } = req.body; // Include thumbnail
 
-  executeQuery('UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ? WHERE id = ?', 
-    [name, description, categoryId, brand, id], (err, result) => {
+  executeQuery('UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ?, thumbnail = ? WHERE id = ?', 
+    [name, description, categoryId, brand, thumbnail, id], (err, result) => { // Pass thumbnail
       if (err) return res.status(500).json({ message: 'Internal server error' });
 
       const updatePromises = [];

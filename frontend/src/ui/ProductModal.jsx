@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import Modal from './Modal';
 import Input from './Input';
-import DragAndDropUpload from './DragAndDropUpload';
 import ActionButton from './ActionButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTrash, faPlus, faUpload, faTimes, faEdit } from '@fortawesome/free-solid-svg-icons';
+import { useDropzone } from 'react-dropzone';
 import backendUrl from '../Util/backendURL';
 import axios from 'axios';
 import Dropdown from './DropDownAdmin';
-import { colors, brands } from '../data'; 
+import { colors, brands } from '../data';
 
 const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
@@ -14,215 +16,189 @@ const ProductModal = ({
   isOpen,
   onClose,
   editingProductId,
-  productDetails,
-  setProductDetails,
   buttonLoading,
   setButtonLoading,
   setSuccessMessage,
   setError,
   fetchProducts,
   categories,
+  
 }) => {
-  const [tempSku, setTempSku] = useState({ sku: '', price: '', stock: '', color: '', size: '', images: [] });
+  const [productDetails, setProductDetails] = useState({
+    
+    name: '',
+    description: '',
+    category_id: '',
+    brand: '',
+    skus: [],
+    thumbnail: null,
+    status: true,
+  });
+  const [skuFields, setSkuFields] = useState({ sku: '', price: '', stock: '', color: '', size: '', images: [] });
   const [isAddingSku, setIsAddingSku] = useState(false);
+  const [editingSkuIndex, setEditingSkuIndex] = useState(null);
 
-  // Handle SKU changes
-  const handleSkuChange = (index, field, value) => {
-    const updatedSkus = [...productDetails.skus];
-    updatedSkus[index] = { ...updatedSkus[index], [field]: value };
+  const handleInputChange = (field, value) => setProductDetails(prev => ({ ...prev, [field]: value }));
+
+  const handleSkuChange = (field, value) => {
+    const updatedSkus = [...(productDetails.skus || [])];
+    editingSkuIndex !== null ? updatedSkus[editingSkuIndex][field] = value : setSkuFields({ ...skuFields, [field]: value });
+    editingSkuIndex !== null ? setProductDetails({ ...productDetails, skus: updatedSkus }) : null;
+  };
+
+  const toggleSku = () => {
+    setIsAddingSku(prev => !prev);
+    if (isAddingSku) setSkuFields({ sku: '', price: '', stock: '', color: '', size: '', images: [] });
+  };
+
+  const saveSku = () => {
+    const updatedSkus = editingSkuIndex !== null ? [...(productDetails.skus || [])] : [...(productDetails.skus || []), skuFields];
+    if (editingSkuIndex !== null) updatedSkus[editingSkuIndex] = skuFields;
     setProductDetails({ ...productDetails, skus: updatedSkus });
+    setSkuFields({ sku: '', price: '', stock: '', color: '', size: '', images: [] });
+    toggleSku();
   };
 
-  // Add a new SKU entry
-  const addSku = () => {
-    setIsAddingSku(true);
+  const removeSku = (index) => setProductDetails(prev => ({ ...prev, skus: (prev.skus || []).filter((_, i) => i !== index) }));
+
+  const editSku = (index) => {
+    setEditingSkuIndex(index);
+    setSkuFields(productDetails.skus[index]);
+    toggleSku();
   };
 
-  // Save temporary SKU and add it to the product details
-  const saveTempSku = () => {
-    setProductDetails({
-      ...productDetails,
-      skus: [...productDetails.skus, tempSku],
-    });
-    setTempSku({ sku: '', price: '', stock: '', color: '', size: '', images: [] }); // Reset temp SKU
-    setIsAddingSku(false); // Hide the temporary section
-  };
-
-  // Remove a SKU entry
-  const removeSku = (index) => {
-    const updatedSkus = productDetails.skus.filter((_, i) => i !== index);
-    setProductDetails({ ...productDetails, skus: updatedSkus });
-  };
-
-  // Add or update product
-  const handleAddOrUpdateProduct = async () => {
+  const handleSaveProduct = async () => {
     setButtonLoading(true);
     try {
-      const productData = { ...productDetails };
-
-      if (editingProductId) {
-        await axios.put(`${apiUrl}/api/products/${editingProductId}`, productData);
-        setSuccessMessage('Product updated successfully!');
-      } else {
-        await axios.post(`${apiUrl}/api/products`, productData);
-        setSuccessMessage('Product added successfully!');
-      }
-      
-      // Reset form
-      setProductDetails({
-        name: '',
-        description: '',
-        category_id: '',
-        brand: '',
-        skus: [], 
-      });
-
-      console.log(productDetails);
-      fetchProducts(); 
-      onClose(); 
+      const url = editingProductId ? `${apiUrl}/api/products/${editingProductId}` : `${apiUrl}/api/products`;
+      const payload = {
+        ...productDetails,
+        thumbnail: productDetails.thumbnail, 
+      };
+      await axios[editingProductId ? 'put' : 'post'](url, payload);
+      console.log(productDetails.thumbnail);
+      console.log(payload);
+      setSuccessMessage(`Product ${editingProductId ? 'updated' : 'added'} successfully!`);
+      fetchProducts();
+      onClose();
     } catch (error) {
-      setError('Error adding/updating product');
+      setError(`Error ${editingProductId ? 'updating' : 'adding'} product`);
+    } finally {
+      setButtonLoading(false);
     }
-    setButtonLoading(false);
   };
+
+
+  const handleThumbnailChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+            handleInputChange('thumbnail', reader.result); 
+        };
+        reader.readAsDataURL(file);
+    }
+};
+
+
+
+
+  const onDrop = (acceptedFiles) => {
+    const newImages = acceptedFiles.map((file) => ({ file, preview: URL.createObjectURL(file) }));
+    setSkuFields(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
+
+  const renderInputs = [
+    { id: 'name', label: 'Product Name', value: productDetails.name },
+    { id: 'description', label: 'Description', value: productDetails.description },
+  ].map(input => (
+    <Input key={input.id} id={input.id} label={input.label} value={input.value} onChange={(e) => handleInputChange(input.id, e.target.value)} required />
+  ));
+
+  const renderSkus = (productDetails.skus || []).map((sku, index) => (
+    <tr key={index}>
+      {['sku', 'price', 'stock', 'color', 'size'].map(field => (
+        <td key={field} className="border border-gray-300 p-2">{sku[field]}</td>
+      ))}
+      <td className="p-1 flex space-x-2 justify-center">
+        <ActionButton type="button" onClick={() => editSku(index)} icon={<FontAwesomeIcon icon={faEdit} />}  />
+        <ActionButton type="button" onClick={() => removeSku(index)} icon={<FontAwesomeIcon icon={faTrash} />}  />
+      </td>
+    </tr>
+  ));
 
   return (
     <Modal
       title={editingProductId ? 'Edit Product' : 'Add Product'}
       isOpen={isOpen}
       onClose={onClose}
-      onSave={handleAddOrUpdateProduct}
+      onSave={handleSaveProduct}
       buttonText={editingProductId ? 'Update' : 'Add'}
       buttonLoading={buttonLoading}
-      saveButtonDisabled={!productDetails.name.trim() || !productDetails.skus.length} 
+      saveButtonDisabled={!productDetails.name.trim() || !(productDetails.skus || []).length}
     >
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
-        <Input
-          id="product-name"
-          type="text"
-          label="Product Name"
-          value={productDetails.name}
-          onChange={(e) => setProductDetails({ ...productDetails, name: e.target.value })}
-          required
-        />
-        <Input
-          id="description"
-          type="text"
-          label="Description"
-          value={productDetails.description}
-          onChange={(e) => setProductDetails({ ...productDetails, description: e.target.value })}
-          required
-        />
-        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Dropdown
-            id="brand"
-            label="Brand"
-            options={brands}
-            value={productDetails.brand}
-            onChange={(e) => setProductDetails({ ...productDetails, brand: e.target.value })}
-            required
-          />
-        </div>
-        <div className="col-span-1 sm:col-span-2 lg:col-span-1">
-          <Dropdown
-            id="category"
-            label="Category"
-            options={categories.map((category) => ({
-              value: category.id,
-              label: category.name,
-            }))}
-            value={productDetails.category_id}
-            onChange={(e) => setProductDetails({ ...productDetails, category_id: e.target.value })}
-            required
-          />
-        </div>
+       <div className="flex items-center mb-2">
+        <label className="flex items-center cursor-pointer">
+          <FontAwesomeIcon icon={faUpload} className="w-5 h-5 mr-2" />
+          <span>Upload Thumbnail</span>
+          <input type="file" onChange={handleThumbnailChange} className="hidden" accept="image/*" />
+        </label>
+        {productDetails.thumbnail && (
+          <img src={productDetails.thumbnail} alt="Thumbnail" className="w-16 h-16 object-cover rounded ml-4" />
+        )}
       </div>
 
-      {/* SKU Table Section */}
-      <div className="col-span-1 sm:col-span-2 lg:col-span-4">
-        <h3 className="text-lg font-medium mb-2">SKUs</h3>
-        <div className="mt-4 mb-2 flex justify-end">
-          <ActionButton type="button" onClick={addSku} text="Add SKU" />
-        </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+        {renderInputs}
+        <Dropdown id="brand" label="Brand" options={brands} value={productDetails.brand} onChange={(e) => handleInputChange('brand', e.target.value)} required />
+        <Dropdown id="category" label="Category" options={categories.map(cat => ({ value: cat.id, label: cat.name }))} value={productDetails.category_id} onChange={(e) => handleInputChange('category_id', e.target.value)} required />
+      </div>
 
+      <div>
+        <h3 className="text-lg font-medium mb-2">SKUs</h3>
+        <div className="flex justify-end">
+          <ActionButton type="button" onClick={toggleSku} icon={<FontAwesomeIcon icon={faPlus} />} text="Add SKU" className="mt-4 mb-2" />
+        </div>
         <table className="min-w-full border-collapse border border-gray-300 mb-4">
           <thead>
-            <tr>
-              <th className="border border-gray-300 p-2">SKU</th>
-              <th className="border border-gray-300 p-2">Price</th>
-              <th className="border border-gray-300 p-2">Stock</th>
-              <th className="border border-gray-300 p-2">Color</th>
-              <th className="border border-gray-300 p-2">Size</th>
-              <th className="border border-gray-300 p-2">Actions</th>
-            </tr>
+            <tr>{['SKU', 'Price', 'Stock', 'Color', 'Size', 'Actions'].map(heading => <th key={heading} className="border border-gray-300 p-2">{heading}</th>)}</tr>
           </thead>
-          <tbody>
-            {productDetails.skus.map((sku, index) => (
-              <tr key={index}>
-                <td className="border border-gray-300 p-2">{sku.sku}</td>
-                <td className="border border-gray-300 p-2">{sku.price}</td>
-                <td className="border border-gray-300 p-2">{sku.stock}</td>
-                <td className="border border-gray-300 p-2">{sku.color}</td>
-                <td className="border border-gray-300 p-2">{sku.size}</td>
-                <td className="border border-gray-300 p-2">
-                  <button className="text-red-500" onClick={() => removeSku(index)}>
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+          <tbody>{renderSkus}</tbody>
         </table>
 
-        {/* Temporary SKU Entry Section */}
         {isAddingSku && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 mb-4 border p-4 rounded">
-            <Input
-              id="temp-sku"
-              type="text"
-              label="SKU"
-              value={tempSku.sku}
-              onChange={(e) => setTempSku({ ...tempSku, sku: e.target.value })}
-            />
-            <Input
-              id="temp-price"
-              type="number"
-              label="Price"
-              value={tempSku.price}
-              onChange={(e) => setTempSku({ ...tempSku, price: e.target.value })}
-            />
-            <Input
-              id="temp-stock"
-              type="number"
-              label="Stock"
-              value={tempSku.stock}
-              onChange={(e) => setTempSku({ ...tempSku, stock: e.target.value })}
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-4 lg:grid-cols-5 gap-4 mb-4 border p-2 rounded">
+            {['sku', 'price', 'stock', 'size'].map(field => (
+              <Input key={field} id={field} label={field.charAt(0).toUpperCase() + field.slice(1)} value={skuFields[field]} onChange={(e) => handleSkuChange(field, e.target.value)} required />
+            ))}
             <Dropdown
               id="temp-color"
               label="Color"
               options={colors}
-              value={tempSku.color}
-              onChange={(e) => setTempSku({ ...tempSku, color: e.target.value })}
-            />
-            <Input
-              id="temp-size"
-              type="text"
-              label="Size"
-              value={tempSku.size}
-              onChange={(e) => setTempSku({ ...tempSku, size: e.target.value })}
+              value={skuFields.color}
+              onChange={(e) => handleSkuChange('color', e.target.value)}
+              required
             />
             <div className="col-span-5">
-              <DragAndDropUpload
-                id={`temp-images`}
-                onDrop={(files) => setTempSku({ ...tempSku, images: files })}
-                uploadedFiles={tempSku.images}
-                label="Upload Images"
-              />
+              <div {...getRootProps({ className: 'border-dashed border-2 border-gray-400 p-2 rounded' })}>
+                <input {...getInputProps()} />
+                <p className="text-center">Drag & drop images here, or click to select</p>
+              </div>
+              <div className="mt-2 flex flex-wrap">
+                {skuFields.images.map((image, index) => (
+                  <div key={index} className="relative mr-2 mb-2">
+                    <img src={image.preview} alt={`Preview ${index}`} className="w-16 h-16 object-cover rounded" />
+                    <button type="button" onClick={() => setSkuFields(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }))} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                      <FontAwesomeIcon icon={faTimes} className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div className="mt-2 col-span-5 flex justify-end space-x-2">
-              <ActionButton text="Save SKU" onClick={saveTempSku} />
-              <ActionButton text="Cancel" onClick={() => setIsAddingSku(false)} />
+            <div className="col-span-5 flex justify-end">
+              <ActionButton type="button" onClick={saveSku} icon={<FontAwesomeIcon icon={faPlus} />} text="Save SKU" />
             </div>
           </div>
         )}
@@ -232,3 +208,4 @@ const ProductModal = ({
 };
 
 export default ProductModal;
+0

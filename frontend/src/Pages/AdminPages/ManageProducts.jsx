@@ -12,14 +12,6 @@ const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
 const ManageProducts = () => {
   const [products, setProducts] = useState([]);
-  const [productDetails, setProductDetails] = useState({
-    name: '',
-    description: '',
-    category_id: '',
-    brand: '',
-    skus: [],
-    status: true,
-  });
   const [editingProductId, setEditingProductId] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -39,9 +31,10 @@ const ManageProducts = () => {
     try {
       const response = await axios.get(`${apiUrl}/api/products`);
       setProducts(response.data);
-      console.log(response.data);
+      console.log('Fetched products:', response.data); // Debugging log
     } catch (error) {
       setError('Error fetching products');
+      console.error(error); // Log the actual error
     } finally {
       setLoading(false);
     }
@@ -51,26 +44,18 @@ const ManageProducts = () => {
     try {
       const response = await axios.get(`${apiUrl}/api/categories`);
       setCategories(response.data);
+      console.log('Fetched categories:', response.data); // Debugging log
     } catch (error) {
       console.error('Error fetching categories:', error);
     }
   };
 
   const openAddModal = () => {
-    setProductDetails({
-      name: '',
-      description: '',
-      category_id: '',
-      brand: '',
-      skus: [],
-      status: true,
-    });
     setEditingProductId(null);
     setIsModalOpen(true);
   };
 
   const openEditModal = (product) => {
-    setProductDetails(product);
     setEditingProductId(product.id);
     setIsModalOpen(true);
   };
@@ -83,6 +68,7 @@ const ManageProducts = () => {
         setSuccessMessage('Product deleted successfully!');
       } catch (error) {
         setError('Error deleting product');
+        console.error(error); // Log the actual error
       }
     }
   };
@@ -94,6 +80,7 @@ const ManageProducts = () => {
       setSuccessMessage('Product status updated successfully!');
     } catch (error) {
       setError('Error updating product status');
+      console.error(error); // Log the actual error
     }
   };
 
@@ -102,12 +89,25 @@ const ManageProducts = () => {
   );
 
   const columns = [
+    
+    { label: 'Thumbnail', key: 'thumbnail' },
     { label: 'Model', key: 'id' },
     { label: 'Name', key: 'name' },
     { label: 'Description', key: 'description' },
     { label: 'Brand', key: 'brand' },
     { label: 'Category', key: 'category_name' },
-    { label: 'Status', key: 'status' }, 
+    {
+      label: 'Status',
+      key: 'status',
+      render: (row) => (
+        <button
+          onClick={() => handleToggleStatus(row.id, row.status)}
+          className={`px-2 py-1 rounded ${row.status ? 'bg-green-500' : 'bg-red-500'} text-white`}
+        >
+          {row.status ? 'Active' : 'Inactive'}
+        </button>
+      ),
+    },
   ];
 
   return (
@@ -152,14 +152,12 @@ const ManageProducts = () => {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           editingProductId={editingProductId}
-          productDetails={productDetails}
-          setProductDetails={setProductDetails}
           buttonLoading={buttonLoading}
           setButtonLoading={setButtonLoading}
           setSuccessMessage={setSuccessMessage}
           setError={setError}
           fetchProducts={fetchProducts}
-          categories={categories} // Pass categories to the modal
+          categories={categories}
         />
       </div>
     </div>

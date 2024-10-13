@@ -2,17 +2,18 @@ import React, { useState, useEffect } from 'react';
 import Switch from 'react-switch';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import SyncLoader from 'react-spinners/SyncLoader'; // Ensure SyncLoader is installed
+import ProductDetailsModal from '../Components/ProductDetailsModal';
+import SyncLoader from 'react-spinners/SyncLoader'; 
 import Pagination from './Pagination';
-import { useDarkMode } from '../Util/DarkModeContext'; // Assuming this is your context for dark mode
+import { useDarkMode } from '../Util/DarkModeContext'; 
 
 const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatus, identifierKey, h = 330 }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(20);
+  const [selectedProduct, setSelectedProduct] = useState(null); // Change to selectedProduct
   const [isLoading, setIsLoading] = useState(true);
-
-  const { darkMode, toggleDarkMode } = useDarkMode(); // Get dark mode state and toggle function
+  const { darkMode } = useDarkMode(); 
 
   useEffect(() => {
     const handleScroll = () => {
@@ -34,6 +35,14 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
     }
   };
 
+  const handleIdClick = (item) => {
+    setSelectedProduct(item); // Set selected product instead of id
+  };
+
+  const handleCloseModal = () => {
+    setSelectedProduct(null);
+  };
+  
   // Pagination
   const indexOfLastItem = currentPage * itemsPerPage;
   const indexOfFirstItem = indexOfLastItem - itemsPerPage;
@@ -45,15 +54,13 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
     <div className={`table-container ${isScrolled ? '' : ''} ${darkMode ? 'bg-secondary' : 'bg-white'}`}>
       <div className="overflow-x-auto">
         <div className="overflow-y-auto" style={{ maxHeight: `calc(100vh - ${h}px)` }}>
-          <table className={`w-full  border-b border-primary ${darkMode ? 'bg-secondary text-white border-gray-800' : 'bg-white text-secondary border-gray-50'}`}>
+          <table className={`w-full border-b border-primary ${darkMode ? 'bg-secondary text-white border-gray-800' : 'bg-white text-secondary border-gray-50'}`}>
             <thead className={`${darkMode ? 'bg-black text-white' : 'bg-gray-50 text-secondary'} sticky top-0 z-10`}>
               <tr>
                 {columns.map((column, index) => (
                   <th
                     key={index}
-                    className={`px-4 py-2 text-left font-bold text-sm md:text-lg ${
-                      column.key.toLowerCase() === 'status' ? 'text-center' : ''
-                    }`}
+                    className={`px-4 py-2 text-left font-bold text-sm md:text-lg ${column.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                   >
                     {column.label}
                   </th>
@@ -63,7 +70,7 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                 </th>
               </tr>
             </thead>
-            <tbody className={` ${darkMode ? 'text-white' : 'text-secondary'}`}>
+            <tbody className={`${darkMode ? 'text-white' : 'text-secondary'}`}>
               {isLoading ? (
                 <tr>
                   <td colSpan={columns.length + 1} className="text-center py-4">
@@ -82,12 +89,18 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                     {columns.map((col, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`px-4 py-2 text-left text-sm md:text-lg border-b border-primary ${
-                          col.key.toLowerCase() === 'status' ? 'text-center' : ''
-                        }`}
+                        className={`px-4 py-2 text-left text-sm md:text-lg border-b border-primary ${col.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                       >
-                        {col.key.toLowerCase() === 'applyto' && Array.isArray(item[col.key]) ? (
-                          item[col.key].includes('*') ? '*' : 'many'
+                        {col.key.toLowerCase() === 'thumbnail' ? (
+                          item.thumbnail ? (
+                            <img
+                              src={item.thumbnail}
+                              alt={item.name} 
+                              className="w-20 h-auto object-cover" 
+                            />
+                          ) : (
+                            'No Image'
+                          )
                         ) : col.key.toLowerCase() === 'status' ? (
                           <div className="flex justify-center items-center h-full">
                             <Switch
@@ -103,8 +116,17 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                               className="align-middle"
                             />
                           </div>
+                        ) : col.key.toLowerCase() === 'id' ? ( // Check if the column key is 'id'
+                          <span
+                            onClick={() => handleIdClick(item)} // Set selected item on click
+                            className="cursor-pointer font-bold underline text-primary" // Update styles
+                          >
+                            {item[col.key]}
+                          </span>
                         ) : (
-                          item[col.key]
+                          <span>
+                            {item[col.key]}
+                          </span>
                         )}
                       </td>
                     ))}
@@ -143,6 +165,14 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
         paginate={paginate}
         currentPage={currentPage}
       />
+      
+      {selectedProduct && ( // Check if selectedProduct is not null
+        <ProductDetailsModal 
+          product={selectedProduct} // Pass the selected product
+          isOpen={Boolean(selectedProduct)} 
+          onClose={handleCloseModal} 
+        />
+      )}
     </div>
   );
 };
