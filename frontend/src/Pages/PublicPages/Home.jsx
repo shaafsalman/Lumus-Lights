@@ -45,7 +45,7 @@ const Home = () => {
         <PopUpImage images={promotionalImages} onClose={handleClose} />
       )}
 
-      <ProductShowcase 
+      <ProductShowcase
         products={products}
         title="Modern And Minimalist Lamps" 
         description="Lamps are devices that provide artificial light for illumination purposes. They come in various shapes, sizes, and designs, and can be used for both functional and decorative purposes in different settings. Here are some common types of lamps:" 

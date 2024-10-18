@@ -31,7 +31,6 @@ const NavigationBar = () => {
     const loadPromotionalMessage = async () => {
       try {
         const data = await fetchPromotionalMessage();
-        console.log(data);
         setPromotionalMessage(data.message || '');
         setIsActive(data.active || false); 
       } catch (error) {
@@ -56,7 +55,7 @@ const NavigationBar = () => {
     <>
       {/* Promotional message */}
       {isActive && promotionalMessage && (
-        <div className={`bg-red-600 text-white text-center p-2 fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className={`bg-red-600 text-white text-center p-.5 fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           {promotionalMessage}
         </div>
       )}
@@ -66,15 +65,16 @@ const NavigationBar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Company logo */}
-            <img 
-              src={darkMode ? logoDark : logoLight} 
-              alt="Company Logo" 
-              className="h-10 w-auto mr-2 transition-all duration-300"
-            />
-            <span className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
-              {getCompanyName()}
-            </span>
-
+            <Link to="/" className="flex items-center">
+      <img 
+        src={darkMode ? logoDark : logoLight} 
+        alt="Company Logo" 
+        className="h-10 w-auto mr-2 transition-all duration-300"
+      />
+      <span className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
+        {getCompanyName()}
+         </span>
+        </Link>
             {/* Navigation links */}
             <div className="hidden md:flex flex-grow items-center space-x-6 ml-10">
               {company.pages.map((page) => (

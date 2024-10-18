@@ -1,9 +1,13 @@
 import React from 'react';
+import { useDarkMode } from '../Util/DarkModeContext';
 
 const RoundIconButton = ({ icon: Icon, onClick, size = 30, className = '' }) => {
+  const { darkMode } = useDarkMode();
+
   return (
     <button
-      className={`text-white bg-gray-900 rounded-full p-3 hover:bg-gray-700 transition-colors ${className}`}
+      className={`rounded-full p-3 transition-colors ${className} 
+        ${darkMode ? 'bg-transparent  text-white hover:bg-gray-600' : 'bg-transparent text-secondary hover:bg-gray-300'}`}
       onClick={onClick}
     >
       <Icon size={size} />
