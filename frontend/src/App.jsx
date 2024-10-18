@@ -19,6 +19,10 @@ import ManageProducts from './Pages/AdminPages/ManageProducts';
 import ProfileHeader from './ui/ProfileHeader';
 import AdminNavbar from './ui/AdminNavbar';
 import Dashboard from './Pages/AdminPages/Dashboard.jsx'; 
+import BannerPromotion from './Pages/AdminPages/BannerPromotions.jsx';
+
+
+
 
 
 // Helper function to check token validity
@@ -84,6 +88,8 @@ const adminRoutes = [
   { path: '/dashboard', component: <Dashboard />, title: 'Dashboard' },
   { path: '/admin/manage-categories', component: <ManageCategories />, title: 'Manage Categories' },
   { path: '/admin/manage-products', component: <ManageProducts />, title: 'Manage Products' },
+  { path: '/admin/banner-promotions', component: <BannerPromotion />, title: 'Manage Banner Promotion' },
+
 ];
 
 // Main application content
@@ -107,18 +113,16 @@ const AppContent = ({ isAuthenticated, setIsAuthenticated }) => {
     if (matchedAdminRoute) {
       setPageTitle(matchedAdminRoute.title);
     } else {
-      setPageTitle("Admin"); // Default title for other admin pages
+      setPageTitle("Admin");
     }
   }, [location.pathname]);
 
   return (
     <Routes>
-      {/* Regular routes */}
       {routes.map(({ path, layout: Layout, component }) => (
         <Route key={path} path={path} element={<Layout>{component}</Layout>} />
       ))}
 
-      {/* Admin routes */}
       {adminRoutes.map(({ path, component, title }) => (
         <Route 
           key={path} 
@@ -149,7 +153,7 @@ const App = () => {
         localStorage.removeItem('token');
         localStorage.removeItem('tokenExpiry');
       }
-    }, 60000); // Check every minute
+    }, 60000);
 
     return () => clearInterval(interval);
   }, []);

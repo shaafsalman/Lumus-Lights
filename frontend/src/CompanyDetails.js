@@ -1,6 +1,4 @@
-import {faEnvelope, faHome,faLightbulb  } from '@fortawesome/free-solid-svg-icons';
-
-
+import { faEnvelope, faHome, faLightbulb } from '@fortawesome/free-solid-svg-icons';
 
 const company = {
   name: "Lumus Lights",
@@ -16,24 +14,23 @@ const company = {
       linkedin: "https://www.linkedin.com/company/datasynth",
       website: "https://www.datasynth.com",
   },
-  team: [
-      { name: "Shaaf Salman", role: "Chief AI Scientist" },
-      { name: "Jawad Shahid", role: "Lead Software Engineer" },
-      { name: "Rumaisa Qadeer", role: "Data Ethics Specialist" },
-  ],
   pages: [
-      { path: '/', name: 'Home' , icon: faHome},
-      { path: '/products', name: 'Products' , icon: faLightbulb},
+      { path: '/', name: 'Home', icon: faHome },
+      { path: '/products', name: 'Products', icon: faLightbulb },
       { path: '/contact', name: 'Contact', icon: faEnvelope },
-  ]
+  ],
+  promotionalMessage: "Welcome to Lumus Lights! Check out our latest offers.",
+  promotionMessageActive: true,
+  popupAds: [] 
 };
 
 const getCompanyName = () => company.name;
 const getCompanyAddress = () => company.address;
 const getCompanyContact = () => company.contact;
 const getCompanySocialLinks = () => company.socialLinks;
-const getCompanyTeam = () => company.team;
 const getCompanyEmail = () => company.email;
+const getPromotionalMessage = () => company.promotionalMessage;
+const isPromotionMessageActive = () => company.promotionMessageActive;
 
 export {
   company,
@@ -41,6 +38,7 @@ export {
   getCompanyAddress,
   getCompanyContact,
   getCompanySocialLinks,
-  getCompanyTeam,
-  getCompanyEmail
+  getCompanyEmail,
+  getPromotionalMessage,
+  isPromotionMessageActive,
 };
