@@ -34,7 +34,6 @@ const NavigationBar = () => {
         console.log(data);
         setPromotionalMessage(data.message || '');
         setIsActive(data.active || false); 
-        console.log(data);
       } catch (error) {
         console.error('Error fetching promotional message:', error);
       }

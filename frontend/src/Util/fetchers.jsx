@@ -61,7 +61,9 @@ export const setPromotionalMessageStatus = async (active) => {
 export const fetchPromotionalImages = async () => {
   try {
     const response = await axios.get(`${apiUrl}/promotion/promotional-images`);
+    console.log(response.data);
     return response.data;
+
   } catch (error) {
     console.error('Error fetching promotional images:', error);
     throw error;

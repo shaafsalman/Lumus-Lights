@@ -48,9 +48,9 @@ const AuthLayout = ({ children }) => {
 const MainLayout = ({ children }) => {
   const { darkMode } = useDarkMode();
   return (
-    <div className={`flex flex-col min-h-screen ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
+    <div className={`flex flex-col overflow-hidden  ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
       <NavigationBar />
-      <main className="flex-grow pt-16">{children}</main>
+      <main className="flex-grow mt-32">{children}</main>
       <Footer />
     </div>
   );
