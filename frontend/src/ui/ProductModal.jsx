@@ -22,10 +22,8 @@ const ProductModal = ({
   setError,
   fetchProducts,
   categories,
-  
 }) => {
   const [productDetails, setProductDetails] = useState({
-    
     name: '',
     description: '',
     category_id: '',
@@ -34,6 +32,7 @@ const ProductModal = ({
     thumbnail: null,
     status: true,
   });
+  
   const [skuFields, setSkuFields] = useState({ sku: '', price: '', stock: '', color: '', size: '', images: [] });
   const [isAddingSku, setIsAddingSku] = useState(false);
   const [editingSkuIndex, setEditingSkuIndex] = useState(null);
@@ -76,7 +75,6 @@ const ProductModal = ({
         thumbnail: productDetails.thumbnail, 
       };
       await axios[editingProductId ? 'put' : 'post'](url, payload);
-      console.log(productDetails.thumbnail);
       console.log(payload);
       setSuccessMessage(`Product ${editingProductId ? 'updated' : 'added'} successfully!`);
       fetchProducts();
@@ -88,24 +86,28 @@ const ProductModal = ({
     }
   };
 
-
   const handleThumbnailChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-        const reader = new FileReader();
-        reader.onloadend = () => {
-            handleInputChange('thumbnail', reader.result); 
-        };
-        reader.readAsDataURL(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        handleInputChange('thumbnail', reader.result); 
+      };
+      reader.readAsDataURL(file);
     }
-};
-
-
-
+  };
 
   const onDrop = (acceptedFiles) => {
-    const newImages = acceptedFiles.map((file) => ({ file, preview: URL.createObjectURL(file) }));
-    setSkuFields(prev => ({ ...prev, images: [...prev.images, ...newImages] }));
+    acceptedFiles.forEach(file => {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setSkuFields(prev => ({
+          ...prev,
+          images: [...prev.images, { file, preview: reader.result }]
+        }));
+      };
+      reader.readAsDataURL(file);
+    });
   };
 
   const { getRootProps, getInputProps } = useDropzone({ onDrop });
@@ -123,8 +125,8 @@ const ProductModal = ({
         <td key={field} className="border border-gray-300 p-2">{sku[field]}</td>
       ))}
       <td className="p-1 flex space-x-2 justify-center">
-        <ActionButton type="button" onClick={() => editSku(index)} icon={<FontAwesomeIcon icon={faEdit} />}  />
-        <ActionButton type="button" onClick={() => removeSku(index)} icon={<FontAwesomeIcon icon={faTrash} />}  />
+        <ActionButton type="button" onClick={() => editSku(index)} icon={<FontAwesomeIcon icon={faEdit} />} />
+        <ActionButton type="button" onClick={() => removeSku(index)} icon={<FontAwesomeIcon icon={faTrash} />} />
       </td>
     </tr>
   ));
@@ -139,7 +141,7 @@ const ProductModal = ({
       buttonLoading={buttonLoading}
       saveButtonDisabled={!productDetails.name.trim() || !(productDetails.skus || []).length}
     >
-       <div className="flex items-center mb-2">
+      <div className="flex items-center mb-2">
         <label className="flex items-center cursor-pointer">
           <FontAwesomeIcon icon={faUpload} className="w-5 h-5 mr-2" />
           <span>Upload Thumbnail</span>
@@ -187,18 +189,22 @@ const ProductModal = ({
                 <p className="text-center">Drag & drop images here, or click to select</p>
               </div>
               <div className="mt-2 flex flex-wrap">
-                {skuFields.images.map((image, index) => (
-                  <div key={index} className="relative mr-2 mb-2">
-                    <img src={image.preview} alt={`Preview ${index}`} className="w-16 h-16 object-cover rounded" />
-                    <button type="button" onClick={() => setSkuFields(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }))} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
-                      <FontAwesomeIcon icon={faTimes} className="w-3 h-3" />
-                    </button>
-                  </div>
-                ))}
+                {skuFields.images.length === 0 ? (
+                  <p>No SKU images uploaded</p> 
+                ) : (
+                  skuFields.images.map((image, index) => (
+                    <div key={index} className="relative mr-2 mb-2">
+                      <img src={image.preview} alt={`Preview ${index}`} className="w-16 h-16 object-cover rounded" />
+                      <button type="button" onClick={() => setSkuFields(prev => ({ ...prev, images: prev.images.filter((_, i) => i !== index) }))} className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1">
+                        <FontAwesomeIcon icon={faTimes} className="w-3 h-3" />
+                      </button>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
-            <div className="col-span-5 flex justify-end">
-              <ActionButton type="button" onClick={saveSku} icon={<FontAwesomeIcon icon={faPlus} />} text="Save SKU" />
+            <div className="flex justify-end mt-2">
+              <ActionButton type="button" onClick={saveSku} text={editingSkuIndex !== null ? 'Update SKU' : 'Save SKU'} />
             </div>
           </div>
         )}
@@ -208,4 +214,3 @@ const ProductModal = ({
 };
 
 export default ProductModal;
-0

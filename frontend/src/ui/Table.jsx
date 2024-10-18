@@ -15,6 +15,8 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
   const [isLoading, setIsLoading] = useState(true);
   const { darkMode } = useDarkMode(); 
 
+  //  console.log("data",data);
+
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 0;

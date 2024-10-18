@@ -7,6 +7,7 @@ import ActionButton from '../../ui/ActionButton';
 import NoDataFound from '../../ui/NoDataFound';
 import SearchBar from '../../ui/SearchBar';
 import MessageCard from '../../ui/MessageCard';
+import { fetchProducts, fetchCategories } from './../../Util/fetchers'; 
 
 const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
@@ -22,33 +23,25 @@ const ManageProducts = () => {
   const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, []);
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${apiUrl}/api/products`);
-      setProducts(response.data);
-      console.log('Fetched products:', response.data); // Debugging log
-    } catch (error) {
-      setError('Error fetching products');
-      console.error(error); // Log the actual error
-    } finally {
+    const fetchOptionsData = async () => {
+      try {
+        setLoading(true);
+        const [fetchedProducts, fetchedCategories] = await Promise.all([
+          fetchProducts(),
+          fetchCategories(),
+        ]);
+        setProducts(fetchedProducts);
+        setCategories(fetchedCategories);
+      } catch (err) {
+        console.error('Error fetching options:', err);
+        setMessage({ type: 'error', content: 'Failed to fetch options data. Please try again.' });
+      }
       setLoading(false);
-    }
-  };
+    };
 
-  const fetchCategories = async () => {
-    try {
-      const response = await axios.get(`${apiUrl}/api/categories`);
-      setCategories(response.data);
-      console.log('Fetched categories:', response.data); // Debugging log
-    } catch (error) {
-      console.error('Error fetching categories:', error);
-    }
-  };
+    fetchOptionsData();
+
+  }, []);
 
   const openAddModal = () => {
     setEditingProductId(null);
@@ -64,11 +57,12 @@ const ManageProducts = () => {
     if (window.confirm('Are you sure you want to delete this product?')) {
       try {
         await axios.delete(`${apiUrl}/api/products/${productId}`);
-        fetchProducts();
+        const updatedProducts = await fetchProducts();
+        setProducts(updatedProducts);
         setSuccessMessage('Product deleted successfully!');
       } catch (error) {
         setError('Error deleting product');
-        console.error(error); // Log the actual error
+        console.error(error); 
       }
     }
   };
@@ -76,20 +70,17 @@ const ManageProducts = () => {
   const handleToggleStatus = async (productId, currentStatus) => {
     try {
       await axios.patch(`${apiUrl}/api/products/${productId}/status`, { status: !currentStatus });
-      fetchProducts();
+      setProducts(updatedProducts);
       setSuccessMessage('Product status updated successfully!');
     } catch (error) {
       setError('Error updating product status');
-      console.error(error); // Log the actual error
+      console.error(error); 
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+ 
 
   const columns = [
-    
     { label: 'Thumbnail', key: 'thumbnail' },
     { label: 'Model', key: 'id' },
     { label: 'Name', key: 'name' },
@@ -127,7 +118,10 @@ const ManageProducts = () => {
           whatToSearch="Products"
           searchTerm={searchTerm}
           handleSearch={setSearchTerm}
-          handleReload={fetchProducts}
+          handleReload={async () => {
+            const updatedProducts = await fetchProducts(); 
+            setProducts(updatedProducts);
+          }}
           actionButton={
             <ActionButton onClick={openAddModal} text="Add Product" className="ml-auto mb-4" />
           }
@@ -135,10 +129,10 @@ const ManageProducts = () => {
 
         {loading ? (
           <p>Loading...</p>
-        ) : filteredProducts.length > 0 ? (
+        ) : products.length > 0 ? (
           <Table
             columns={columns}
-            data={filteredProducts}
+            data={products}
             handleEdit={openEditModal}
             handleDelete={handleDeleteProduct}
             handleToggleStatus={handleToggleStatus} 

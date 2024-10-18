@@ -1,17 +1,19 @@
 const pool = require('../db');
 
-// Helper function for query execution
-const executeQuery = (query, params, callback) => {
-  pool.query(query, params, (err, results) => {
-    if (err) {
-      return callback(new Error(err.message), null);
-    }
-    callback(null, results);
+// Helper function for query execution (returns a Promise)
+const executeQuery = (query, params) => {
+  return new Promise((resolve, reject) => {
+    pool.query(query, params, (err, results) => {
+      if (err) {
+        return reject(new Error(err.message));
+      }
+      resolve(results);
+    });
   });
 };
 
 // Fetch all products along with their SKUs and images
-const fetchProducts = (callback) => {
+const fetchProducts = async () => {
   const query = `
     SELECT 
       p.id AS product_id, 
@@ -38,8 +40,8 @@ const fetchProducts = (callback) => {
     ORDER BY p.id, sku.id;
   `;
 
-  executeQuery(query, [], (err, results) => {
-    if (err) return callback(err, null);
+  try {
+    const results = await executeQuery(query, []);
 
     const productsMap = new Map();
 
@@ -84,126 +86,122 @@ const fetchProducts = (callback) => {
       }
     });
 
-    callback(null, Array.from(productsMap.values()));
-  });
+    return Array.from(productsMap.values());
+  } catch (error) {
+    console.error('Error fetching products:', error);
+    throw error; 
+  }
 };
 
+
 // Add a new product with thumbnail file path
-const addProduct = (name, description, categoryId, brand, thumbnail, callback) => {
-  console.log(thumbnail);
-  executeQuery('INSERT INTO Products (name, description, category_id, brand, thumbnail) VALUES (?, ?, ?, ?, ?)', 
-    [name, description, categoryId, brand, thumbnail], 
-    (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.insertId);
-    });
+const addProduct = async (name, description, categoryId, brand, thumbnail) => {
+  const result = await executeQuery(
+    'INSERT INTO Products (name, description, category_id, brand, thumbnail) VALUES (?, ?, ?, ?, ?)', 
+    [name, description, categoryId, brand, thumbnail]
+  );
+  return result.insertId;
 };
 
 // Add a new SKU
-const addSKU = (productId, sku, price, stock, color, size, wattage, voltage, callback) => {
-  executeQuery('INSERT INTO Product_SKUs (product_id, sku, price, stock, color, size, wattage, voltage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
-    [productId, sku, price, stock, color, size, wattage, voltage], (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.insertId);
-    });
+const addSKU = async (productId, sku, price, stock, color, size, wattage, voltage) => {
+  const result = await executeQuery(
+    'INSERT INTO Product_SKUs (product_id, sku, price, stock, color, size, wattage, voltage) VALUES (?, ?, ?, ?, ?, ?, ?, ?)', 
+    [productId, sku, price, stock, color, size, wattage, voltage]
+  );
+  return result.insertId;
 };
 
 // Add a new image
-const addImage = (skuId, imagePath, isPrimary, callback) => {
-  executeQuery('INSERT INTO Product_Images (sku_id, image_path, is_primary) VALUES (?, ?, ?)', 
-    [skuId, imagePath, isPrimary], (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.insertId);
-    });
+const addImage = async (skuId, imagePath, isPrimary) => {
+  const result = await executeQuery(
+    'INSERT INTO Product_Images (sku_id, image_path, is_primary) VALUES (?, ?, ?)', 
+    [skuId, imagePath, isPrimary]
+  );
+  return result.insertId;
 };
 
 // Update a SKU by ID
-const updateSKU = (skuId, sku, price, stock, color, size, wattage, voltage, callback) => {
-  executeQuery(`UPDATE Product_SKUs SET sku = ?, price = ?, stock = ?, color = ?, size = ?, wattage = ?, voltage = ? WHERE id = ?`, 
-    [sku, price, stock, color, size, wattage, voltage, skuId], (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.affectedRows);
-    });
+const updateSKU = async (skuId, sku, price, stock, color, size, wattage, voltage) => {
+  const result = await executeQuery(
+    'UPDATE Product_SKUs SET sku = ?, price = ?, stock = ?, color = ?, size = ?, wattage = ?, voltage = ? WHERE id = ?', 
+    [sku, price, stock, color, size, wattage, voltage, skuId]
+  );
+  return result.affectedRows;
 };
 
 // Update an image by ID
-const updateImage = (imageId, imagePath, isPrimary, callback) => {
-  executeQuery(`UPDATE Product_Images SET image_path = ?, is_primary = ? WHERE id = ?`, 
-    [imagePath, isPrimary, imageId], (err, results) => {
-      if (err) return callback(err, null);
-      callback(null, results.affectedRows);
-    });
+const updateImage = async (imageId, imagePath, isPrimary) => {
+  const result = await executeQuery(
+    'UPDATE Product_Images SET image_path = ?, is_primary = ? WHERE id = ?', 
+    [imagePath, isPrimary, imageId]
+  );
+  return result.affectedRows;
 };
 
 // Update a product by ID, including updating SKUs and images if necessary
-const updateProduct = (req, res) => {
+const updateProduct = async (req, res) => {
   const { id } = req.params;
   const { name, description, categoryId, brand, skus, images, thumbnail } = req.body; // Include thumbnail
 
-  executeQuery('UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ?, thumbnail = ? WHERE id = ?', 
-    [name, description, categoryId, brand, thumbnail, id], (err, result) => { // Pass thumbnail
-      if (err) return res.status(500).json({ message: 'Internal server error' });
+  try {
+    await executeQuery(
+      'UPDATE Products SET name = ?, description = ?, category_id = ?, brand = ?, thumbnail = ? WHERE id = ?', 
+      [name, description, categoryId, brand, thumbnail, id]
+    );
 
-      const updatePromises = [];
-      if (skus && Array.isArray(skus)) {
-        skus.forEach(sku => {
-          updatePromises.push(new Promise((resolve, reject) => {
-            updateSKU(sku.id, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage, (err) => {
-              if (err) return reject(err);
-              resolve();
-            });
-          }));
-        });
-      }
+    const updatePromises = [];
 
-      if (images && Array.isArray(images)) {
-        images.forEach(image => {
-          updatePromises.push(new Promise((resolve, reject) => {
-            updateImage(image.id, image.image_path, image.is_primary, (err) => {
-              if (err) return reject(err);
-              resolve();
-            });
-          }));
-        });
-      }
+    if (skus && Array.isArray(skus)) {
+      skus.forEach(sku => {
+        updatePromises.push(updateSKU(sku.id, sku.sku, sku.price, sku.stock, sku.color, sku.size, sku.wattage, sku.voltage));
+      });
+    }
 
-      Promise.all(updatePromises)
-        .then(() => res.status(200).json({ message: 'Product updated successfully', result }))
-        .catch(() => res.status(500).json({ message: 'Failed to update SKUs or images' }));
-    });
+    if (images && Array.isArray(images)) {
+      images.forEach(image => {
+        updatePromises.push(updateImage(image.id, image.image_path, image.is_primary));
+      });
+    }
+
+    await Promise.all(updatePromises);
+
+    res.status(200).json({ message: 'Product updated successfully' });
+  } catch (error) {
+    console.error('Error updating product:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 // Delete a product by ID along with its SKUs and images
-const removeProduct = (req, res) => {
+const removeProduct = async (req, res) => {
   const { id } = req.params;
 
-  deleteProduct(id, (err, result) => {
-    if (err) return res.status(500).json({ message: 'Internal server error' });
+  try {
+    await deleteProduct(id);
+    await deleteSKUsByProductId(id);
+    await deleteImagesByProductId(id);
 
-    deleteSKUsByProductId(id, (err) => {
-      if (err) return res.status(500).json({ message: 'Failed to delete SKUs' });
-
-      deleteImagesByProductId(id, (err) => {
-        if (err) return res.status(500).json({ message: 'Failed to delete images' });
-        res.status(200).json({ message: 'Product deleted successfully', result });
-      });
-    });
-  });
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
 
 // Delete a product by ID
-const deleteProduct = (id, callback) => {
-  executeQuery('DELETE FROM Products WHERE id = ?', [id], callback);
+const deleteProduct = async (id) => {
+  await executeQuery('DELETE FROM Products WHERE id = ?', [id]);
 };
 
 // Delete SKUs by product ID
-const deleteSKUsByProductId = (productId, callback) => {
-  executeQuery('DELETE FROM Product_SKUs WHERE product_id = ?', [productId], callback);
+const deleteSKUsByProductId = async (productId) => {
+  await executeQuery('DELETE FROM Product_SKUs WHERE product_id = ?', [productId]);
 };
 
 // Delete images by SKU ID
-const deleteImagesByProductId = (productId, callback) => {
-  executeQuery('DELETE FROM Product_Images WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)', [productId], callback);
+const deleteImagesByProductId = async (productId) => {
+  await executeQuery('DELETE FROM Product_Images WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)', [productId]);
 };
 
 module.exports = {

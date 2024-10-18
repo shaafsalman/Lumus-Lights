@@ -3,7 +3,7 @@ import ActionButton from './ActionButton';
 import { faSave, faTimes } from '@fortawesome/free-solid-svg-icons';
 import { useDarkMode } from '../Util/DarkModeContext';
 
-const Modal = ({ title, isOpen, onClose, onSave, buttonText, children, buttonLoading, saveButtonDisabled = false }) => {
+const Modal = ({ title, isOpen, onClose, onSave, buttonText,closeButtonText="Cancel", children, buttonLoading, saveButtonDisabled = false }) => {
   const { darkMode } = useDarkMode();
 
   return (
@@ -37,7 +37,7 @@ const Modal = ({ title, isOpen, onClose, onSave, buttonText, children, buttonLoa
                 disabled={buttonLoading}
                 icon={faTimes}
                 onClick={onClose}
-                text="Cancel"
+                text={closeButtonText}
                 className={`ml-2`}
               />
             )}
