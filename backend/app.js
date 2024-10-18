@@ -24,6 +24,9 @@ const productRoutes = require('./Route/productRoutes');
 app.use('/api', productRoutes);
 
 
+const promotionalMessageRoutes = require('./Route/promotionalRoute');
+app.use('/promotion', promotionalMessageRoutes);
+
 
 // Basic route for testing
 app.get('/', (req, res) => {

@@ -2,26 +2,7 @@ const uploadToCloudinary = require('./../Utility/uploadToCloudinary');
 const productModel = require('../Model/productModel');
 const path = require('path');
 const fs = require('fs');
-
-
-// Utility function to process and upload images
-const processImage = async (image, filename) => {
-  if (image.startsWith('data:image/jpeg;base64,') || image.startsWith('data:image/png;base64,')) {
-      const base64Data = image.replace(/^data:image\/\w+;base64,/, "");
-      return await uploadToCloudinary(await writeTempFile(base64Data, filename), 'images');
-  } else {
-      return await uploadToCloudinary(path.resolve(__dirname, '../Uploads', image), 'images');
-  }
-};
-
-// Write a temporary file and return its path
-const writeTempFile = async (data, filename) => {
-  const filePath = path.join(__dirname, '../Uploads', filename);
-  fs.writeFileSync(filePath, data, { encoding: 'base64' });
-  return filePath; 
-};
-
-
+const { processImage } = require('./../Utility/imageUtils'); 
 
 
 
@@ -36,16 +17,6 @@ const getProducts = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
-
-
-
-
-
-
-
-
-
 
 
 

@@ -20,8 +20,7 @@ import ProfileHeader from './ui/ProfileHeader';
 import AdminNavbar from './ui/AdminNavbar';
 import Dashboard from './Pages/AdminPages/Dashboard.jsx'; 
 import BannerPromotion from './Pages/AdminPages/BannerPromotions.jsx';
-
-
+import PopUpPromotions from './Pages/AdminPages/PopUpPromotions.jsx';
 
 
 
@@ -88,7 +87,8 @@ const adminRoutes = [
   { path: '/dashboard', component: <Dashboard />, title: 'Dashboard' },
   { path: '/admin/manage-categories', component: <ManageCategories />, title: 'Manage Categories' },
   { path: '/admin/manage-products', component: <ManageProducts />, title: 'Manage Products' },
-  { path: '/admin/banner-promotions', component: <BannerPromotion />, title: 'Manage Banner Promotion' },
+  { path: '/admin/banner-promotions', component: <BannerPromotion />, title: 'Banner Promotions' },
+  { path: '/admin/popups-promotions', component: <PopUpPromotions/>, title: 'PopUp Promotions' },
 
 ];
 

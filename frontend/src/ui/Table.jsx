@@ -93,17 +93,17 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                         key={colIndex}
                         className={`px-4 py-2 text-left text-sm md:text-lg border-b border-primary ${col.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                       >
-                        {col.key.toLowerCase() === 'thumbnail' ? (
-                          item.thumbnail ? (
+                        {col.key.toLowerCase() === 'thumbnail' || col.key.toLowerCase() === 'imageurl'  ? (
+                          item.thumbnail || item.ImageUrl ? (
                             <img
-                              src={item.thumbnail}
+                              src={item.thumbnail || item.ImageUrl}
                               alt={item.name} 
                               className="w-20 h-auto object-cover" 
                             />
                           ) : (
                             'No Image'
                           )
-                        ) : col.key.toLowerCase() === 'status' ? (
+                        ) : col.key.toLowerCase() === 'status' || col.key.toLowerCase() === 'active' ? (
                           <div className="flex justify-center items-center h-full">
                             <Switch
                               onChange={() => handleToggleStatus(item[identifierKey], item.status)}
@@ -118,10 +118,10 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                               className="align-middle"
                             />
                           </div>
-                        ) : col.key.toLowerCase() === 'id' ? ( // Check if the column key is 'id'
+                        ) : col.key.toLowerCase() === 'id' ? ( 
                           <span
-                            onClick={() => handleIdClick(item)} // Set selected item on click
-                            className="cursor-pointer font-bold underline text-primary" // Update styles
+                            onClick={() => handleIdClick(item)} 
+                            className="cursor-pointer font-bold underline text-primary" 
                           >
                             {item[col.key]}
                           </span>

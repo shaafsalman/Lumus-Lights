@@ -29,8 +29,6 @@ const getCompanyAddress = () => company.address;
 const getCompanyContact = () => company.contact;
 const getCompanySocialLinks = () => company.socialLinks;
 const getCompanyEmail = () => company.email;
-const getPromotionalMessage = () => company.promotionalMessage;
-const isPromotionMessageActive = () => company.promotionMessageActive;
 
 export {
   company,
@@ -39,6 +37,4 @@ export {
   getCompanyContact,
   getCompanySocialLinks,
   getCompanyEmail,
-  getPromotionalMessage,
-  isPromotionMessageActive,
 };

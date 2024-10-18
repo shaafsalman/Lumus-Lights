@@ -3,7 +3,7 @@ import React from 'react';
 import { useDarkMode } from '../Util/DarkModeContext';
 
 const Input = ({ id, label, type, value, onChange, required = false }) => {
-  const { darkMode } = useDarkMode(); // Get dark mode state
+  const { darkMode } = useDarkMode();
 
   return (
     <div className="mb-4">
