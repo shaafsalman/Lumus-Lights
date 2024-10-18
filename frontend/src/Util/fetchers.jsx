@@ -48,7 +48,7 @@ export const updatePromotionalMessage = async (message, active) => {
 
 export const setPromotionalMessageStatus = async (active) => {
   try {
-    const response = await axios.patch(`${apiUrl}/promotion/promotional-message/activate`, {
+    const response = await axios.post(`${apiUrl}/promotion/promotional-message/activate`, {
       active,
     });
     return response.data;
@@ -110,15 +110,15 @@ export const deletePromotionalImage = async ({ index }) => {
   }
 };
 
-export const activateDeactivatePromotionalImage = async ({ index, active }) => {
+export const activateDeactivatePromotionalImage = async (imageID,active) => {
   try {
-    const response = await axios.patch(`${apiUrl}/promotion/promotional-image/activate`, {
-      index,
-      active,
+    const response = await axios.post(`${apiUrl}/promotion/promotional-image/activate`, {
+      imageID,active
     });
-    return response.data;
+    return response.data; 
   } catch (error) {
-    console.error('Error updating promotional image status:', error);
-    throw error;
+    console.error('Error updating image status:', error);
+    throw error; 
   }
 };
+;

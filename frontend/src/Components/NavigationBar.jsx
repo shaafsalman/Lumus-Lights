@@ -14,25 +14,27 @@ const NavigationBar = () => {
   const location = useLocation();
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [promotionalMessage, setPromotionalMessage] = useState('');
-  const [isVisible, setIsVisible] = useState(true); // To toggle promotional message visibility
+  const [isActive, setIsActive] = useState(false); 
+  const [isVisible, setIsVisible] = useState(true); 
   let lastScrollY = window.scrollY;
 
-  // Handle scrolling to hide/show promotional message
   const handleScroll = () => {
     if (window.scrollY > lastScrollY) {
-      setIsVisible(false); // Hide message when scrolling down
+      setIsVisible(false); 
     } else {
-      setIsVisible(true); // Show message when scrolling up
+      setIsVisible(true);
     }
     lastScrollY = window.scrollY;
   };
 
   useEffect(() => {
-    // Fetch the promotional message
     const loadPromotionalMessage = async () => {
       try {
         const data = await fetchPromotionalMessage();
+        console.log(data);
         setPromotionalMessage(data.message || '');
+        setIsActive(data.active || false); 
+        console.log(data);
       } catch (error) {
         console.error('Error fetching promotional message:', error);
       }
@@ -40,29 +42,28 @@ const NavigationBar = () => {
 
     loadPromotionalMessage();
 
-    // Attach the scroll event listener
     window.addEventListener('scroll', handleScroll);
 
-    // Clean up the event listener when the component is unmounted
+
     return () => {
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const toggleMenu = () => setIsOpen(!isOpen);
-  const isActive = (path) => location.pathname === path;
+  const isActiveLink = (path) => location.pathname === path;
 
   return (
     <>
       {/* Promotional message */}
-      {promotionalMessage && (
+      {isActive && promotionalMessage && (
         <div className={`bg-red-600 text-white text-center p-2 fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           {promotionalMessage}
         </div>
       )}
 
       {/* Navigation bar */}
-      <nav className={`fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} ${isVisible ? 'mt-10' : 'mt-0'}`}>
+      <nav className={`fixed top-0 left-0 w-full z-10 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} ${isVisible ? (isActive ? 'mt-10' : 'mt-0') : 'mt-0'}`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             {/* Company logo */}
@@ -81,7 +82,7 @@ const NavigationBar = () => {
                 <Link
                   key={page.path}
                   to={page.path}
-                  className={`relative text-md font-semibold tracking-tighter transition-all duration-300 ease-in-out ${isActive(page.path) ? 'text-primary border-b-2 border-primary' : 'hover:text-primary'} ${darkMode ? 'text-white' : 'text-secondary'}`}
+                  className={`relative text-md font-semibold tracking-tighter transition-all duration-300 ease-in-out ${isActiveLink(page.path) ? 'text-primary border-b-2 border-primary' : 'hover:text-primary'} ${darkMode ? 'text-white' : 'text-secondary'}`}
                 >
                   {page.icon && <FontAwesomeIcon icon={page.icon} className="mr-2 text-md" />}
                   {page.name}
@@ -117,7 +118,7 @@ const NavigationBar = () => {
                 <Link
                   key={page.path}
                   to={page.path}
-                  className={`block px-3 py-2 text-lg font-medium transition-all duration-300 ease-in-out ${isActive(page.path) ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} ${darkMode ? 'text-white' : 'text-secondary'}`}
+                  className={`block px-3 py-2 text-lg font-medium transition-all duration-300 ease-in-out ${isActiveLink(page.path) ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} ${darkMode ? 'text-white' : 'text-secondary'}`}
                   onClick={() => setIsOpen(false)}
                 >
                   {page.icon && <FontAwesomeIcon icon={page.icon} className="mr-2 h-5 w-5" />}

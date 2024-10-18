@@ -11,7 +11,7 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(20);
-  const [selectedProduct, setSelectedProduct] = useState(null); // Change to selectedProduct
+  const [selectedProduct, setSelectedProduct] = useState(null); 
   const [isLoading, setIsLoading] = useState(true);
   const { darkMode } = useDarkMode(); 
 
@@ -38,7 +38,7 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
   };
 
   const handleIdClick = (item) => {
-    setSelectedProduct(item); // Set selected product instead of id
+    setSelectedProduct(item);
   };
 
   const handleCloseModal = () => {
@@ -94,9 +94,9 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                         className={`px-4 py-2 text-left text-sm md:text-lg border-b border-primary ${col.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                       >
                         {col.key.toLowerCase() === 'thumbnail' || col.key.toLowerCase() === 'imageurl'  ? (
-                          item.thumbnail || item.ImageUrl ? (
+                          item.thumbnail || item.imageUrl ? (
                             <img
-                              src={item.thumbnail || item.ImageUrl}
+                              src={item.thumbnail || item.imageUrl}
                               alt={item.name} 
                               className="w-20 h-auto object-cover" 
                             />
@@ -106,8 +106,8 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                         ) : col.key.toLowerCase() === 'status' || col.key.toLowerCase() === 'active' ? (
                           <div className="flex justify-center items-center h-full">
                             <Switch
-                              onChange={() => handleToggleStatus(item[identifierKey], item.status)}
-                              checked={item.status === true}
+                              onChange={() => handleToggleStatus(item[identifierKey], item.status || item.active)}
+                              checked={item.status === true || item.active === true || item.active == 1}
                               onColor="#38a169"
                               offColor="#808080"
                               checkedIcon={false}

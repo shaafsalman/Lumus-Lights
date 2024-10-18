@@ -24,12 +24,12 @@ const formatDate = (date) => {
 const fetchPromotionalImages = async () => {
   const query = `
     SELECT 
-      ImageID, 
-      ImageUrl, 
-      Name,          
-      Active, 
-      CreatedAt, 
-      UpdatedAt
+      imageID , 
+      imageUrl, 
+      name,          
+      active, 
+      createdAt, 
+      updatedAt
     FROM PromotionalImages;
   `;
 
@@ -39,8 +39,8 @@ const fetchPromotionalImages = async () => {
     // Format the dates for each image
     const formattedResults = results.map(image => ({
       ...image,
-      CreatedAt: formatDate(new Date(image.CreatedAt)),
-      UpdatedAt: formatDate(new Date(image.UpdatedAt)),
+      createdAt: formatDate(new Date(image.createdAt)),
+      updatedAt: formatDate(new Date(image.updatedAt)),
     }));
 
     return formattedResults;
@@ -50,8 +50,8 @@ const fetchPromotionalImages = async () => {
   }
 };
 
-// Activate or deactivate promotional image
-const activateDeactivatePromotionalImage = async (imageID, isActive) => {
+/// Activate or deactivate promotional image
+const activateDeactivatePromotionalImage = async (imageID, active) => {
   const query = `
     UPDATE PromotionalImages 
     SET Active = ? 
@@ -59,13 +59,16 @@ const activateDeactivatePromotionalImage = async (imageID, isActive) => {
   `;
 
   try {
-    const result = await executeQuery(query, [isActive, imageID]);
+    // Toggle the active status
+    const result = await executeQuery(query, [active ? 0 : 1, imageID]);
     return result.affectedRows;
   } catch (error) {
     console.error('Error updating promotional image status:', error);
     throw error;
   }
 };
+
+
 
 // Delete a promotional image by ImageID
 const deletePromotionalImage = async (imageID) => {

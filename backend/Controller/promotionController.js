@@ -30,9 +30,39 @@ const saveData = () => {
   fs.writeFileSync(dataPath, JSON.stringify(dataToSave, null, 2));
 };
 
+const activateDeactivatePromotionalMessage = async (req, res) => {
+  const { active } = req.body; 
+
+  try {
+    promotionalData.messageActive = active; 
+    saveData();
+    const statusMessage = promotionalData.messageActive ? 'activated' : 'deactivated';
+    res.status(200).send(`Promotional message ${statusMessage} successfully.`);
+  } catch (error) {
+    console.error('Error updating promotional message status:', error);
+    res.status(500).send('Failed to update promotional message status.');
+  }
+};
+
+
+
+
+
+
 const getPromotionalMessage = (req, res) => {
   res.json({ message: promotionalData.message, active: promotionalData.messageActive });
 };
+const addOrUpdatePromotionalMessage = (req, res) => {
+  const { message, active } = req.body;
+  promotionalData.message = message || null;
+  promotionalData.messageActive = active !== undefined ? active : promotionalData.messageActive;
+  saveData();
+  res.status(200).send('Promotional message updated successfully.');
+};
+
+
+
+
 
 const getPromotionalImages = async (req, res) => {
   try {
@@ -44,18 +74,10 @@ const getPromotionalImages = async (req, res) => {
   }
 };
 
-const addOrUpdatePromotionalMessage = (req, res) => {
-  const { message, active } = req.body;
-  promotionalData.message = message || null;
-  promotionalData.messageActive = active !== undefined ? active : promotionalData.messageActive;
-  saveData();
-  res.status(200).send('Promotional message updated successfully.');
-};
-
 const addPromotionalImage = async (req, res) => {
   const { imageFile, active, name } = req.body; 
 
-  if (imageFile && name) { // Ensure both imageFile and name are provided
+  if (imageFile && name) { 
     try {
       const imageUrl = await processImage(imageFile, "promotions"); 
       const imageID = await promotionalModel.addPromotionalImage({ imageUrl, active: active || false, name });
@@ -85,20 +107,17 @@ const deletePromotionalImage = async (req, res) => {
   }
 };
 
-const activateDeactivatePromotionalMessage = (req, res) => {
-  const { active } = req.body;
-  promotionalData.messageActive = active;
-  saveData();
-  res.status(200).send(`Promotional message ${active ? 'activated' : 'deactivated'} successfully.`);
-};
-
 const activateDeactivateImage = async (req, res) => {
-  const { imageID, active } = req.body;
+  const { imageID, active } = req.body; 
+  console.log(req.body);
+  console.log("Toggle active image");
 
   try {
     const affectedRows = await promotionalModel.activateDeactivatePromotionalImage(imageID, active);
+    
     if (affectedRows > 0) {
-      res.status(200).send(`Promotional image ${active ? 'activated' : 'deactivated'} successfully.`);
+      const statusMessage = active ? 'deactivated' : 'activated'; 
+      res.status(200).send(`Promotional image ${statusMessage} successfully.`);
     } else {
       res.status(404).send('Image not found.');
     }
@@ -107,6 +126,7 @@ const activateDeactivateImage = async (req, res) => {
     res.status(500).send('Failed to update promotional image status.');
   }
 };
+
 
 loadData();
 

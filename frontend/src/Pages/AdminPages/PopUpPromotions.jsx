@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { fetchPromotionalImages, addPromotionalImage, deletePromotionalImage } from './../../Util/fetchers'; 
+import { fetchPromotionalImages, addPromotionalImage, deletePromotionalImage, activateDeactivatePromotionalImage } from './../../Util/fetchers';
 import MessageCard from '../../ui/MessageCard';
-import { Cloud as CloudIcon } from 'lucide-react'; 
-import Modal from '../../ui/Modal';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faUpload } from '@fortawesome/free-solid-svg-icons';
 import ActionButton from '../../ui/ActionButton';
 import Table from '../../ui/Table';
-import Input from '../../ui/Input'; 
+import Input from '../../ui/Input';
+import Modal from '../../ui/Modal';
 
 const ImageUpload = ({ image, imageFile, handleImageChange }) => {
   const fileSizeInKB = imageFile ? (imageFile.size / 1024).toFixed(2) : 0;
@@ -38,7 +37,7 @@ const PopUpPromotions = () => {
   const [image, setImage] = useState('');
   const [imageFile, setImageFile] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [name, setName] = useState(''); // New state for name input
+  const [name, setName] = useState('');
 
   // Fetch promotional images on mount
   useEffect(() => {
@@ -72,15 +71,14 @@ const PopUpPromotions = () => {
   };
 
   const handleUpload = async () => {
-    if (image && name) { // Ensure both image and name are provided
+    if (image && name) {
       setLoading(true);
       try {
-        await addPromotionalImage({ image, name }); // Pass name to the function
+        await addPromotionalImage({ image, name });
         setNotification({ type: 'success', message: 'Image uploaded successfully!' });
         setImage('');
-        setName(''); // Reset name input after upload
+        setName('');
         setIsModalOpen(false);
-        // Reload images after upload
         loadImages();
       } catch (error) {
         setNotification({ type: 'error', message: 'Error uploading image.' });
@@ -93,7 +91,7 @@ const PopUpPromotions = () => {
   const handleDelete = async (id) => {
     try {
       await deletePromotionalImage(id);
-      setImages((prev) => prev.filter((img) => img.id !== id));
+      setImages((prev) => prev.filter((img) => img.ImageID !== id));
       setNotification({ type: 'success', message: 'Image deleted successfully!' });
     } catch (error) {
       setNotification({ type: 'error', message: 'Error deleting image.' });
@@ -102,10 +100,11 @@ const PopUpPromotions = () => {
 
   const handleToggleStatus = async (id, status) => {
     try {
-      await togglePromotionalImageStatus(id, !status);
+      console.log('Toggle status', status);
+      await activateDeactivatePromotionalImage(id,status);
       setImages((prev) =>
         prev.map((img) =>
-          img.id === id ? { ...img, active: !status } : img
+          img.imageID === id ? { ...img, active: !status } : img
         )
       );
       setNotification({ type: 'success', message: `Image ${status ? 'deactivated' : 'activated'} successfully!` });
@@ -115,19 +114,19 @@ const PopUpPromotions = () => {
   };
 
   const columns = [
-    { label: 'ID', key: 'ImageID' },
-    { label: 'Image', key: 'ImageUrl' },
-    { label: 'Created At', key: 'CreatedAt' },
+    { label: 'Image', key: 'imageUrl' },
+    { label: 'Name', key: 'name' },
+    { label: 'Created At', key: 'createdAt' },
     { label: 'Active', key: 'active' },
   ];
 
   return (
     <div className="popup-promotions p-4 text-white">
       <div className="flex justify-end mb-4">
-        <ActionButton 
-          text="Upload a New Promotion Image" 
-          onClick={() => setIsModalOpen(true)} 
-          icon={faUpload} 
+        <ActionButton
+          text="Upload a New Promotion Image"
+          onClick={() => setIsModalOpen(true)}
+          icon={faUpload}
         />
       </div>
 
@@ -140,25 +139,25 @@ const PopUpPromotions = () => {
           <p>No images to show</p>
         </div>
       ) : (
-        <Table 
-          columns={columns} 
-          data={images} 
-          handleDelete={handleDelete} 
-          handleToggleStatus={handleToggleStatus} 
-          identifierKey="id" 
+        <Table
+          columns={columns}
+          data={images}
+          handleDelete={handleDelete}
+          handleToggleStatus={handleToggleStatus}
+          identifierKey="imageID"
         />
       )}
 
-      <Modal isOpen={isModalOpen} onSave={handleUpload} buttonText="Save" saveButtonDisabled={!image || !name} onClose={() => setIsModalOpen(false)}>
+      <Modal isOpen={isModalOpen} onSave={handleUpload} buttonText="Save" saveButtonDisabled={!image || !name} buttonLoading={loading} onClose={() => setIsModalOpen(false)}>
         <h2 className="text-lg font-bold mb-2">Upload New Image</h2>
         <p className="mb-4">Choose an image to upload as a promotional image. You will see a preview once uploaded.</p>
-        
-        <Input 
-          type="text" 
-          value={name} 
-          onChange={(e) => setName(e.target.value)} 
-          label="Enter image name" 
-          className="mb-4" 
+
+        <Input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+          label="Enter image name"
+          className="mb-4"
         />
 
         <ImageUpload image={image} imageFile={imageFile} handleImageChange={handleImageChange} />

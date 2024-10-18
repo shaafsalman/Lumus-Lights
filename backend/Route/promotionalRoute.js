@@ -13,7 +13,7 @@ router.get('/promotional-images', promotionController.getPromotionalImages);
 router.post('/promotional-message', promotionController.addOrUpdatePromotionalMessage);
 
 // Activate or deactivate promotional message
-router.patch('/promotional-message/activate', promotionController.activateDeactivatePromotionalMessage);
+router.post('/promotional-message/activate', promotionController.activateDeactivatePromotionalMessage);
 
 // Add a new promotional image
 router.post('/promotional-image', promotionController.addPromotionalImage);
@@ -22,6 +22,6 @@ router.post('/promotional-image', promotionController.addPromotionalImage);
 router.delete('/promotional-image', promotionController.deletePromotionalImage);
 
 // Activate or deactivate a promotional image
-router.patch('/promotional-image/activate', promotionController.activateDeactivateImage);
+router.post('/promotional-image/activate', promotionController.activateDeactivateImage);
 
 module.exports = router;

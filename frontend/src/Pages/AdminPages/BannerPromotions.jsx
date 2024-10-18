@@ -15,7 +15,6 @@ const BannerPromotion = () => {
   const [loading, setLoading] = useState(false);
   const [messageCard, setMessageCard] = useState(null);
 
-  // Fetch promotional message on mount
   useEffect(() => {
     const loadPromotionalMessage = async () => {
       try {
@@ -51,8 +50,16 @@ const BannerPromotion = () => {
 
   const toggleActiveStatus = async () => {
     const newStatus = !isActive;
-    await setPromotionalMessageStatus(newStatus); 
-    setIsActive(newStatus); 
+    try {
+      await setPromotionalMessageStatus(newStatus); 
+      setIsActive(newStatus); 
+      setMessageCard({
+        type: 'success',
+        message: `Promotional message ${newStatus ? 'activated' : 'deactivated'} successfully!`,
+      });
+    } catch (error) {
+      setMessageCard({ type: 'error', message: 'Failed to update promotional message status.' });
+    }
   };
 
   return (
