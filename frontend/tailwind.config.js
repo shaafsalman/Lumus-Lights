@@ -16,7 +16,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['"Century Gothic"', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'], 
+
       },
       colors: {
         primary: '#bea77f', 

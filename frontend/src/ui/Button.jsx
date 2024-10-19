@@ -14,7 +14,7 @@ const Button = ({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`w-full text-xs sm:text-xs  ${buttonColor} ${borderColor} border-2 px-3 py-1 sm:px-4 sm:py-2 rounded-lg font-semibold flex items-center justify-center transition-all duration-300 ease-in-out
+      className={`w-full text-xl sm:text-md  ${buttonColor} ${borderColor} border-2 px-3 py-1 sm:px-2 sm:py-2 rounded-md font-bold flex items-center justify-center transition-all duration-300 ease-in-out
         ${loading ? "cursor-not-allowed opacity-75" : "hover:bg-transparent hover:border-current hover:text-current"}
       `}
       style={{
@@ -26,7 +26,7 @@ const Button = ({
       ) : (
         <>
           {text}
-          <i className={`${iconClass} ml-1 sm:ml-2 text-xs sm:text-xs`}></i>
+          <i className={`${iconClass} ml-1 sm:ml-6 text-xs sm:text-lg`}></i>
         </>
       )}
     </button>
