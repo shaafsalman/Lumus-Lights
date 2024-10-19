@@ -13,8 +13,8 @@ const NavigationLinks = ({ darkMode, isActiveLink }) => {
     home: <HomeIcon className="mr-2" />,
     products: <LampDesk className="mr-2" />,
     about: <InfoIcon className="mr-2" />,
-    shop: <ShoppingBagIcon className="mr-2" />, // Changed this to ShoppingBagIcon
-    contact: <UserIcon className="mr-2" /> // Using UserIcon for Contact Us
+    shop: <ShoppingBagIcon className="mr-2" />, 
+    contact: <UserIcon className="mr-2" /> 
   };
 
   return (
