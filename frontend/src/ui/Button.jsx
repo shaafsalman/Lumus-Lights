@@ -9,12 +9,13 @@ const Button = ({
   buttonColor = "bg-[#bea77f] text-white",
   borderColor = "border-[#bea77f]",
   textColorHover = "text-[#bea77f]",
+  small = false
 }) => {
   return (
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className={`w-full text-xl sm:text-md  ${buttonColor} ${borderColor} border-2 px-3 py-1 sm:px-2 sm:py-2 rounded-md font-bold flex items-center justify-center transition-all duration-300 ease-in-out
+      className={`w-full ${small ? 'text-sm px-2 py-1' : 'text-xl sm:text-md px-3 py-1 sm:px-2 sm:py-2'} ${buttonColor} ${borderColor} border-2 rounded-md font-bold flex items-center justify-center transition-all duration-300 ease-in-out
         ${loading ? "cursor-not-allowed opacity-75" : "hover:bg-transparent hover:border-current hover:text-current"}
       `}
       style={{

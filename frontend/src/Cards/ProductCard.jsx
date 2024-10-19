@@ -5,6 +5,7 @@ import Button from '../ui/Button.jsx';
 import { useDarkMode } from '../Util/DarkModeContext';
 import { colors, brands } from '../data';
 import RoundIconButton from '../ui/RoundIconButton.jsx';
+import ColorSelector from '../ui/ColorSelector';
 
 const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
   const navigate = useNavigate();
@@ -103,24 +104,14 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
         <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{description}</p>
       </div>
 
-      <div className="flex items-center mb-2">
-        <div className="flex">
-          {skus.length > 0 ? skus.map((sku) => (
-            <div
-              key={sku.id}
-              onClick={() => handleColorChange(sku)}
-              className={`w-6 h-6 rounded-full border-2 cursor-pointer mr-2 relative`}
-              title={sku.color.charAt(0).toUpperCase() + sku.color.slice(1)}
-            >
-              <div className={`w-full h-full rounded-full ${getColorStyle(sku.color)}`} />
-            </div>
-          )) : (
-            <span className={`text-gray-500`}>No available colors</span>
-          )}
-        </div>
-      </div>
+      
+      <ColorSelector 
+          items={skus} 
+          
+        />
 
-      <div className="flex flex-col gap-2 lg:mb-4 mb-1 lg:px-6 px-2">
+      
+      <div className="flex flex-col gap-1 lg:mb-4 mb-1 lg:px-6 px-2">
         <div className="flex justify-between items-center">
           <div>
             <span className={`lg:text-lg font-semibold tracking-tighter ${darkMode ? 'text-white' : 'text-secondary'}`}>
@@ -134,12 +125,13 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col gap-1">
+        <div className="w-full flex flex-col-2 gap-2">
           <Button
             onClick={handleViewProduct}
             text="View"
             iconClass="fas fa-eye"
             buttonColor="bg-[#333] text-white"
+            small={true}
           />
           <Button
             onClick={onAddToCart}
@@ -147,6 +139,7 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
             loading={isAddingToCart}
             text="Add to Cart"
             iconClass="fas fa-angle-double-right"
+            small={true}
           />
         </div>
       </div>
