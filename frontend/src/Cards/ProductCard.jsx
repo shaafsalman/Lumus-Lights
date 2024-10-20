@@ -113,11 +113,11 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
 };
 
 const ImageCarousel = ({ images, currentImageIndex, onPrev, onNext, name, thumbnail }) => (
-  <div className="relative">
+  <div className="relative flex justify-center items-center">
     <img
       src={images.length > 0 ? images[currentImageIndex] : thumbnail}
       alt={name}
-      className="w-full h-auto lg:h-48 object-scale-down"
+      className="w-36 h-auto lg:h-48 object-scale-down" 
     />
     <div className="absolute top-1/2 transform -translate-y-1/2 left-3">
       <RoundIconButton icon={ArrowLeft} onClick={onPrev} size={20} />

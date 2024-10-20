@@ -151,7 +151,7 @@ const NavigationBar = () => {
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center">
               <img src={darkMode ? logoDark : logoLight} alt="Company Logo" className="h-10 w-auto mr-2" />
-              <span className={`text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              <span className={`font-Publica text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
                 {getCompanyName()}
               </span>
             </Link>

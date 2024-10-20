@@ -35,18 +35,18 @@ const HeroCategory = () => {
   }
 
   return (
-    <div className="flex flex-row px-10 py-10 h-full w-screen">
-      <div className="w-2/3">
+    <div className="flex flex-col md:flex-row mt-8 px-10 py-10 h-full w-screen">
+      <div className="w-full md:w-1/3 ">
         <img 
           src={heroImageLeft} 
           alt="Left lamp"
-          className="w-full min-w-56 h-auto object-cover"
+          className="w-full h-auto object-cover"
         />
       </div>
-      <div className="centerContainer">
-        <div className="w-3/4 text-left text-white p-6">
-          <h1 className="text-4xl font-bold mb-4">{heroTitle}</h1>
-          <p className="text-lg mb-8">
+      <div className="centerContainer w-screen md:w-2/3">
+        <div className="w-3/4 text-left p-6">
+          <h1 className="text-3xl md:text-4xl font-bold mb-4">{heroTitle}</h1>
+          <p className="text-base md:text-lg mb-8 pr-0 lg:pr-20">
             {heroDescription}
           </p>
 
@@ -54,22 +54,21 @@ const HeroCategory = () => {
             {availableCategories.map(category => (
               <HollowButton 
                 key={category.id} 
-                className="py-2 px-4 bg-transparent border border-white text-white hover:bg-white hover:text-black transition w-full"
                 onClick={() => setSelectedCategoryId(category.id)}
                 text={category.name}
               />
             ))}
           </div>
 
-          <Button text="All Products" widthClass="w-3/4"  /> 
+          <Button text="All Products" widthClass="w-4/4 lg:w-2/4" /> 
         </div>
       </div>
       
-      <div className="absolute right-10 transform -translate-y-20">
+      <div className="hidden md:block absolute right-10 transform -translate-y-56">
         <img 
           src={heroImageRight} 
           alt="Right lamp"
-          className="w-64 h-auto object-cover"
+          className="w-96 h-auto object-cover"
         />
       </div>
     </div>

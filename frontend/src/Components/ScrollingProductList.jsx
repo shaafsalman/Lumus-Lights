@@ -1,13 +1,13 @@
 import React, { useState, useRef, useEffect } from 'react';
-import ProductCard from '.././Cards/ProductCard';
-import RoundButton from '.././ui/RoundButton';
-import { faArrowLeft, faArrowRight } from '@fortawesome/free-solid-svg-icons'; 
+import ProductCard from '../Cards/ProductCard';
+import RoundIconButton from '../ui/RoundIconButton';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 const ScrollingProductList = ({ products, productsPerRow = 3 }) => {
   const [scrollPosition, setScrollPosition] = useState(0);
   const containerRef = useRef(null);
   const productWidth = useRef(300); 
-  const gap = 2; 
+  const gap = 8; 
 
   useEffect(() => {
     if (containerRef.current) {
@@ -22,24 +22,22 @@ const ScrollingProductList = ({ products, productsPerRow = 3 }) => {
     setScrollPosition(prev => Math.min(Math.max(0, newPosition), maxScroll));
   };
 
-  const visibleProducts = products.slice(0, productsPerRow); 
+  const visibleProducts = products.slice(0, productsPerRow);
 
   return (
     <div className="relative flex items-center justify-center">
       {/* Left Arrow */}
-      <RoundButton
+      <RoundIconButton
         onClick={() => handleScroll(-1)}
-        icon={faArrowLeft}
+        icon={ArrowLeft}
         disabled={scrollPosition === 0}
-        className="absolute left-0 z-10" // Positioning the button over the first card
+        className="absolute left-0 z-10 md:p-2 p-1"
+        size={40} 
       />
 
       <div className="relative overflow-hidden w-full flex justify-center">
-        <div 
-          ref={containerRef}
-          className="flex overflow-x-hidden"
-        >
-          <div 
+        <div ref={containerRef} className="flex overflow-x-hidden">
+          <div
             className="flex flex-nowrap"
             style={{ transform: `translateX(-${scrollPosition}px)`, transition: 'transform 0.3s ease' }}
           >
@@ -53,10 +51,11 @@ const ScrollingProductList = ({ products, productsPerRow = 3 }) => {
       </div>
 
       {/* Right Arrow */}
-      <RoundButton
+      <RoundIconButton
         onClick={() => handleScroll(1)}
-        icon={faArrowRight}
-        className="absolute right-0 z-10" 
+        icon={ArrowRight}
+        className="absolute right-0 z-10 md:p-2 p-1"
+        size={40} 
       />
     </div>
   );
