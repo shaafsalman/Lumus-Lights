@@ -50,7 +50,7 @@ const MainLayout = ({ children }) => {
   return (
     <div className={`flex flex-col  overflow-hidden ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
       <NavigationBar />
-      <main className="flex-grow mt-32">{children}</main>
+      <main className="flex-grow mt-24">{children}</main>
       <Footer />
     </div>
   );

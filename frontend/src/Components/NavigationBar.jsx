@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { HomeIcon, InfoIcon, ShoppingBagIcon, UserIcon, ShoppingCartIcon, MenuIcon, XIcon,LampDesk  } from 'lucide-react'; 
+import { HomeIcon, InfoIcon, ShoppingBagIcon, UserIcon, ShoppingCartIcon, MenuIcon, XIcon,LampDesk  ,MoonIcon, SunIcon} from 'lucide-react'; 
 import { useDarkMode } from '../Util/DarkModeContext';
 import { getCompanyName, company } from '../CompanyDetails';
 import { fetchPromotionalMessage } from '../Util/fetchers';
@@ -37,41 +37,77 @@ const NavigationLinks = ({ darkMode, isActiveLink }) => {
 
 const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen }) => {
   const iconMap = {
-    home: <HomeIcon />,
-    about: <InfoIcon />,
-    shop: <ShoppingBagIcon />,
-    contact: <UserIcon />
+    home: <HomeIcon className="mr-2" />,
+    products: <LampDesk className="mr-2" />,
+    about: <InfoIcon className="mr-2" />,
+    shop: <ShoppingBagIcon className="mr-2" />,
+    contact: <UserIcon className="mr-2" />,
   };
 
   return (
     isOpen && (
-      <div className={`${darkMode ? 'bg-secondary' : 'bg-white'} md:hidden`}>
-        <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-          {company.pages.map((page) => (
-            <Link
-              key={page.path}
-              to={page.path}
-              className={`block px-3 py-2 text-lg font-medium transition-all duration-300 ease-in-out ${isActiveLink(page.path) ? 'bg-primary text-white' : 'hover:bg-primary hover:text-white'} ${darkMode ? 'text-white' : 'text-secondary'}`}
-              onClick={() => setIsOpen(false)}
-            >
-              {iconMap[page.name.toLowerCase()]}
-              {page.name}
-            </Link>
-          ))}
-          <button
-            onClick={toggleDarkMode}
-            className={`block w-full text-left px-3 py-2 rounded-md text-lg font-medium transition-all duration-300 ease-in-out ${darkMode ? 'bg-primary text-white' : 'bg-gray-800 hover:bg-gray-700 text-secondary'}`}
-          >
-            Toggle Dark Mode
-          </button>
+      <div className={`md:hidden  ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0  z-10`}>
+        {/* Container for Mobile Menu, placed under navigation bar */}
+        <div className="absolute top-20 left-0 right-0  max-h-[80vh] overflow-y-auto">
+          <div className="flex flex-col px-4 pt-5 space-y-6">
+            {/* Navigation Links */}
+            {company.pages.map((page) => (
+              <Link
+                key={page.path}
+                to={page.path}
+                className={`flex items-center text-lg font-medium transition-all duration-300 ease-in-out px-4 py-2 ${
+                  isActiveLink(page.path) ? 'bg-primary text-white font-extrabold rounded-lg' : 'hover:bg-primary hover:text-white'
+                } ${darkMode ? 'text-white' : 'text-secondary'}`}
+                onClick={() => setIsOpen(false)}
+              >
+                {iconMap[page.name.toLowerCase()]}
+                {page.name}
+              </Link>
+            ))}
+
+            {/* Divider */}
+            <div className="border-t border-gray-200 my-4"></div>
+
+            {/* Profile and Cart Buttons */}
+            <div className="flex justify-between px-4">
+              <Link to="/profile" className="flex items-center text-xl">
+                <UserIcon className="h-6 w-6 mr-2" />
+                Profile
+              </Link>
+              <Link to="/cart" className="flex items-center text-xl">
+                <ShoppingCartIcon className="h-6 w-6 mr-2" />
+                Cart
+              </Link>
+            </div>
+
+            {/* Dark Mode Toggle with Icon and Dynamic Text */}
+            <div className="px-4 pt-4">
+              <button
+                onClick={toggleDarkMode}
+                className={`w-full text-left text-lg font-medium transition-all duration-300 rounded-lg ease-in-out px-3 py-2 ${
+                  darkMode ? 'bg-primary text-white' : 'bg-gray-800 text-white hover:bg-secondary'
+                }`}
+              >
+                <span className="flex items-center">
+                  {darkMode ? <MoonIcon className="mr-2" /> : <SunIcon className="mr-2" />}
+                  {darkMode ? 'Change to Light Mode' : 'Change to Dark Mode'}
+                </span>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     )
   );
 };
 
+
+
+
+
+
 const ProfileCartActions = ({ darkMode, toggleDarkMode }) => (
-  <div className="flex items-center space-x-4">
+  <div className="hidden md:flex items-center space-x-4">
     <Link to="/profile" className="text-xl">
       <UserIcon className="h-6 w-6" />
     </Link>
@@ -83,7 +119,7 @@ const ProfileCartActions = ({ darkMode, toggleDarkMode }) => (
 );
 
 const NavigationBar = () => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false); // Ensure isOpen controls the menu visibility
   const { darkMode, toggleDarkMode } = useDarkMode();
   const [promotionalMessage, setPromotionalMessage] = useState('');
   const [isActive, setIsActive] = useState(false);
@@ -115,7 +151,7 @@ const NavigationBar = () => {
   return (
     <>
       <nav className={`fixed top-0 left-0 w-full z-20 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} transition-all duration-300`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center">
               <img src={darkMode ? logoDark : logoLight} alt="Company Logo" className="h-10 w-auto mr-2" />
@@ -124,21 +160,35 @@ const NavigationBar = () => {
               </span>
             </Link>
 
-            <NavigationLinks darkMode={darkMode} isActiveLink={(path) => location.pathname === path} />
-
-            <ProfileCartActions darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
-
+            {/* Mobile menu button */}
             <div className="md:hidden">
               <button onClick={toggleMenu} className={`text-2xl ${darkMode ? 'text-white' : 'text-secondary'}`}>
                 {isOpen ? <XIcon /> : <MenuIcon />}
               </button>
             </div>
+
+            {/* Desktop Nav Links */}
+            <NavigationLinks darkMode={darkMode} isActiveLink={(path) => location.pathname === path} />
+
+            {/* Profile and Cart actions for desktop */}
+            <ProfileCartActions darkMode={darkMode} toggleDarkMode={toggleDarkMode} />
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu */}
+      <MobileMenu
+        isOpen={isOpen}
+        darkMode={darkMode}
+        isActiveLink={(path) => location.pathname === path}
+        toggleDarkMode={toggleDarkMode}
+        setIsOpen={setIsOpen}
+      />
+
+      {/* Promotional message */}
       {isActive && promotionalMessage && (
-        <div className={`bg-gradient-to-r from-primary to-secondary text-white text-left pt-6 text-xl font-thin mt-14 fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-          <div className="ml-20">
+        <div className={` text-white ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-gradient-to-r from-primary to-white'} text-left pt-6 text-xl font-thin mt-14 fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+          <div className="ml-10">
             {promotionalMessage}
           </div>
         </div>
