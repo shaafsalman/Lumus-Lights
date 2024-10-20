@@ -16,8 +16,11 @@ export default {
         },
       },
       fontFamily: {
-        sans: ['Poppins', 'sans-serif'], 
-
+        Publica: ['Publica'],  
+        PublicaSans: ['PublicaSans'],  
+        poppins: ['Poppins', 'sans-serif'],
+        CenturyGothic: ['CenturyGothic', 'sans-serif'],
+        roboto: ['Roboto', 'sans-serif'], 
       },
       colors: {
         primary: '#bea77f', 

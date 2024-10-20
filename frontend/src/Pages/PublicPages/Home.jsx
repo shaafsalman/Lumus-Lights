@@ -4,7 +4,7 @@ import CategoryShowcase from '../../Components/CategoryShowcase';
 import productsData from '../../data/products.json'; 
 import { fetchPromotionalImages } from '../../Util/fetchers';
 import PopUpImage from '../../ui/PopUpImage';
-
+import HeroCategory from '../../Components/HeroCategory';
 const bgImage = "https://light-workdo.myshopify.com/cdn/shop/files/home-banner.png";
 
 const Home = () => {
@@ -39,7 +39,7 @@ const Home = () => {
   };
 
   return (
-    <div className="w-screen flex flex-col">
+    <div className="font-Publica w-screen flex flex-col">
       {/* Promotional Images Modal */}
       {showImages && promotionalImages.length > 0 && (
         <PopUpImage images={promotionalImages} onClose={handleClose} />
@@ -58,6 +58,8 @@ const Home = () => {
         title="Explore Our Categories"
         description="Browse our wide range of lamps categorized by type and design. Find the perfect lamp for your needs."
       />
+
+      <HeroCategory/>
     </div>
   );
 };

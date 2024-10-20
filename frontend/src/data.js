@@ -11,8 +11,7 @@ export const colors = [
   ];
 
 export const brands = [
-    { value: 'phillips', label: 'Phillips',logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7NpUgN0l5DOZlUYkAdNTaDc827TUIoZDnHQ&s'},
-    { value: 'panasonic', label: 'Panasonic',logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7NpUgN0l5DOZlUYkAdNTaDc827TUIoZDnHQ&s' },
-    { value: 'schendelier', label: 'Schendelier',logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ7NpUgN0l5DOZlUYkAdNTaDc827TUIoZDnHQ&s' },
+    { value: 'phillips', label: 'Phillips',logo: 'https://i.ibb.co/VSwQ4T9/phillips.png'},
+    { value: 'panasonic', label: 'Panasonic',logo: 'https://i.ibb.co/QnQDBS4/panasonic.png' },
  
 ];

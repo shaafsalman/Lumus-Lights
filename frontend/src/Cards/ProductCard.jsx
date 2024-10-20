@@ -28,7 +28,7 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
 
   return (
     <div 
-      className={`relative rounded-lg  lg:min-w-56   p-1.5 border shadow-md border-primary ${darkMode ? 'bg-opacity-10 text-white border-primary backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}
+      className={`relative rounded-lg lg:min-w-56 p-1.5 border shadow-md border-primary ${darkMode ? 'bg-opacity-10 text-white border-primary backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}
       onMouseEnter={() => setIsHovered(true)} // Set hover state to true
       onMouseLeave={() => setIsHovered(false)}
     >
@@ -47,8 +47,8 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
         brandLogo={brandLogo} 
         darkMode={darkMode} 
       />
-      <ColorSelector items={skus} onChange={handleColorChange} />
       <PricingSection 
+        handleColorChange={handleColorChange}
         selectedSku={selectedSku} 
         skus={skus} 
         onViewProduct={handleViewProduct} 
@@ -59,19 +59,19 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
       
       {/* Hover Action Buttons */}
       {isHovered && (
-  <div className="absolute top-2 right-2 flex gap-1  rounded-xl ">
-    <RoundIconButton 
-      icon={Heart} 
+      <div className="absolute top-2 right-2 flex gap-1  rounded-xl ">
+         <RoundIconButton 
+           icon={Heart} 
       onClick={() => {/* Add like functionality */}} 
       size={16} 
       className="hover:text-primary transition bg-transparent border border-primary rounded-md " 
-    />
-    <RoundIconButton 
-      icon={ShoppingCart} 
+        />
+          <RoundIconButton 
+           icon={ShoppingCart} 
       onClick={onAddToCart} 
       size={16} 
       className="hover:text-primary transition bg-transparent border border-primary rounded-md " 
-    />
+        />
   </div>
 )}
 
@@ -117,7 +117,7 @@ const ImageCarousel = ({ images, currentImageIndex, onPrev, onNext, name, thumbn
     <img
       src={images.length > 0 ? images[currentImageIndex] : thumbnail}
       alt={name}
-      className="w-full h-28 lg:h-32 object-scale-down"
+      className="w-full h-auto lg:h-48 object-scale-down"
     />
     <div className="absolute top-1/2 transform -translate-y-1/2 left-3">
       <RoundIconButton icon={ArrowLeft} onClick={onPrev} size={20} />
@@ -131,10 +131,10 @@ const ImageCarousel = ({ images, currentImageIndex, onPrev, onNext, name, thumbn
 const ProductInfo = ({ category_name, name, description, brandLogo, darkMode }) => (
   <div className="mb-2">
     <div className="flex justify-between items-center">
-      <h2 className={`lg:text-base text-sm mb-1 ${darkMode ? 'text-white' : 'text-secondary'}`}>
+      <h2 className={`lg:text-base text-sm  ${darkMode ? 'text-white' : 'text-secondary'}`}>
         {category_name}
       </h2>
-      <img src={brandLogo} alt={name} className="w-8 h-auto" />
+      <img src={brandLogo} alt={name} className="w-auto h-12" />
     </div>
     <h3 className={`lg:text-lg tracking-tight font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
       {name}
@@ -143,11 +143,14 @@ const ProductInfo = ({ category_name, name, description, brandLogo, darkMode }) 
   </div>
 );
 
-const PricingSection = ({ selectedSku, skus, onViewProduct, onAddToCart, isAddingToCart, darkMode }) => (
+const PricingSection = ({ selectedSku, skus, onViewProduct, handleColorChange, onAddToCart, isAddingToCart, darkMode }) => (
   <div className="flex flex-col gap-1 mb-2 px-1">
     <div className="flex justify-between items-center">
+    <ColorSelector items={skus} onChange={handleColorChange} />
+
+      
       <div>
-        <span className={`lg:text-lg font-semibold tracking-tight ${darkMode ? 'text-white' : 'text-secondary'}`}>
+        <span className={`lg:text-lg font-semibold  rounded-md p-1  tracking-tight ${darkMode ? 'text-white bg-secondary' : 'text-white bg-secondary'}`}>
           {selectedSku ? selectedSku.price : skus.length > 0 ? skus[0].price : "0"} PKR
         </span>
         {selectedSku && selectedSku.originalPrice && (
@@ -157,7 +160,7 @@ const PricingSection = ({ selectedSku, skus, onViewProduct, onAddToCart, isAddin
         )}
       </div>
     </div>
-    <div className="w-full flex flex-col gap-1">
+    <div className="w-full flex flex-col-2 gap-1">
       <Button
         onClick={onViewProduct}
         text="View"
@@ -169,8 +172,8 @@ const PricingSection = ({ selectedSku, skus, onViewProduct, onAddToCart, isAddin
         onClick={onAddToCart}
         disabled={isAddingToCart}
         loading={isAddingToCart}
-        text="Add to Cart"
-        iconClass="fas fa-angle-double-right"
+        text="Add "
+        iconClass="fas fa-shopping-cart"
         size="sm" 
       />
     </div>

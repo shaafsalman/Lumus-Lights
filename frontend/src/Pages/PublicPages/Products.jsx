@@ -149,13 +149,27 @@ const FilterSlider = ({
   isDarkMode,
   products,
 }) => {
+  const resetFilters = () => {
+    setSelectedCategories([]); 
+    setSelectedColors([]);     
+    setSelectedBrands([]);     
+  };
+
   return (
     <div
-      className={`w-full md:w-1/4 py-4 pl-4 border-r overflow-y-auto   ${isDarkMode ? 'border-white' : 'border-gray-300'}`}
+      className={`font-Publica w-full md:w-1/4 py-4 pl-4 border-r overflow-y-auto ${isDarkMode ? 'border-white' : 'border-gray-300'}`}
     >
-      <h3 className={`font-semibold tracking-tighter text-xl mb-0.5`}>
-        Filters
-      </h3>
+      <div className="flex items-center justify-between mb-2">
+        <h3 className={`font-semibold  text-3xl mb-1.5`}>
+          Filters
+        </h3>
+        <button
+          onClick={resetFilters}
+          className={`text-sm mr-4 underline text-primary hover:text-primaryHover  transition duration-200`}
+        >
+          Reset All
+        </button>
+      </div>
       <div className={`border-b ${isDarkMode ? 'border-white' : 'border-gray-300'} mb-2`} />
       <CategoryFilter
         categories={categories}
@@ -181,10 +195,12 @@ const FilterSlider = ({
   );
 };
 
+
+
 const MainSection = ({ filteredProducts, sortOptions, handleSortChange, isDarkMode }) => {
   return (
-    <div className={`w-full h-screen`}>
-      <div className={`flex sm-hidden  items-center border-b ${isDarkMode ? 'border-white' : 'border-gray-300'}`}>
+    <div className={` w-full h-screen`}>
+      <div className={`flex sm-hidden  font-Publica items-center border-b ${isDarkMode ? 'border-white' : 'border-gray-300'}`}>
         <div className="flex-1 flex justify-between items-center">
           <span className="text-sm ml-8">Home / Products</span>
           <div className="flex items-center mb-2 px-10">

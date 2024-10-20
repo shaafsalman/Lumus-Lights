@@ -14,7 +14,7 @@ const Footer = ({ page }) => {
   ];
 
   return (
-    <div className="flex flex-col p-8 md:p-20 bg-secondary text-white">
+    <div className="font-Publica flex flex-col p-8 md:p-20 bg-secondary text-white">
       <div className="w-full flex flex-col items-center md:items-start">
         <div className="text-3xl md:text-7xl font-bold text-center md:text-left mb-4 md:mb-6">
           How can we help you get in touch

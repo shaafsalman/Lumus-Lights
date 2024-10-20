@@ -19,7 +19,6 @@ const DropDown = ({ values, heading = "Color" }) => {
             </option>
           ))}
         </select>
-        {/* Custom Arrow using Lucide React */}
         <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
           <ArrowDown className="w-4 h-4" />
         </div>
