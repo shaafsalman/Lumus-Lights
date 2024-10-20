@@ -9,14 +9,17 @@ import Input from '../../ui/Input';
 import NoProducts from '../../ui/NoProducts';
 import Loading from '../../ui/Loading';
 
+const FilterSection = ({ title, children }) => {
+  const { isDarkMode } = useDarkMode(); 
 
-const FilterSection = ({ title, children }) => (
-  <div className="mb-4">
-    <h4 className="font-semibold">{title}</h4>
-    {children}
-    <div className="border-b border-gray-300 dark:border-gray-700 mb-4" />
-  </div>
-);
+  return (
+    <div className="mb-4">
+      <h4 className="font-semibold">{title}</h4>
+      {children}
+      <div className={`border-b mb-4 ${isDarkMode ? 'border-white' : 'border-gray-300'}`} />
+    </div>
+  );
+};
 
 const ColorFilter = ({ selectedColors, setSelectedColors, products }) => {
   const colorCounts = products.reduce((acc, product) => {
@@ -180,11 +183,11 @@ const FilterSlider = ({
 
 const MainSection = ({ filteredProducts, sortOptions, handleSortChange, isDarkMode }) => {
   return (
-    <div className={`w-full`}>
+    <div className={`w-full h-screen`}>
       <div className={`flex sm-hidden  items-center border-b ${isDarkMode ? 'border-white' : 'border-gray-300'}`}>
         <div className="flex-1 flex justify-between items-center">
           <span className="text-sm ml-8">Home / Products</span>
-          <div className="flex items-center mb-2">
+          <div className="flex items-center mb-2 px-10">
             <label className="text-xs mr-2">Sort by </label>
             <Dropdown
               values={sortOptions.map(option => option.label)}
@@ -282,7 +285,7 @@ const Products = () => {
   if (error) return <NoProducts message={error} />; 
   if (filteredProducts.length === 0) return <NoProducts message="No products to show." />;
 
-  const isMobile = window.innerWidth < 768; 
+  const isMobile = window.innerWidth < 1000; 
 
   return (
     <div className="productsPage mt-6">
@@ -290,7 +293,7 @@ const Products = () => {
         {isMobile && (
           <>
             <button
-              className="absolute top-12 right-4 z-50 h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-primaryHover transition-colors"
+              className="absolute mt-16 right-4 z-20 h-10 w-10 rounded-full bg-primary text-white flex items-center justify-center shadow-lg hover:bg-primaryHover transition-colors"
               onClick={() => setIsFilterVisible(!isFilterVisible)}
             >
               {isFilterVisible ? '×' : '+'}

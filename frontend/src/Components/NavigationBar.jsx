@@ -46,10 +46,10 @@ const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen 
 
   return (
     isOpen && (
-      <div className={`md:hidden  ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0  z-10 mt-8`}>
+      <div className={`md:hidden  ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0  z-30 `}>
         {/* Container for Mobile Menu, placed under navigation bar */}
         <div className="absolute top-20 left-0 right-0  max-h-[80vh] overflow-y-auto">
-          <div className="flex flex-col px-4 pt-5 space-y-6">
+          <div className="flex flex-col px-4 pt-5 space-y-2">
             {/* Navigation Links */}
             {company.pages.map((page) => (
               <Link
@@ -150,7 +150,7 @@ const NavigationBar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-20 ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} transition-all duration-300`}>
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-colors  ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center">
@@ -187,7 +187,7 @@ const NavigationBar = () => {
 
       {/* Promotional message */}
       {isActive && promotionalMessage && (
-        <div className={` text-white ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-gradient-to-r from-primary to-white'} text-left pt-6 text-xl font-thin mt-14 fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className={` text-white ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-primary font-medium'} text-left pt-6 text-xl font-thin mt-14 fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
           <div className="ml-10">
             {promotionalMessage}
           </div>

@@ -60,10 +60,6 @@ const addOrUpdatePromotionalMessage = (req, res) => {
   res.status(200).send('Promotional message updated successfully.');
 };
 
-
-
-
-
 const getPromotionalImages = async (req, res) => {
   try {
     const images = await promotionalModel.fetchPromotionalImages();

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, ArrowRight } from 'lucide-react'; 
+import { ArrowLeft, ArrowRight, Heart, ShoppingCart } from 'lucide-react'; 
 import Button from '../ui/Button.jsx';
 import { useDarkMode } from '../Util/DarkModeContext';
 import { colors, brands } from '../data';
@@ -10,7 +10,6 @@ import ColorSelector from '../ui/ColorSelector';
 const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
   const navigate = useNavigate();
   const { darkMode } = useDarkMode();
-
   const {
     category_name = "Generic",
     description = "Light",
@@ -22,129 +21,160 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
 
   const [selectedSku, setSelectedSku] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-
-  const getBrandLogo = () => {
-    const brandData = brands.find(b => b.value === brand);
-    return brandData ? brandData.logo : 'https://via.placeholder.com/50';
-  };
-
-  const getImagesToShow = () => {
-    if (selectedSku) {
-      return selectedSku.images.map(image => image.image_path); // Only show images of the selected SKU
-    }
-    return skus.reduce((acc, sku) => {
-      return acc.concat(sku.images.map(image => image.image_path)); // Show all SKU images
-    }, [thumbnail]); // Include thumbnail
-  };
+  const [isHovered, setIsHovered] = useState(false); // New state for hover
 
   const imagesToShow = getImagesToShow();
+  const brandLogo = getBrandLogo(brand);
 
-  const getColorStyle = (skuColor) => {
-    const colorObj = colors.find(c => c.value === skuColor);
-    return colorObj ? colorObj.gradient : 'bg-gray-300'; 
-  };
+  return (
+    <div 
+      className={`relative rounded-lg  lg:min-w-56   p-1.5 border shadow-md border-primary ${darkMode ? 'bg-opacity-10 text-white border-primary backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}
+      onMouseEnter={() => setIsHovered(true)} // Set hover state to true
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <ImageCarousel 
+        images={imagesToShow} 
+        currentImageIndex={currentImageIndex} 
+        onPrev={handlePrevImage} 
+        onNext={handleNextImage} 
+        name={name} 
+        thumbnail={thumbnail} 
+      />
+      <ProductInfo 
+        category_name={category_name} 
+        name={name} 
+        description={description} 
+        brandLogo={brandLogo} 
+        darkMode={darkMode} 
+      />
+      <ColorSelector items={skus} onChange={handleColorChange} />
+      <PricingSection 
+        selectedSku={selectedSku} 
+        skus={skus} 
+        onViewProduct={handleViewProduct} 
+        onAddToCart={onAddToCart} 
+        isAddingToCart={isAddingToCart} 
+        darkMode={darkMode} 
+      />
+      
+      {/* Hover Action Buttons */}
+      {isHovered && (
+  <div className="absolute top-2 right-2 flex gap-1  rounded-xl ">
+    <RoundIconButton 
+      icon={Heart} 
+      onClick={() => {/* Add like functionality */}} 
+      size={16} 
+      className="hover:text-primary transition bg-transparent border border-primary rounded-md " 
+    />
+    <RoundIconButton 
+      icon={ShoppingCart} 
+      onClick={onAddToCart} 
+      size={16} 
+      className="hover:text-primary transition bg-transparent border border-primary rounded-md " 
+    />
+  </div>
+)}
 
-  const handleColorChange = (sku) => {
+    </div>
+  );
+
+  function getImagesToShow() {
+    if (selectedSku) {
+      return selectedSku.images.map(image => image.image_path);
+    }
+    return skus.reduce((acc, sku) => acc.concat(sku.images.map(image => image.image_path)), [thumbnail]);
+  }
+
+  function getBrandLogo(brand) {
+    const brandData = brands.find(b => b.value === brand);
+    return brandData ? brandData.logo : 'https://via.placeholder.com/50';
+  }
+
+  function handleColorChange(sku) {
     setSelectedSku(sku);
     setCurrentImageIndex(0);
-  };
+  }
 
-  const handleViewProduct = () => {
+  function handleViewProduct() {
     if (product) {
       navigate('/product-main-page', {
         state: { product },
       });
     }
-  };
+  }
 
-  const handleNextImage = () => {
+  function handleNextImage() {
     setCurrentImageIndex((prevIndex) => (prevIndex + 1) % imagesToShow.length);
-  };
+  }
 
-  const handlePrevImage = () => {
-    setCurrentImageIndex((prevIndex) =>
-      prevIndex === 0 ? imagesToShow.length - 1 : prevIndex - 1
-    );
-  };
+  function handlePrevImage() {
+    setCurrentImageIndex((prevIndex) => (prevIndex === 0 ? imagesToShow.length - 1 : prevIndex - 1));
+  }
+};
 
-  return (
-    <div className={`relative rounded-lg p-2 border shadow-lg lg:w-72 w-48 h-auto ${darkMode ? 'bg-opacity-10 text-white border-[#bea77f] backdrop-blur-sm' : 'bg-white text-secondary border-gray-300'}`}>
-      <div className="relative">
-        <img
-          src={imagesToShow.length > 0 ? imagesToShow[currentImageIndex] : thumbnail}
-          alt={name}
-          className="w-full lg:h-48 h-28 object-scale-down"
-        />
-        <div className="absolute top-1/2 transform -translate-y-1/2 left-2">
-          <RoundIconButton
-            icon={ArrowLeft}
-            onClick={handlePrevImage}
-            size={24}
-          />
-        </div>
-        <div className="absolute top-1/2 transform -translate-y-1/2 right-2">
-          <RoundIconButton
-            icon={ArrowRight}
-            onClick={handleNextImage}
-            size={24}
-          />
-        </div>
-      </div>
+const ImageCarousel = ({ images, currentImageIndex, onPrev, onNext, name, thumbnail }) => (
+  <div className="relative">
+    <img
+      src={images.length > 0 ? images[currentImageIndex] : thumbnail}
+      alt={name}
+      className="w-full h-28 lg:h-32 object-scale-down"
+    />
+    <div className="absolute top-1/2 transform -translate-y-1/2 left-3">
+      <RoundIconButton icon={ArrowLeft} onClick={onPrev} size={20} />
+    </div>
+    <div className="absolute top-1/2 transform -translate-y-1/2 right-3">
+      <RoundIconButton icon={ArrowRight} onClick={onNext} size={20} />
+    </div>
+  </div>
+);
 
-      <div className="mb-2">
-        <div className="flex justify-between items-center">
-          <h2 className={`lg:text-sm text-xs mb-1 ${darkMode ? 'text-white' : 'text-secondary'}`}>
-            {category_name}
-          </h2>
-          <img src={getBrandLogo()} alt={brand} className="w-10 h-auto" />
-        </div>
-        <h3 className={`lg:text-xl tracking-tighter font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
-          {name}
-        </h3>
-        <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{description}</p>
-      </div>
+const ProductInfo = ({ category_name, name, description, brandLogo, darkMode }) => (
+  <div className="mb-2">
+    <div className="flex justify-between items-center">
+      <h2 className={`lg:text-base text-sm mb-1 ${darkMode ? 'text-white' : 'text-secondary'}`}>
+        {category_name}
+      </h2>
+      <img src={brandLogo} alt={name} className="w-8 h-auto" />
+    </div>
+    <h3 className={`lg:text-lg tracking-tight font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
+      {name}
+    </h3>
+    <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{description}</p>
+  </div>
+);
 
-      
-      <ColorSelector 
-          items={skus} 
-          
-        />
-
-      
-      <div className="flex flex-col gap-1 lg:mb-4 mb-1 lg:px-6 px-2">
-        <div className="flex justify-between items-center">
-          <div>
-            <span className={`lg:text-lg font-semibold tracking-tighter ${darkMode ? 'text-white' : 'text-secondary'}`}>
-              {selectedSku ? selectedSku.price : skus.length > 0 ? skus[0].price : "0"} PKR
-            </span>
-            {selectedSku && selectedSku.originalPrice && (
-              <span className={`line-through ml-2 text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>
-                {selectedSku.originalPrice} PKR
-              </span>
-            )}
-          </div>
-        </div>
-
-        <div className="w-full flex flex-col gap-2">
-          <Button
-            onClick={handleViewProduct}
-            text="View"
-            iconClass="fas fa-eye"
-            buttonColor="bg-[#333] text-white"
-            small={true}
-          />
-          <Button
-            onClick={onAddToCart}
-            disabled={isAddingToCart}
-            loading={isAddingToCart}
-            text="Add to Cart"
-            iconClass="fas fa-angle-double-right"
-            small={true}
-          />
-        </div>
+const PricingSection = ({ selectedSku, skus, onViewProduct, onAddToCart, isAddingToCart, darkMode }) => (
+  <div className="flex flex-col gap-1 mb-2 px-1">
+    <div className="flex justify-between items-center">
+      <div>
+        <span className={`lg:text-lg font-semibold tracking-tight ${darkMode ? 'text-white' : 'text-secondary'}`}>
+          {selectedSku ? selectedSku.price : skus.length > 0 ? skus[0].price : "0"} PKR
+        </span>
+        {selectedSku && selectedSku.originalPrice && (
+          <span className={`line-through ml-2 text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>
+            {selectedSku.originalPrice} PKR
+          </span>
+        )}
       </div>
     </div>
-  );
-};
+    <div className="w-full flex flex-col gap-1">
+      <Button
+        onClick={onViewProduct}
+        text="View"
+        iconClass="fas fa-eye"
+        buttonColor="bg-[#333] text-white"
+        size="sm" 
+      />
+      <Button
+        onClick={onAddToCart}
+        disabled={isAddingToCart}
+        loading={isAddingToCart}
+        text="Add to Cart"
+        iconClass="fas fa-angle-double-right"
+        size="sm" 
+      />
+    </div>
+  </div>
+);
 
 export default ProductCard;
