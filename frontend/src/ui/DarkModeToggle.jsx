@@ -21,13 +21,13 @@ const DarkModeToggle = () => {
           checked={darkMode}
           onChange={toggleDarkMode}
         />
-        <div className={`w-14 h-8 bg-gray-300 rounded-full shadow-inner transition duration-200 ease-in-out ${darkMode ? 'bg-gray-800' : 'bg-gray-200'}`}></div>
+        <div className={`w-14 h-8 bg-gray-300 rounded-full shadow-inner transition duration-200 border ease-in-out ${darkMode ? 'bg-secondary' : 'bg-gray-200'}`}></div>
         <div
           className={`absolute w-6 h-6 bg-white rounded-full shadow transition-transform duration-300 ease-in-out ${darkMode ? 'translate-x-6' : 'translate-x-1'}`}
         ></div>
       </label>
       <span className={`ml-3 text-lg font-medium ${darkMode ? 'text-gray-200' : 'text-gray-800'} transition-colors duration-300`}>
-        {darkMode ? 'Light Mode' : 'Dark Mode'}
+        {/* {darkMode ? 'Light Mode' : 'Dark Mode'} */}
       </span>
     </div>
   );

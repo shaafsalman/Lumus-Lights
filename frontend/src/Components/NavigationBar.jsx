@@ -180,11 +180,14 @@ const NavigationBar = () => {
 
       {/* Promotional message */}
       {isActive && promotionalMessage && (
-        <div className={` text-white ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-primary font-medium'} text-left pt-6 text-xl font-thin mt-14 fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-          <div className="ml-10 font-Publica">
+        <div className={`fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
+        <div className={`flex flex-wrap items-center justify-between text-white tracking-tighter ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-primary font-medium'} text-left pt-6 text-xl font-thin mt-14`}>
+          <div className="ml-8 font-Publica">
             {promotionalMessage}
           </div>
         </div>
+      </div>
+      
       )}
     </>
   );
