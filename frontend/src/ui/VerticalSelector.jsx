@@ -29,9 +29,9 @@ const VerticalSelector = ({
                 />
               )}
               {showImage && item.logo && (
-                <img src={item.logo} alt={item.label} className="w-5 h-5 rounded-full mr-2" />
+                <img src={item.logo} alt={item.label} className="w-8 h-8 mr-2 my-2" />
               )}
-              {item.label} {item.quantity > 0 && `(${item.quantity})`} {/* Show quantity */}
+              {item.label} {item.quantity > 0 && `(${item.quantity})`} 
             </span>
           </li>
         ))}
