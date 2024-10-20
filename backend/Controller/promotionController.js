@@ -109,8 +109,6 @@ const deletePromotionalImage = async (req, res) => {
 
 const activateDeactivateImage = async (req, res) => {
   const { imageID, active } = req.body; 
-  console.log(req.body);
-  console.log("Toggle active image");
 
   try {
     const affectedRows = await promotionalModel.activateDeactivatePromotionalImage(imageID, active);

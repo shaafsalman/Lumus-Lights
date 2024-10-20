@@ -46,7 +46,7 @@ const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen 
 
   return (
     isOpen && (
-      <div className={`md:hidden  ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0  z-10`}>
+      <div className={`md:hidden  ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0  z-10 mt-8`}>
         {/* Container for Mobile Menu, placed under navigation bar */}
         <div className="absolute top-20 left-0 right-0  max-h-[80vh] overflow-y-auto">
           <div className="flex flex-col px-4 pt-5 space-y-6">

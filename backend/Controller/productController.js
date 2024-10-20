@@ -9,7 +9,6 @@ const { processImage } = require('./../Utility/imageUtils');
 const getProducts = async (req, res) => {
   try {
     const products = await productModel.fetchProducts();
-    console.log(products.length); 
     res.status(200).json(products); 
 
   } catch (err) {

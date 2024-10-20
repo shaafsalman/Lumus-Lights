@@ -30,7 +30,7 @@ app.use('/promotion', promotionalMessageRoutes);
 
 // Basic route for testing
 app.get('/', (req, res) => {
-  res.send('Lumus Backend Working on localhost');
+  res.send('Lumus Backend Working');
 });
 
 // Global error handling middleware

@@ -4,9 +4,6 @@ const authController = require('../Controller/authController');
 
 // Middleware to log request details
 router.use((req, res, next) => {
-  console.log(`Request Method: ${req.method}`);
-  console.log(`Request URL: ${req.originalUrl}`);
-  console.log(`Request Body: ${JSON.stringify(req.body)}`);
   next();
 });
 

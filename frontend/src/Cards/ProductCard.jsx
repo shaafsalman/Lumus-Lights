@@ -12,12 +12,12 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
   const { darkMode } = useDarkMode();
 
   const {
-    category_name = "N/A",
-    description = "No description available",
-    name = "Unnamed Product",
-    thumbnail = "https://via.placeholder.com/150",
+    category_name = "Generic",
+    description = "Light",
+    name = "Product",
+    thumbnail = "https://res.cloudinary.com/dpxvkrk12/image/upload/v1729257713/images/thumbnail.webp",
     skus = [],
-    brand = "unknown-brand",
+    brand = "panasonic",
   } = product || {};
 
   const [selectedSku, setSelectedSku] = useState(null);
@@ -125,7 +125,7 @@ const ProductCard = ({ product, onAddToCart, isAddingToCart = false }) => {
           </div>
         </div>
 
-        <div className="w-full flex flex-col-2 gap-2">
+        <div className="w-full flex flex-col gap-2">
           <Button
             onClick={handleViewProduct}
             text="View"

@@ -48,19 +48,22 @@ const ColorFilter = ({ selectedColors, setSelectedColors, products }) => {
     </FilterSection>
   );
 };
-
 const BrandFilter = ({ selectedBrands, setSelectedBrands, products }) => {
   const brandCounts = products.reduce((acc, product) => {
-    acc[product.brand] = (acc[product.brand] || 0) + 1;
+    const brandName = product.brand.toLowerCase(); // Convert to lower case
+    acc[brandName] = (acc[brandName] || 0) + 1;
     return acc;
   }, {});
 
-  const brandItems = brands.map(brand => ({
-    value: brand.value,
-    label: brand.label,
-    quantity: brandCounts[brand.label] || 0,
-    logo: brand.logo,
-  }));
+  const brandItems = brands.map(brand => {
+    const brandLabel = brand.label.toLowerCase(); 
+    return {
+      value: brand.value,
+      label: brand.label,
+      quantity: brandCounts[brandLabel] || 0,
+      logo: brand.logo,
+    };
+  });
 
   return (
     <FilterSection title="Brand">
@@ -77,6 +80,7 @@ const BrandFilter = ({ selectedBrands, setSelectedBrands, products }) => {
     </FilterSection>
   );
 };
+
 
 const PriceFilter = ({ selectedPriceRange, setSelectedPriceRange }) => (
   <FilterSection title="Price">
@@ -251,24 +255,25 @@ const Products = () => {
   const filterProducts = () => {
     return products.filter((product) => {
       const inCategory = selectedCategories.length
-        ? selectedCategories.includes(product.category_name)
+        ? selectedCategories.map(cat => cat.toLowerCase()).includes(product.category_name.toLowerCase())
         : true;
-
+  
       const inColor = selectedColors.length
-        ? product.skus.some((sku) => selectedColors.includes(sku.color))
+        ? product.skus.some((sku) => selectedColors.map(color => color.toLowerCase()).includes(sku.color.toLowerCase()))
         : true;
-
+  
       const inBrand = selectedBrands.length
-        ? selectedBrands.includes(product.brand)
+        ? selectedBrands.map(brand => brand.toLowerCase()).includes(product.brand.toLowerCase())
         : true;
-
+  
       const inPriceRange =
         (selectedPriceRange.min === '' || product.skus.some(sku => sku.price >= selectedPriceRange.min)) &&
         (selectedPriceRange.max === '' || product.skus.some(sku => sku.price <= selectedPriceRange.max));
-
+  
       return inCategory && inColor && inBrand && inPriceRange;
     });
   };
+  
 
   const filteredProducts = filterProducts();
 
