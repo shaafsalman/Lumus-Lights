@@ -1,5 +1,5 @@
 import { Loader } from 'lucide-react';
-import Logo from './../assets/LogoDark.png'; 
+import Logo from './../assets/logoDark.png'; 
 
 const Loading = ({ all = false }) => {
   if (!all) {
