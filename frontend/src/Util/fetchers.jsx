@@ -1,27 +1,67 @@
+import React, {useState,useEffect } from 'react';
 import axios from 'axios';
 import backendUrl from './backendURL';
 
 const apiUrl = import.meta.env.VITE_API_URL || backendUrl;
 
+export const useFetchProducts = () => {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  const fetchProductsAsync = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/products`);
+      setProducts(response.data);
+    } catch (error) {
+      console.error('Error fetching products:', error);
+      setProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchCategoriesAsync = async () => {
+    try {
+      const response = await axios.get(`${apiUrl}/api/categories`);
+      setCategories(response.data);
+    } catch (error) {
+      console.error('Error fetching categories:', error);
+      setCategories([]);
+    }
+  };
+
+  useEffect(() => {
+    fetchProductsAsync();
+    fetchCategoriesAsync();
+  }, []);
+
+  return { products, categories, loading };
+};
+
 export const fetchProducts = async () => {
   try {
     const response = await axios.get(`${apiUrl}/api/products`);
-    return response.data;
+    setProducts(response.data);
   } catch (error) {
     console.error('Error fetching products:', error);
-    return [];
+    setProducts([]);
+  } finally {
+    setLoading(false);
   }
 };
 
 export const fetchCategories = async () => {
   try {
     const response = await axios.get(`${apiUrl}/api/categories`);
-    return response.data;
+    setCategories(response.data);
   } catch (error) {
     console.error('Error fetching categories:', error);
-    return [];
+    setCategories([]);
   }
 };
+
+
 
 export const fetchPromotionalMessage = async () => {
   try {

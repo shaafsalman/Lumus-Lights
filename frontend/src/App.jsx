@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import { useDarkMode, DarkModeProvider } from './Util/DarkModeContext';
-
+import { fetchProducts, fetchCategories,useFetchProducts  } from './Util/fetchers';
 import Home from './Pages/PublicPages/Home';
 import Products from './Pages/PublicPages/Products';
 import ProductDetail from './Pages/PublicPages/ProductDetail';

@@ -1,22 +1,44 @@
-import React, { useState } from 'react';
-import HollowButton from '.././ui/HollowButton';
+import React, { useState, useEffect } from 'react';
+import HollowButton from '../ui/HollowButton';
 import ScrollingProductList from './ScrollingProductList'; 
-import { useDarkMode } from '.././Util/DarkModeContext';
+import { useDarkMode } from '../Util/DarkModeContext';
+import { useFetchProducts } from '../Util/fetchers';
+import Loading from '../ui/Loading';
 
 const CategoryShowcase = ({ 
-  categories, 
-  products, 
   title, 
   description, 
   backgroundImage 
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState(categories[0] || '');
-  const filteredProducts = products.filter(product => product.productCategory === selectedCategory);
+  const { products, categories, loading } = useFetchProducts();
+  const [selectedCategoryId, setSelectedCategoryId] = useState(null); // Category ID
   const { darkMode } = useDarkMode();
+
+  useEffect(() => {
+    // Automatically set the first available category with products as the default
+    const availableCategories = categories.filter(category => 
+      products.some(product => product.category_id === category.id)
+    );
+    if (availableCategories.length > 0) {
+      setSelectedCategoryId(availableCategories[0].id);
+    }
+  }, [categories, products]);
+
+  // Filter products by selected category ID
+  const filteredProducts = products.filter(product => product.category_id === selectedCategoryId);
+
+  // Only show categories that have products
+  const availableCategories = categories.filter(category => 
+    products.some(product => product.category_id === category.id)
+  );
+
+  if (loading) {
+    return <div><Loading/></div>;
+  }
 
   return (
     <div 
-      className="relative flex flex-col items-center justify-center h-full w-screen mb-10 bg-center bg-cover"
+      className="relative  flex flex-col items-center justify-center h-full w-screen mb-10 bg-center bg-cover"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className={`flex flex-col w-full h-full bg-opacity-50 p-6 md:p-10 rounded-lg ${darkMode ? 'bg-black' : 'bg-white'}`}>
@@ -27,13 +49,13 @@ const CategoryShowcase = ({
           </h1>
           
           {/* Hollow Buttons for Categories */}
-          <div className="grid grid-cols-3 sm:grid-cols-3 md:flex md:space-x-4 gap-2 md:gap-0 py-2 w-full md:w-auto">
-            {categories.map((category, index) => (
+          <div className="grid grid-cols-3 sm:grid-cols-3 md:flex md:space-x-4 gap-2 md:gap-0 py-2 w-full md:w-auto ">
+            {availableCategories.map((category) => (
               <HollowButton
-                key={index}
-                text={category}
-                onClick={() => setSelectedCategory(category)}
-                isActive={selectedCategory === category}
+                key={category.id}
+                text={category.name}
+                onClick={() => setSelectedCategoryId(category.id)}
+                isActive={selectedCategoryId === category.id} 
               />
             ))}
           </div>
@@ -46,7 +68,7 @@ const CategoryShowcase = ({
         
         {/* Products of Selected Category */}
         {filteredProducts.length > 0 ? (
-          <ScrollingProductList products={filteredProducts} productsPerRow={3} />
+          <ScrollingProductList products={filteredProducts} productsPerRow={5} />
         ) : (
           <p className="text-lg text-center">No products available in this category.</p>
         )}

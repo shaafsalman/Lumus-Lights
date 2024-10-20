@@ -1,13 +1,23 @@
 import React from 'react';
-import Button from '.././ui/Button';
+import Button from '../ui/Button';
 import ScrollingProductList from './ScrollingProductList';
-
+import { useFetchProducts } from '../Util/fetchers';
+import Loading from '../ui/Loading';
 const ProductShowcase = ({ 
-  products, 
   title, 
   description, 
   backgroundImage 
 }) => {
+  // Use the custom hook to fetch products
+  const { products, loading } = useFetchProducts();
+
+  // Sort products in descending order based on quantitySold
+  const sortedProducts = [...products].sort((a, b) => b.quantitySold - a.quantitySold);
+
+  if (loading) {
+    return <Loading/>; 
+  }
+
   return (
     <div 
       className="flex flex-col items-center text-white bg-center bg-cover h-screen w-screen"
@@ -22,8 +32,8 @@ const ProductShowcase = ({
           </div>
         </div>
         <div className="w-full md:w-2/3">
-          {products.length > 0 ? (
-            <ScrollingProductList products={products} productsPerRow={2} />
+          {sortedProducts.length > 0 ? (
+            <ScrollingProductList products={sortedProducts} productsPerRow={2} />
           ) : (
             <p className="text-sm md:text-lg">No products available.</p>
           )}

@@ -19,6 +19,8 @@ const fetchProducts = async () => {
       p.id AS product_id, 
       p.name AS product_name, 
       p.description, 
+      p.discountFactor,
+      p.quantitySold, 
       p.category_id, 
       c.name AS category_name,  
       p.brand,
@@ -139,10 +141,10 @@ const updateImage = async (imageId, imagePath, isPrimary) => {
   return result.affectedRows;
 };
 
-// Update a product by ID, including updating SKUs and images if necessary
+// Update a product by ID, including updating SKUs and images
 const updateProduct = async (req, res) => {
   const { id } = req.params;
-  const { name, description, categoryId, brand, skus, images, thumbnail } = req.body; // Include thumbnail
+  const { name, description, categoryId, brand, skus, images, thumbnail } = req.body;
 
   try {
     await executeQuery(

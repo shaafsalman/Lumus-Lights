@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchProducts, fetchCategories } from '../../Util/fetchers';
+import {useFetchProducts  } from '../../Util/fetchers';
 import ProductCard from '../../Cards/ProductCard';
 import { useDarkMode } from '../../Util/DarkModeContext';
 import VerticalSelector from '../../ui/VerticalSelector';
@@ -208,44 +208,21 @@ const MainSection = ({ filteredProducts, sortOptions, handleSortChange, isDarkMo
 };
 
 const Products = () => {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { products, categories, loading } = useFetchProducts(); 
   const [error, setError] = useState(null);
   const { isDarkMode } = useDarkMode();
-  const [isFilterVisible, setIsFilterVisible] = useState(false); 
-
+  const [isFilterVisible, setIsFilterVisible] = useState(false);
+  
   const [selectedPriceRange, setSelectedPriceRange] = useState({ min: '', max: '' });
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedColors, setSelectedColors] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
   const [sortOrder, setSortOrder] = useState('');
 
-  useEffect(() => {
-    const fetchOptionsData = async () => {
-      setLoading(true);
-      try {
-        const [fetchedProducts, fetchedCategories] = await Promise.all([
-          fetchProducts(),
-          fetchCategories(),
-        ]);
-        setProducts(fetchedProducts);
-        setCategories(fetchedCategories);
-      } catch (err) {
-        console.error('Error fetching options:', err);
-        setError('Failed to fetch options data. Please try again.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchOptionsData();
-  }, []);
-
   const handleSortChange = (value) => {
     setSortOrder(value);
     const sortedProducts = [...products].sort((a, b) =>
-      value === 'low-to-high' ? a.price - b.price : b.price - a.price
+      value === 'low-to-high' ? a.skus[0].price - b.skus[0].price : b.skus[0].price - a.skus[0].price
     );
     setProducts(sortedProducts);
   };
@@ -276,16 +253,14 @@ const Products = () => {
       return inCategory && inColor && inBrand && inPriceRange;
     });
   };
-  
 
   const filteredProducts = filterProducts();
 
-  // Show loading, error, or no products messages
   if (loading) return <Loading />;
-  if (error) return <NoProducts message={error} />; 
+  if (error) return <NoProducts message={error} />;
   if (filteredProducts.length === 0) return <NoProducts message="No products to show." />;
 
-  const isMobile = window.innerWidth < 1000; 
+  const isMobile = window.innerWidth < 1000;
 
   return (
     <div className="productsPage mt-6">
