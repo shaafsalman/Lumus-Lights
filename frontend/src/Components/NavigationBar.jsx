@@ -76,15 +76,18 @@ const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen 
               Profile
             </Link>
             
-            {/* Dark Mode Toggle */}
-            <div className="flex items-center">
-              <DarkModeToggle />
-            </div>
+           
     
             <Link to="/cart" className="flex items-center text-xl">
               <ShoppingCartIcon className="h-6 w-6 mr-2" />
               Cart
             </Link>
+
+
+             {/* Dark Mode Toggle */}
+             <div className="flex items-center">
+              <DarkModeToggle />
+            </div>
           </div>
         </div>
       </div>
