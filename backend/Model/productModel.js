@@ -1,4 +1,6 @@
 const pool = require('../db');
+const {mockProducts} = require('./../Data/mockProducts');
+
 
 // Helper function for query execution (returns a Promise)
 const executeQuery = (query, params) => {
@@ -12,88 +14,101 @@ const executeQuery = (query, params) => {
   });
 };
 
-// Fetch all products along with their SKUs and images
+// // Fetch all products along with their SKUs and images
+// const fetchProducts = async () => {
+//   const query = `
+//     SELECT 
+//       p.id AS product_id, 
+//       p.name AS product_name, 
+//       p.description, 
+//       p.discountFactor,
+//       p.quantitySold, 
+//       p.category_id, 
+//       c.name AS category_name,  
+//       p.brand,
+//       p.thumbnail,  
+//       sku.id AS sku_id,
+//       sku.sku, 
+//       sku.price, 
+//       sku.stock, 
+//       sku.color, 
+//       sku.size, 
+//       sku.wattage, 
+//       sku.voltage,
+//       img.image_path, 
+//       img.is_primary
+//     FROM Products p
+//     LEFT JOIN Product_SKUs sku ON p.id = sku.product_id
+//     LEFT JOIN Product_Images img ON sku.id = img.sku_id
+//     LEFT JOIN Categories c ON p.category_id = c.id  
+//     ORDER BY p.id, sku.id;
+//   `;
+
+//   try {
+//     const results = await executeQuery(query, []);
+
+//     const productsMap = new Map();
+
+//     results.forEach(row => {
+//       const productId = row.product_id;
+//       const product = productsMap.get(productId) || {
+//         id: productId,
+//         name: row.product_name,
+//         description: row.description,
+//         category_id: row.category_id,
+//         category_name: row.category_name,
+//         brand: row.brand,
+//         thumbnail: row.thumbnail,  
+//         skus: [],
+//       };
+
+//       if (!productsMap.has(productId)) {
+//         productsMap.set(productId, product);
+//       }
+
+//       const skuId = row.sku_id;
+//       if (skuId) {
+//         const sku = product.skus.find(s => s.id === skuId) || {
+//           id: skuId,
+//           sku: row.sku,
+//           price: row.price,
+//           stock: row.stock,
+//           color: row.color,
+//           size: row.size,
+//           wattage: row.wattage,
+//           voltage: row.voltage,
+//           images: [],
+//         };
+
+//         if (!product.skus.find(s => s.id === skuId)) {
+//           product.skus.push(sku);
+//         }
+
+//         if (row.image_path) {
+//           sku.images.push({ image_path: row.image_path, is_primary: row.is_primary });
+//         }
+//       }
+//     });
+
+//     return Array.from(productsMap.values());
+//   } catch (error) {
+//     console.error('Error fetching products:', error);
+//     throw error; 
+//   }
+// };
+
 const fetchProducts = async () => {
-  const query = `
-    SELECT 
-      p.id AS product_id, 
-      p.name AS product_name, 
-      p.description, 
-      p.discountFactor,
-      p.quantitySold, 
-      p.category_id, 
-      c.name AS category_name,  
-      p.brand,
-      p.thumbnail,  
-      sku.id AS sku_id,
-      sku.sku, 
-      sku.price, 
-      sku.stock, 
-      sku.color, 
-      sku.size, 
-      sku.wattage, 
-      sku.voltage,
-      img.image_path, 
-      img.is_primary
-    FROM Products p
-    LEFT JOIN Product_SKUs sku ON p.id = sku.product_id
-    LEFT JOIN Product_Images img ON sku.id = img.sku_id
-    LEFT JOIN Categories c ON p.category_id = c.id  
-    ORDER BY p.id, sku.id;
-  `;
-
   try {
-    const results = await executeQuery(query, []);
+    // Simulate a delay for mock data
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
-    const productsMap = new Map();
-
-    results.forEach(row => {
-      const productId = row.product_id;
-      const product = productsMap.get(productId) || {
-        id: productId,
-        name: row.product_name,
-        description: row.description,
-        category_id: row.category_id,
-        category_name: row.category_name,
-        brand: row.brand,
-        thumbnail: row.thumbnail,  
-        skus: [],
-      };
-
-      if (!productsMap.has(productId)) {
-        productsMap.set(productId, product);
-      }
-
-      const skuId = row.sku_id;
-      if (skuId) {
-        const sku = product.skus.find(s => s.id === skuId) || {
-          id: skuId,
-          sku: row.sku,
-          price: row.price,
-          stock: row.stock,
-          color: row.color,
-          size: row.size,
-          wattage: row.wattage,
-          voltage: row.voltage,
-          images: [],
-        };
-
-        if (!product.skus.find(s => s.id === skuId)) {
-          product.skus.push(sku);
-        }
-
-        if (row.image_path) {
-          sku.images.push({ image_path: row.image_path, is_primary: row.is_primary });
-        }
-      }
-    });
-
-    return Array.from(productsMap.values());
+    return mockProducts;
   } catch (error) {
     console.error('Error fetching products:', error);
     throw error; 
   }
 };
+
 
 
 // Add a new product with thumbnail file path
