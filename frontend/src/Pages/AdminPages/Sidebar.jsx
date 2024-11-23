@@ -47,22 +47,32 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`h-full p-4 shadow-sm`}>
+    <aside className={`h-full p-3 shadow-sm overflow-auto ${darkMode ? 'bg-secondary' : 'bg-white'}`}>
       <nav>
-        <ul className="space-y-6 mt-4"> {/* Increased space between sections */}
+        <ul className="space-y-4 mt-2"> {/* Reduced gap between sections */}
           {menuItems.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               <div
-                className={`px-1 py-2 text-xl font-semibold cursor-pointer flex justify-between items-center ${darkMode ? 'text-white' : 'text-black'}`}
+                className={`px-3 py-2 text-lg font-semibold cursor-pointer flex justify-between items-center ${darkMode ? 'text-white' : 'text-black'}`}
                 onClick={() => toggleSection(section.section)}
               >
                 <span>{section.section}</span>
                 <div className="ml-2">
-                  {collapsedSections[section.section] ? <ArrowDown /> : <ArrowUp />}
+                  {collapsedSections[section.section] ? (
+                    <ArrowDown />
+                  ) : (
+                    <ArrowUp />
+                  )}
                 </div>
               </div>
-              {!collapsedSections[section.section] && (
-                <ul className="pl-4 space-y-2"> {/* Added vertical gaps between items */}
+              <div
+                style={{
+                  maxHeight: collapsedSections[section.section] ? '0' : '500px',
+                  overflow: 'hidden',
+                  transition: 'max-height 0.3s ease-in-out',
+                }}
+              >
+                <ul className="pl-4 space-y-1"> {/* Reduced space between items */}
                   {section.items.map((item, itemIndex) => (
                     <li key={itemIndex}>
                       <NavLink
@@ -71,17 +81,17 @@ const Sidebar = () => {
                           `flex items-center px-4 py-2 rounded-md transition duration-300 ${
                             isActive
                               ? `${darkMode ? 'text-white text-lg' : 'text-white text-lg'} bg-primary`
-                              : `${darkMode ? 'text-white hover:text-primary' : 'text-secondary hover:text-gray-400'}`
+                              : `${darkMode ? 'text-white' : 'text-secondary'}`
                           }`
                         }
                       >
-                        <item.icon className="mr-2" /> {/* Using Lucid React icons */}
-                        <span className="text-base">{item.name}</span>
+                        <item.icon className="mr-2" />
+                        <span className="text-sm">{item.name}</span>
                       </NavLink>
                     </li>
                   ))}
                 </ul>
-              )}
+              </div>
             </div>
           ))}
         </ul>

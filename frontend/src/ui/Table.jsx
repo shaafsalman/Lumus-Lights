@@ -15,8 +15,6 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
   const [isLoading, setIsLoading] = useState(true);
   const { darkMode } = useDarkMode(); 
 
-  //  console.log("data",data);
-
   useEffect(() => {
     const handleScroll = () => {
       const scrolled = window.scrollY > 0;
@@ -32,9 +30,8 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
   }, [data]);
 
   const handleDeleteItem = (id) => {
-    if (window.confirm('Are you sure you want to delete this item?')) {
       handleDelete(id);
-    }
+    
   };
 
   const handleIdClick = (item) => {
@@ -62,12 +59,12 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                 {columns.map((column, index) => (
                   <th
                     key={index}
-                    className={`px-4 py-2 text-left font-bold text-sm md:text-lg ${column.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
+                    className={`px-2 py-1 text-left font-bold text-xs md:text-sm lg:text-base ${column.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                   >
                     {column.label}
                   </th>
                 ))}
-                <th className="px-4 py-3 text-center font-bold text-sm md:text-lg ">
+                <th className="px-2 py-1 text-center font-bold text-xs md:text-sm lg:text-base">
                   Actions
                 </th>
               </tr>
@@ -78,7 +75,7 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                   <td colSpan={columns.length + 1} className="text-center py-4">
                     <div className="flex items-center justify-center space-x-2 text-2xl">
                       <SyncLoader color={darkMode ? 'white' : 'primary'} size={8} />
-                      <span className={`text-gray-500 text-xl md:text-base ${darkMode ? 'text-gray-300' : ''}`}>Loading</span>
+                      <span className={`text-gray-500 text-lg md:text-base ${darkMode ? 'text-gray-300' : ''}`}>Loading</span>
                     </div>
                   </td>
                 </tr>
@@ -91,14 +88,14 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                     {columns.map((col, colIndex) => (
                       <td
                         key={colIndex}
-                        className={`px-4 py-2 text-left text-sm md:text-lg border-b border-primary ${col.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
+                        className={`px-2 py-1 text-left text-xs md:text-sm lg:text-base border-b border-primary ${col.key.toLowerCase() === 'status' ? 'text-center' : ''}`}
                       >
-                        {col.key.toLowerCase() === 'thumbnail' || col.key.toLowerCase() === 'imageurl'  ? (
+                        {col.key.toLowerCase() === 'thumbnail' || col.key.toLowerCase() === 'imageurl' ? (
                           item.thumbnail || item.imageUrl ? (
                             <img
                               src={item.thumbnail || item.imageUrl}
                               alt={item.name} 
-                              className="w-20 h-auto object-cover" 
+                              className="w-12 h-auto object-cover" 
                             />
                           ) : (
                             'No Image'
@@ -127,12 +124,12 @@ const Table = ({ columns, data = [], handleEdit, handleDelete, handleToggleStatu
                           </span>
                         ) : (
                           <span>
-                            {item[col.key]}
+                            {item[col.key].length > 14 ? `${item[col.key].substring(0, 14)}...` : item[col.key]}
                           </span>
                         )}
                       </td>
                     ))}
-                    <td className="px-4 py-2 text-center border-b border-primary">
+                    <td className="px-2 py-1 text-center border-b border-primary">
                       <button
                         onClick={() => handleEdit(item)}
                         className={`text-gray-500 hover:text-gray-300 focus:outline-none ${darkMode ? 'text-gray-300 hover:text-gray-400' : ''}`}

@@ -50,7 +50,7 @@ const HeroCategory = () => {
             {heroDescription}
           </p>
 
-          <div className="flex flex-col items-start gap-4 mb-8">
+          <div className="flex flex-row items-start gap-2 mb-8">
             {availableCategories.map(category => (
               <HollowButton 
                 key={category.id} 

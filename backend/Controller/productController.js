@@ -1,7 +1,5 @@
-const uploadToCloudinary = require('./../Utility/uploadToCloudinary');
 const productModel = require('../Model/productModel');
-const path = require('path');
-const fs = require('fs');
+
 const { processImage } = require('./../Utility/imageUtils'); 
 
 
@@ -16,7 +14,6 @@ const getProducts = async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
-
 
 
 // Main function to add or update a product
@@ -57,36 +54,20 @@ const addOrUpdateProduct = async (req, res) => {
 
 
 
-// Remove a product by ID
-const removeProduct = (req, res) => {
+const removeProduct = async (req, res) => {
   const { id } = req.params;
 
-  // Step 1: Delete images by product ID
-  productModel.deleteImagesByProductId(id, (err) => {
-    if (err) {
-      console.error(err);
-      return res.status(500).json({ message: 'Failed to delete images' });
-    }
-
-    // Step 2: Delete SKUs by product ID
-    productModel.deleteSKUsByProductId(id, (err) => {
-      if (err) {
-        console.error(err);
-        return res.status(500).json({ message: 'Failed to delete SKUs' });
-      }
-
-      // Step 3: Delete the product
-      productModel.deleteProduct(id, (err) => {
-        if (err) {
-          console.error(err);
-          return res.status(500).json({ message: 'Failed to delete product' });
-        }
-
-        res.status(200).json({ message: 'Product deleted successfully' });
-      });
-    });
-  });
+  try {
+    console.log(`deletion initiated for product ID: ${id}`);
+    await productModel.deleteProductAndAssociations(id);
+    res.status(200).json({ message: 'Product deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting product:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
 };
+
+
 
 module.exports = {
   getProducts,

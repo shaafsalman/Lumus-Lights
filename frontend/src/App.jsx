@@ -39,7 +39,7 @@ const isTokenValid = () => {
 const AuthLayout = ({ children }) => {
   const { darkMode } = useDarkMode();
   return (
-    <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
+    <div className={`min-h-screen flex items-center justify-center ${darkMode ? 'bg-secondary text-light' : 'bg-light text-black'}`}>
       {children}
     </div>
   );
@@ -48,7 +48,7 @@ const AuthLayout = ({ children }) => {
 const MainLayout = ({ children }) => {
   const { darkMode } = useDarkMode();
   return (
-    <div className={`font-popins flex flex-col  overflow-hidden ${darkMode ? 'bg-secondary text-white' : 'bg-white text-black'}`}>
+    <div className={`font-popins flex flex-col  overflow-hidden ${darkMode ? 'bg-secondary text-light' : 'bg-light text-black'}`}>
       <NavigationBar />
       <main className="flex-grow mt-24">{children}</main>
       <Footer />
@@ -59,23 +59,22 @@ const MainLayout = ({ children }) => {
 const AdminLayout = ({ children, pageTitle }) => {
   const { darkMode } = useDarkMode();
 
-
- 
   return (
-      <div className={`flex flex-col h-screen ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
-        <AdminNavbar />
-    
-        <div className="flex flex-1 overflow-hidden">
-          <Sidebar />
-          <div className={`flex-1 px-8 py-5 shadow-2xl  ${darkMode ? 'bg-secondary text-secondary' : 'bg-white text-secondary'}`}>
-            <ProfileHeader pageTitle={pageTitle} />
-            {children}
-          </div>
+    <div className={`flex flex-col h-screen ${darkMode ? 'bg-secondary text-light' : 'bg-light text-secondary'}`}>
+      <AdminNavbar />
+
+      <div className="flex flex-1 overflow-hidden">
+        <Sidebar />
+        <div className={`flex-1 px-2 py-2 shadow-2xl ${darkMode ? 'bg-secondary text-secondary' : 'bg-light text-secondary'}`}>
+          <ProfileHeader pageTitle={pageTitle} />
+          {children}
         </div>
       </div>
-    
+    </div>
   );
 };
+
+
 
 // Protected Route Component
 const ProtectedRoute = ({ isAuthenticated, children }) => (

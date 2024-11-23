@@ -1,6 +1,5 @@
 const pool = require('../db');
-const {mockProducts} = require('./../Data/mockProducts');
-
+const { mockProducts } = require('./../Data/mockProducts');
 
 // Helper function for query execution (returns a Promise)
 const executeQuery = (query, params) => {
@@ -46,41 +45,41 @@ const fetchProducts = async () => {
 
   try {
     const results = await executeQuery(query, []);
-
     const productsMap = new Map();
 
     results.forEach(row => {
       const productId = row.product_id;
-      const product = productsMap.get(productId) || {
-        id: productId,
-        name: row.product_name,
-        description: row.description,
-        category_id: row.category_id,
-        category_name: row.category_name,
-        brand: row.brand,
-        thumbnail: row.thumbnail,  
-        skus: [],
-      };
+      let product = productsMap.get(productId);
 
-      if (!productsMap.has(productId)) {
+      if (!product) {
+        product = {
+          id: productId,
+          name: row.product_name,
+          description: row.description,
+          category_id: row.category_id,
+          category_name: row.category_name,
+          brand: row.brand,
+          thumbnail: row.thumbnail,
+          skus: [],
+        };
         productsMap.set(productId, product);
       }
 
       const skuId = row.sku_id;
       if (skuId) {
-        const sku = product.skus.find(s => s.id === skuId) || {
-          id: skuId,
-          sku: row.sku,
-          price: row.price,
-          stock: row.stock,
-          color: row.color,
-          size: row.size,
-          wattage: row.wattage,
-          voltage: row.voltage,
-          images: [],
-        };
-
-        if (!product.skus.find(s => s.id === skuId)) {
+        let sku = product.skus.find(s => s.id === skuId);
+        if (!sku) {
+          sku = {
+            id: skuId,
+            sku: row.sku,
+            price: row.price,
+            stock: row.stock,
+            color: row.color,
+            size: row.size,
+            wattage: row.wattage,
+            voltage: row.voltage,
+            images: [],
+          };
           product.skus.push(sku);
         }
 
@@ -93,25 +92,10 @@ const fetchProducts = async () => {
     return Array.from(productsMap.values());
   } catch (error) {
     console.error('Error fetching products:', error);
-    throw error; 
+    throw error;
   }
 };
 
-// const fetchProducts = async () => {
-//   try {
-//     // Simulate a delay for mock data
-//     await new Promise(resolve => setTimeout(resolve, 1000));
-
-//     return mockProducts;
-//   } catch (error) {
-//     console.error('Error fetching products:', error);
-//     throw error; 
-//   }
-// };
-
-
-
-// Add a new product with thumbnail file path
 const addProduct = async (name, description, categoryId, brand, thumbnail) => {
   const result = await executeQuery(
     'INSERT INTO Products (name, description, category_id, brand, thumbnail) VALUES (?, ?, ?, ?, ?)', 
@@ -190,36 +174,40 @@ const updateProduct = async (req, res) => {
   }
 };
 
-// Delete a product by ID along with its SKUs and images
-const removeProduct = async (req, res) => {
-  const { id } = req.params;
+const deleteProductAndAssociations = async (id) => {
+  const deleteProductImagesQuery = `
+    DELETE FROM Product_Images 
+    WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)
+  `;
+
+  const deleteProductSkusQuery = `
+    DELETE FROM Product_SKUs WHERE product_id = ?
+  `;
+
+  const deleteProductQuery = `
+    DELETE FROM Products WHERE id = ?
+  `;
 
   try {
-    await deleteProduct(id);
-    await deleteSKUsByProductId(id);
-    await deleteImagesByProductId(id);
+    // Step 1: Delete product images by SKU
+    console.log(`Deleting images for product ID: ${id}`);
+    await executeQuery(deleteProductImagesQuery, [id]);
 
-    res.status(200).json({ message: 'Product deleted successfully' });
+    // Step 2: Delete SKUs associated with the product
+    console.log(`Deleting SKUs for product ID: ${id}`);
+    await executeQuery(deleteProductSkusQuery, [id]);
+
+    // Step 3: Delete the product itself
+    console.log(`Deleting product with ID: ${id}`);
+    await executeQuery(deleteProductQuery, [id]);
+
+    console.log(`Product ID: ${id} and associated records deleted successfully.`);
   } catch (error) {
-    console.error('Error deleting product:', error);
-    res.status(500).json({ message: 'Internal server error' });
+    console.error(`Error deleting product ID: ${id} and associated records:`, error.message || error);
+    throw error;  // Rethrow the error for higher-level handling
   }
 };
 
-// Delete a product by ID
-const deleteProduct = async (id) => {
-  await executeQuery('DELETE FROM Products WHERE id = ?', [id]);
-};
-
-// Delete SKUs by product ID
-const deleteSKUsByProductId = async (productId) => {
-  await executeQuery('DELETE FROM Product_SKUs WHERE product_id = ?', [productId]);
-};
-
-// Delete images by SKU ID
-const deleteImagesByProductId = async (productId) => {
-  await executeQuery('DELETE FROM Product_Images WHERE sku_id IN (SELECT id FROM Product_SKUs WHERE product_id = ?)', [productId]);
-};
 
 module.exports = {
   fetchProducts,
@@ -227,10 +215,7 @@ module.exports = {
   addSKU,
   addImage,
   updateProduct,
-  removeProduct,
   updateSKU,
   updateImage,
-  deleteProduct,
-  deleteSKUsByProductId,
-  deleteImagesByProductId,
+  deleteProductAndAssociations
 };

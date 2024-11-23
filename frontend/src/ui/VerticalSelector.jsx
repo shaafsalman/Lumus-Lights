@@ -1,5 +1,5 @@
 import React from 'react';
-import { colors, brands } from './../data';
+import { useDarkMode } from '../Util/DarkModeContext';
 
 const VerticalSelector = ({
   title,
@@ -8,23 +8,31 @@ const VerticalSelector = ({
   onChange,
   showGradient = false,
 }) => {
+  const { darkMode } = useDarkMode(); // Determine the theme
+
+  // Border color based on theme
+  const borderColor = darkMode ? 'border-white' : 'border-secondary';
+
   return (
     <div className="mb-6">
       <h4 className="font-semibold text-lg mb-2">{title}</h4>
       <ul className="pl-4 space-y-2">
         {items.map((item) => (
-          <li key={item.value} className="flex items-center cursor-pointer transition-transform duration-200 ease-in-out">
+          <li
+            key={item.value}
+            className="flex items-center cursor-pointer transition-transform duration-200 ease-in-out"
+          >
             <label className="flex items-center">
               <input
                 type="checkbox"
                 checked={selectedItems.includes(item.value)}
                 onChange={() => onChange(item.value)}
-                className="absolute opacity-0 cursor-pointer" 
+                className="absolute opacity-0 cursor-pointer"
                 disabled={item.quantity === 0}
               />
               <span
                 className={`relative flex items-center h-5 w-5 rounded-full border-2 transition-all duration-200 ease-in-out
-                  ${selectedItems.includes(item.value) ? 'border-primary bg-primary' : 'border-gray-400'}
+                  ${selectedItems.includes(item.value) ? 'border-primary bg-primary' : borderColor}
                   ${item.quantity === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
               >
                 {selectedItems.includes(item.value) && (
@@ -44,13 +52,21 @@ const VerticalSelector = ({
                   </span>
                 )}
               </span>
-              <span className={`ml-2 flex items-center ${item.quantity === 0 ? 'line-through text-gray-400' : ''}`}>
+              <span
+                className={`ml-2 flex items-center ${
+                  item.quantity === 0 ? 'line-through text-gray-400' : ''
+                }`}
+              >
                 {showGradient && item.gradient && (
-                  <div className={`w-5 h-5 rounded-full mr-2 ${item.gradient}`} />
+                  <div
+                    className={`w-5 h-5 rounded-full mr-2 ${item.gradient} border-2 ${borderColor}`}
+                  />
                 )}
                 <span>{item.label}</span>
               </span>
-              {item.quantity > 0 && <span className="text-sm ml-2">({item.quantity})</span>}
+              {item.quantity > 0 && (
+                <span className="text-sm ml-2">({item.quantity})</span>
+              )}
             </label>
           </li>
         ))}

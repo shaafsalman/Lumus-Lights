@@ -139,7 +139,7 @@ const ProductInfo = ({ category_name, name, description, brandLogo, darkMode }) 
     <h3 className={`lg:text-lg tracking-tight font-semibold leading-tight truncate ${darkMode ? 'text-white' : 'text-secondary'}`}>
       {name}
     </h3>
-    <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{description}</p>
+    {/* <p className={`text-xs ${darkMode ? 'text-white' : 'text-secondary'}`}>{description}</p> */}
   </div>
 );
 

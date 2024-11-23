@@ -13,10 +13,10 @@ const FilterSection = ({ title, children }) => {
   const { isDarkMode } = useDarkMode(); 
 
   return (
-    <div className="mb-4">
+    <div className="mb-2">
       <h4 className="font-semibold">{title}</h4>
       {children}
-      <div className={`border-b mb-4 ${isDarkMode ? 'border-white' : 'border-gray-300'}`} />
+      <div className={`border-b mb-2 ${isDarkMode ? 'border-white' : 'border-gray-300'}`} />
     </div>
   );
 };

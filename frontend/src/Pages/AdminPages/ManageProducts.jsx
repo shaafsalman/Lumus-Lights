@@ -55,18 +55,22 @@ const ManageProducts = () => {
     };
 
     const handleDeleteProduct = async (productId) => {
-        if (window.confirm('Are you sure you want to delete this product?')) {
-            try {
-                await axios.delete(`${apiUrl}/api/products/${productId}`);
-                const updatedProducts = await fetchProducts();
-                setProducts(updatedProducts);
-                setSuccessMessage('Product deleted successfully!');
-            } catch (err) {
-                console.error('Error deleting product:', err);
-                setError('Failed to delete product.');
-            }
-        }
-    };
+      if (window.confirm('Are you sure you want to delete this product?')) {
+          try {
+              await axios.delete(`${apiUrl}/api/products/${productId}`);
+              
+              // Re-fetch products after deletion
+              const updatedProducts = await fetchProducts();
+              setProducts(updatedProducts);
+  
+              setSuccessMessage('Product deleted successfully!');
+          } catch (err) {
+              console.error('Error deleting product:', err);
+              setError('Failed to delete product.');
+          }
+      }
+  };
+  
 
     const handleToggleStatus = async (productId, currentStatus) => {
         try {
@@ -161,7 +165,7 @@ const ManageProducts = () => {
                 {/* Product Modal */}
                 <ProductModal
                     isOpen={isModalOpen}
-                    onClose={() => setIsModalOpen(false)}
+                    onClose={() => setIsModalOpen(false) && fetchProducts()}
                     editingProductId={editingProductId}
                     buttonLoading={buttonLoading}
                     setButtonLoading={setButtonLoading}

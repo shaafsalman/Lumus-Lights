@@ -19,7 +19,7 @@ const ProductShowcase = ({
 
   return (
     <div 
-      className="flex flex-col items-center text-white bg-center bg-cover w-screen"
+      className="flex flex-col items-center text-light bg-center bg-cover w-screen"
       style={{ backgroundImage: `url(${backgroundImage})` }}
     >
       <div className="flex flex-col md:flex-row w-full max-w-screen-xl bg-opacity-50 px-12 py-4 md:p-8">

@@ -12,16 +12,16 @@ const AdminNavbar = () => {
   const { darkMode, toggleDarkMode } = useDarkMode();
 
   return (
-    <nav className={`p-3 sticky shadow-sm top-0 flex justify-between items-center ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
+    <nav className={`p-2 sticky shadow-sm top-0 flex justify-between items-center ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
       <div className="flex items-center">
         {/* Logo based on dark mode */}
         <img 
           src={darkMode ? logoDark : logoLight} 
           alt="Company Logo" 
-          className="h-16 w-auto mr-1 ml-6 transition-all duration-300"
+          className="h-8 w-auto mr-1 ml-6 transition-all duration-300"
         />
         <div className={`transition-all duration-300 ml-2`}>
-          <h1 className="text-4xl tracking-tighter font-semibold">{getCompanyName()}</h1>
+          <h1 className="text-3xl tracking-tighter font-semibold">{getCompanyName()}</h1>
         </div>
         
         <div className="ml-24">

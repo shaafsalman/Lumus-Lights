@@ -1,8 +1,12 @@
 // src/data.js
 
 export const colors = [
-  { value: 'white', label: 'White', gradient: 'bg-white`' },
-  { value: 'black', label: 'Black', gradient: 'bg-gradient-to-r from-gray-700 to-black' },
+  {
+    value: 'white',
+    label: 'White',
+    gradient: 'bg-gradient-to-r from-white to-gray-100'
+  }, 
+   { value: 'black', label: 'Black', gradient: 'bg-gradient-to-r from-gray-700 to-black' },
   { value: 'silver', label: 'Silver', gradient: 'bg-gradient-to-r from-gray-200 to-gray-400' },
   { value: 'gold', label: 'Gold', gradient: 'bg-gradient-to-r from-yellow-400 to-yellow-600' },
     { value: 'red', label: 'Red', gradient: 'bg-gradient-to-r from-red-500 to-red-700' },

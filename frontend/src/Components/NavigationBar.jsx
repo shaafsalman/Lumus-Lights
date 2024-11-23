@@ -25,7 +25,7 @@ const NavigationLinks = ({ darkMode, isActiveLink }) => {
         <Link
           key={page.path}
           to={page.path}
-          className={`flex items-center text-md font-semibold tracking-tighter transition-all duration-300 ease-in-out ${isActiveLink(page.path) ? 'text-primary border-b-2 border-primary' : 'hover:text-primary'} ${darkMode ? 'text-white' : 'text-secondary'}`}
+          className={`flex items-center text-md font-semibold tracking-tighter transition-all duration-300 ease-in-out ${isActiveLink(page.path) ? 'text-primary border-b-2 border-primary' : 'hover:text-primary'} ${darkMode ? 'text-light' : 'text-secondary'}`}
         >
           <span className="flex items-center">
             {iconMap[page.name.toLowerCase()]}
@@ -48,7 +48,7 @@ const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen 
 
   return (
     isOpen && (
-      <div className={`md:hidden ${darkMode ? 'bg-secondary' : 'bg-white'} fixed inset-0 z-30`}>
+      <div className={`md:hidden ${darkMode ? 'bg-secondary' : 'bg-light'} fixed inset-0 z-30`}>
       <div className="absolute top-20 left-0 right-0 max-h-[80vh] overflow-y-auto">
         <div className="flex flex-col px-4 pt-5 space-y-2">
           {/* Navigation Links */}
@@ -57,8 +57,8 @@ const MobileMenu = ({ isOpen, darkMode, isActiveLink, toggleDarkMode, setIsOpen 
               key={page.path}
               to={page.path}
               className={`flex items-center text-lg font-medium transition-all duration-300 ease-in-out px-4 py-2 ${
-                isActiveLink(page.path) ? 'bg-primary text-white font-extrabold rounded-lg' : 'hover:bg-primary hover:text-white'
-              } ${darkMode ? 'text-white' : 'text-secondary'}`}
+                isActiveLink(page.path) ? 'bg-primary text-light font-extrabold rounded-lg' : 'hover:bg-primary hover:text-light'
+              } ${darkMode ? 'text-light' : 'text-secondary'}`}
               onClick={() => setIsOpen(false)}
             >
               {iconMap[page.name.toLowerCase()]}
@@ -146,19 +146,19 @@ const NavigationBar = () => {
 
   return (
     <>
-      <nav className={`fixed top-0 left-0 w-full z-50 transition-colors  ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'} transition-all duration-300`}>
+      <nav className={`fixed top-0 left-0 w-full z-50 transition-colors  ${darkMode ? 'bg-secondary text-light' : 'bg-light text-secondary'} transition-all duration-300`}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-10">
           <div className="flex justify-between items-center h-20">
             <Link to="/" className="flex items-center">
               <img src={darkMode ? logoDark : logoLight} alt="Company Logo" className="h-10 w-auto mr-2" />
-              <span className={`font-Publica text-2xl font-semibold ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              <span className={`font-Publica text-2xl font-semibold ${darkMode ? 'text-light' : 'text-secondary'}`}>
                 {getCompanyName()}
               </span>
             </Link>
 
             {/* Mobile menu button */}
             <div className="md:hidden">
-              <button onClick={toggleMenu} className={`text-2xl ${darkMode ? 'text-white' : 'text-secondary'}`}>
+              <button onClick={toggleMenu} className={`text-2xl ${darkMode ? 'text-light' : 'text-secondary'}`}>
                 {isOpen ? <XIcon /> : <MenuIcon />}
               </button>
             </div>
@@ -184,7 +184,7 @@ const NavigationBar = () => {
       {/* Promotional message */}
       {isActive && promotionalMessage && (
         <div className={`fixed left-0 right-0 z-10 transition-transform duration-300 ease-in-out ${isVisible ? 'translate-y-0' : '-translate-y-full'}`}>
-        <div className={`flex flex-wrap items-center justify-between text-white tracking-tighter ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-primary font-medium'} text-left pt-6 text-xl font-thin mt-14`}>
+        <div className={`flex flex-wrap items-center justify-between text-light tracking-tighter ${darkMode ? 'bg-gradient-to-r from-primary to-secondary' : 'bg-primary font-medium'} text-left pt-6 text-xl font-thin mt-14`}>
           <div className="ml-8 font-Publica">
             {promotionalMessage}
           </div>

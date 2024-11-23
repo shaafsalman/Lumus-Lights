@@ -25,7 +25,9 @@ export default {
       colors: {
         primary: '#bea77f', 
         primaryHover: '#bea77f', 
-        secondary: '#22211f',  
+        secondary: '#22211f',
+        light: '#F0F0F0',  
+  
       },
     },
   },

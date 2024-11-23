@@ -144,14 +144,19 @@ const ProductMainPage = () => {
   const [selectedSku, setSelectedSku] = useState(null);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
+  // Handle color change (SKU selection)
   const handleColorChange = (sku) => {
     setSelectedSku(sku);
     setCurrentImageIndex(0);
   };
 
-  const imagesToShow = selectedSku?.images.length > 0
-    ? selectedSku.images
-    : [{ image_path: thumbnail }];
+  // Show all images when no SKU is selected, otherwise show images for selected SKU
+  const imagesToShow = selectedSku
+    ? selectedSku.images // If SKU is selected, show its images
+    : [
+        ...skus.flatMap(sku => sku.images), // Show images from all SKUs if no SKU is selected
+        { image_path: thumbnail }, // Default product thumbnail if no SKU is selected
+      ];
 
   return (
     <div className="mainPage mt-10">

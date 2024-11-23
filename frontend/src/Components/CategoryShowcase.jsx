@@ -40,10 +40,10 @@ const CategoryShowcase = ({
     <div 
       className="relative  flex flex-col items-center justify-center h-full w-screen mb-10 bg-secondary "
     >
-      <div className={`flex flex-col w-full h-full bg-opacity-50 p-6 md:p-10 ${darkMode ? 'bg-secondary' : 'bg-white'}`}>
+      <div className={`flex flex-col w-full h-full p-6 md:p-10 ${darkMode ? 'bg-secondary' : 'bg-light'}`}>
         <div className="flex flex-col md:flex-row justify-between items-center mb-6 md:mb-8 space-y-4 md:space-y-0">
           {/* Category Heading */}
-          <h1 className={`text-3xl md:text-4xl font-bold text-center md:text-left ${darkMode ? 'text-white' : 'text-secondary'}`}>
+          <h1 className={`text-3xl md:text-4xl font-bold text-center md:text-left ${darkMode ? 'text-light' : 'text-secondary'}`}>
             {title}
           </h1>
           

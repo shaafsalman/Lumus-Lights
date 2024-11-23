@@ -10,7 +10,7 @@ const Modal = ({ title, isOpen, onClose, onSave, buttonText,closeButtonText="Can
     isOpen && (
       <div className="fixed inset-0 flex items-center justify-center z-50">
         <div className="absolute inset-0 bg-black opacity-80"></div>
-        <div className={`relative rounded-md shadow-2xl p-6 max-h-[95vh] overflow-y-scroll scrollbar-hidden ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
+        <div className={`relative rounded-md shadow-2xl p-6 max-w-6xl max-h-[85vh] overflow-y-scroll scrollbar-hidden ${darkMode ? 'bg-secondary text-white' : 'bg-white text-secondary'}`}>
           {onClose && (
             <button 
               className={`absolute top-4 right-4 ${darkMode ? 'text-gray-300 hover:text-white' : 'text-gray-600 hover:text-gray-800'} focus:outline-none`}
