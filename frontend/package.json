@@ -19,13 +19,20 @@
     "@heroicons/react": "^1.0.6",
     "@mui/material": "^6.1.4",
     "axios": "^1.7.7",
+    "exceljs": "^4.4.0",
+    "jspdf": "^2.5.2",
+    "jspdf-autotable": "^3.8.4",
     "lucide-react": "^0.451.0",
     "react": "^18.3.1",
+    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.9",
+    "react-minimal-pie-chart": "^9.1.0",
     "react-router-dom": "^6.26.0",
+    "react-segmented-control": "^0.2.2",
     "react-spinners": "^0.14.1",
-    "react-switch": "^7.0.0"
+    "react-switch": "^7.0.0",
+    "recoil": "^0.7.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.8.0",

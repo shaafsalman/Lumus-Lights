@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { NavLink, useLocation } from 'react-router-dom'; 
+import { NavLink, useLocation } from 'react-router-dom';
 import { useDarkMode } from '../../Util/DarkModeContext';
-import { ArrowDown, ArrowUp, Box, Tag, Grid, Settings, LogOut } from 'lucide-react'; 
+import { ArrowDown, ArrowUp, Box, Tag, Grid, Settings, LogOut,FileText } from 'lucide-react';
 
 const menuItems = [
   {
     section: 'Dashboard',
     items: [
-      { name: 'Overview', icon: Grid, path: '/admin/dashboard' },
+      { name: 'Dashboard', icon: Grid, path: '/dashboard' },
     ],
   },
   {
@@ -26,6 +26,12 @@ const menuItems = [
     ],
   },
   {
+    section: 'Reports',
+    items: [
+      { name: 'Product Report', icon: FileText, path: '/admin/report/product-report' },
+    ],
+  },
+  {
     section: 'Admin Controls',
     items: [
       { name: 'Settings', icon: Settings, path: '/admin/settings' },
@@ -37,7 +43,7 @@ const menuItems = [
 const Sidebar = () => {
   const { darkMode } = useDarkMode();
   const [collapsedSections, setCollapsedSections] = useState({});
-  const location = useLocation(); 
+  const location = useLocation();
 
   const toggleSection = (section) => {
     setCollapsedSections({
@@ -47,22 +53,29 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className={`h-full p-3 shadow-sm overflow-auto ${darkMode ? 'bg-secondary' : 'bg-white'}`}>
+    <aside
+      className={`h-full p-2 shadow-2xl  ${
+        darkMode ? 'bg-secondary' : 'bg-card-light'
+      }`}
+      style={{
+        overflow: 'auto',
+        scrollbarWidth: 'none', // For Firefox
+        msOverflowStyle: 'none', // For IE and Edge
+      }}
+    >
       <nav>
-        <ul className="space-y-4 mt-2"> {/* Reduced gap between sections */}
+        <ul className="space-y-4 mt-2">
           {menuItems.map((section, sectionIndex) => (
             <div key={sectionIndex}>
               <div
-                className={`px-3 py-2 text-lg font-semibold cursor-pointer flex justify-between items-center ${darkMode ? 'text-white' : 'text-black'}`}
+                className={`px-3 py-2 text-lg font-semibold cursor-pointer flex justify-between items-center ${
+                  darkMode ? 'text-white' : 'text-black'
+                }`}
                 onClick={() => toggleSection(section.section)}
               >
                 <span>{section.section}</span>
                 <div className="ml-2">
-                  {collapsedSections[section.section] ? (
-                    <ArrowDown />
-                  ) : (
-                    <ArrowUp />
-                  )}
+                  {collapsedSections[section.section] ? <ArrowDown /> : <ArrowUp />}
                 </div>
               </div>
               <div
@@ -72,7 +85,7 @@ const Sidebar = () => {
                   transition: 'max-height 0.3s ease-in-out',
                 }}
               >
-                <ul className="pl-4 space-y-1"> {/* Reduced space between items */}
+                <ul className="pl-4 space-y-1">
                   {section.items.map((item, itemIndex) => (
                     <li key={itemIndex}>
                       <NavLink
@@ -96,6 +109,11 @@ const Sidebar = () => {
           ))}
         </ul>
       </nav>
+      <style jsx>{`
+        aside::-webkit-scrollbar {
+          display: none; /* For Chrome, Safari, and Opera */
+        }
+      `}</style>
     </aside>
   );
 };

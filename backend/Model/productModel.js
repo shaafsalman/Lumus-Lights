@@ -30,6 +30,9 @@ const fetchProducts = async () => {
       sku.sku, 
       sku.price, 
       sku.stock, 
+      sku.sold,
+      sku.discount,
+      sku.rating,
       sku.color, 
       sku.size, 
       sku.wattage, 
@@ -78,6 +81,9 @@ const fetchProducts = async () => {
             size: row.size,
             wattage: row.wattage,
             voltage: row.voltage,
+            rating:row.rating,
+            discount:row.discount,
+            sold:row.sold,
             images: [],
           };
           product.skus.push(sku);

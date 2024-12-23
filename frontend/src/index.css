@@ -4,13 +4,13 @@
 
 @font-face {
   font-family: 'Publica';
-  src: url('./fonts/PublicaPlay-Regular.otf') format('opentype');
+  src: url('./assets/font/PublicaPlay-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
 @font-face {
   font-family: 'PublicaSans';
-  src: url('./fonts/PublicaSans-Regular.otf') format('opentype');
+  src: url('./assets//PublicaSans-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

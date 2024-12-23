@@ -21,7 +21,7 @@ const Input = ({ id, label, type, value, onChange, required = false, isTextArea 
         <input
           id={id}
           type={type}
-          className={`w-full p-3 border rounded transition duration-200 ${darkMode ? 'border-primary bg-secondary text-white' : 'border-primary bg-white text-black'}`}
+          className={`w-full p-2 border rounded transition duration-200 ${darkMode ? 'border-primary bg-secondary text-white' : 'border-primary bg-white text-black'}`}
           value={value}
           onChange={onChange}
           required={required}

@@ -11,6 +11,7 @@ import Register from './Pages/PublicPages/Register';
 import ProductMainPage from './Components/ProductMainPage';
 import NavigationBar from './Components/NavigationBar';
 import Footer from './Components/Footer';
+import { RecoilRoot } from 'recoil';
 
 
 import Sidebar from './Pages/AdminPages/Sidebar';
@@ -18,12 +19,12 @@ import ManageCategories from './Pages/AdminPages/ManageCategories';
 import ManageProducts from './Pages/AdminPages/ManageProducts';
 import ProfileHeader from './ui/ProfileHeader';
 import AdminNavbar from './ui/AdminNavbar';
-import Dashboard from './Pages/AdminPages/Dashboard.jsx'; 
+import Dashboard from './Pages/AdminPages/Dashboard/Dashboard.jsx'; 
 import BannerPromotion from './Pages/AdminPages/BannerPromotions.jsx';
 import PopUpPromotions from './Pages/AdminPages/PopUpPromotions.jsx';
-
-
-
+import FlatSale from './Pages/AdminPages/FlatSale.jsx';
+import LoadState from './contexts/LoadState';
+import ProductReport from './Pages/AdminPages/reports/ProductReport.jsx';
 // Helper function to check token validity
 const isTokenValid = () => {
   const token = localStorage.getItem('token');
@@ -48,7 +49,7 @@ const AuthLayout = ({ children }) => {
 const MainLayout = ({ children }) => {
   const { darkMode } = useDarkMode();
   return (
-    <div className={`font-popins flex flex-col  overflow-hidden ${darkMode ? 'bg-secondary text-light' : 'bg-light text-black'}`}>
+    <div className={`font-poppins flex flex-col  overflow-hidden ${darkMode ? 'bg-secondary text-light' : 'bg-light text-black'}`}>
       <NavigationBar />
       <main className="flex-grow mt-24">{children}</main>
       <Footer />
@@ -60,21 +61,23 @@ const AdminLayout = ({ children, pageTitle }) => {
   const { darkMode } = useDarkMode();
 
   return (
-    <div className={`flex flex-col h-screen ${darkMode ? 'bg-secondary text-light' : 'bg-light text-secondary'}`}>
-      <AdminNavbar />
+    <div className={`font-publica flex flex-col h-screen ${darkMode ? 'bg-secondary text-light' : 'bg-light text-secondary'}`}>
+      <AdminNavbar />  
 
-      <div className="flex flex-1 overflow-hidden">
-        <Sidebar />
-        <div className={`flex-1 px-2 py-2 shadow-2xl ${darkMode ? 'bg-secondary text-secondary' : 'bg-light text-secondary'}`}>
-          <ProfileHeader pageTitle={pageTitle} />
-          {children}
+      <div className="flex flex-1 overflow-hidden">  
+        <Sidebar />  
+
+        <div className={`flex flex-col flex-1 overflow-hidden ${darkMode ? 'bg-secondary' : 'bg-white'}`}>
+          <ProfileHeader pageTitle={pageTitle} />  
+
+          <div className="flex-1 overflow-auto px-2 py-2 shadow-2xl">
+            {children} 
+          </div>
         </div>
       </div>
     </div>
   );
 };
-
-
 
 // Protected Route Component
 const ProtectedRoute = ({ isAuthenticated, children }) => (
@@ -88,7 +91,8 @@ const adminRoutes = [
   { path: '/admin/manage-products', component: <ManageProducts />, title: 'Manage Products' },
   { path: '/admin/banner-promotions', component: <BannerPromotion />, title: 'Banner Promotions' },
   { path: '/admin/popups-promotions', component: <PopUpPromotions/>, title: 'PopUp Promotions' },
-
+  { path: '/admin/flat-sale', component: <FlatSale/>, title: 'Flat Sale' },
+  { path: '/admin/report/product-report', component: <ProductReport/>, title: 'Product Report' },
 ];
 
 // Main application content
@@ -166,11 +170,14 @@ const App = () => {
   };
 
   return (
+    <RecoilRoot>
     <DarkModeProvider>
+      <LoadState /> 
       <Router>
         <AppContent isAuthenticated={isAuthenticated} setIsAuthenticated={handleLogin} />
       </Router>
     </DarkModeProvider>
+  </RecoilRoot>
   );
 };
 
