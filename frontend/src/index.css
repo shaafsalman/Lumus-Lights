@@ -10,7 +10,7 @@
 }
 @font-face {
   font-family: 'PublicaSans';
-  src: url('./assets//PublicaSans-Regular.otf') format('opentype');
+  src: url('./assets/font/PublicaSans-Regular.otf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }
